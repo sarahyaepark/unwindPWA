@@ -30,14 +30,32 @@ export const me = () => async dispatch => {
   }
 }
 
-export const auth = (email, password, method) => async dispatch => {
+export const auth = (
+  email,
+  password,
+  method,
+  firstName,
+  goals
+) => async dispatch => {
   let res
+  let cleanEmail = email.toLowerCase()
+  let cleanName
+  if (firstName) {
+    cleanName = firstName.toLowerCase()
+  }
   try {
-    res = await axios.post(`/auth/${method}`, {email, password})
+    if (method === 'login') {
+      res = await axios.post(`/api`, {
+        query: `{user(email: "${cleanEmail}", password: "${password}"){id, name, email}}`
+      })
+    } else {
+      res = await axios.post(`/api`, {
+        query: `mutation{addUser(firstName:"${cleanName}", email: "${cleanEmail}", password: "${password}", goals:${goals}){name}}`
+      })
+    }
   } catch (authError) {
     return dispatch(getUser({error: authError}))
   }
-
   try {
     dispatch(getUser(res.data))
     history.push('/home')

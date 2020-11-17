@@ -9,6 +9,8 @@ const db = require('./db')
 const sessionStore = new SequelizeStore({db})
 const PORT = process.env.PORT || 8080
 const app = express()
+const schema = require('./api/users')
+const {graphqlHTTP} = require('express-graphql')
 const socketio = require('socket.io')
 module.exports = app
 
@@ -63,9 +65,13 @@ const createApp = () => {
   app.use(passport.initialize())
   app.use(passport.session())
 
-  // auth and api routes
-  app.use('/auth', require('./auth'))
-  app.use('/api', require('./api'))
+  app.use(
+    '/api',
+    graphqlHTTP({
+      schema: schema,
+      graphiql: true
+    })
+  )
 
   // static file-serving middleware
   app.use(express.static(path.join(__dirname, '..', 'public')))
