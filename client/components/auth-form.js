@@ -2,33 +2,47 @@ import React from 'react'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import {auth} from '../store'
+import Form from 'react-bootstrap/Form'
+import Button from 'react-bootstrap/Button'
 
-/**
- * COMPONENT
- */
 const AuthForm = props => {
   const {name, displayName, handleSubmit, error} = props
-
+  console.log(error)
   return (
-    <div>
-      <form onSubmit={handleSubmit} name={name}>
-        <div>
-          <label htmlFor="email">
-            <small>Email</small>
-          </label>
-          <input name="email" type="text" />
-        </div>
-        <div>
-          <label htmlFor="password">
-            <small>Password</small>
-          </label>
-          <input name="password" type="password" />
-        </div>
-        <div>
-          <button type="submit">{displayName}</button>
-        </div>
-        {error && error.response && <div> {error.response.data} </div>}
-      </form>
+    <div className="AuthDiv">
+      <h1>{displayName}</h1>
+      <Form className="AuthForm" onSubmit={handleSubmit} name={name}>
+        {displayName === 'Sign Up' ? (
+          <Form.Group controlId="formBasicName">
+            <Form.Label>First Name</Form.Label>
+            <Form.Control name="firstName" placeholder="Preferred First Name" />
+          </Form.Group>
+        ) : null}
+        <Form.Group controlId="formBasicEmail">
+          <Form.Label>Email address</Form.Label>
+          <Form.Control name="email" placeholder="Enter email" />
+          <Form.Text className="text-muted">
+            We'll never share your email with anyone else.
+          </Form.Text>
+        </Form.Group>
+        <Form.Group controlId="formBasicPassword">
+          <Form.Label>Password</Form.Label>
+          <Form.Control
+            type="password"
+            name="password"
+            placeholder="Password"
+          />
+        </Form.Group>
+        {displayName === 'Login' ? (
+          <Button variant="primary" type="submit">
+            {displayName}
+          </Button>
+        ) : (
+          <Button variant="primary" type="submit">
+            Get Started!
+          </Button>
+        )}
+      </Form>
       <a href="/auth/google">{displayName} with Google</a>
     </div>
   )
@@ -64,7 +78,12 @@ const mapDispatch = dispatch => {
       const formName = evt.target.name
       const email = evt.target.email.value
       const password = evt.target.password.value
-      dispatch(auth(email, password, formName))
+      if (formName === 'login') {
+        dispatch(auth(email, password, formName))
+      } else {
+        const firstName = evt.target.firstName.value
+        dispatch(auth(email, password, formName, firstName))
+      }
     }
   }
 }

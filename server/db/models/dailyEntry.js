@@ -7,19 +7,16 @@ const DailyEntry = db.define('dailyEntry', {
     type: Sequelize.DATEONLY,
     defaultValue: Date.now()
   },
-  journal: {
-    type: Sequelize.STRING
-  },
   mood: {
-    type: Sequelize.STRING,
+    type: Sequelize.INTEGER,
     allowNull: false,
     validate: {
       notEmpty: true,
-      isIn: [['happy', 'sad']]
+      isIn: [[0, 25, 50, 75, 100]]
     }
   },
-  goalsMet: {
-    type: Sequelize.ARRAY(Sequelize.BOOLEAN)
+  journal: {
+    type: Sequelize.TEXT
   }
 })
 

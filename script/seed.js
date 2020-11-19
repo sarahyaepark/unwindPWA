@@ -2,48 +2,107 @@
 const {green, red} = require('chalk')
 const db = require('../server/db')
 
-const {User, DailyEntry} = require('../server/db/models')
+const {User, DailyEntry, Goal} = require('../server/db/models')
 
 async function seed() {
   await db.sync({force: true})
+  // users
   const [Yeppy, Beau] = await Promise.all([
     User.create({
       firstName: 'Yeppy',
       email: 'yeppy@email.com',
-      password: '123',
-      goals: ['morning stretches', 'meditate']
+      password: '123'
     }),
     User.create({
       firstName: 'Beau',
       email: 'beau@email.com',
-      password: '123',
-      goals: ['morning barks', 'meditate']
+      password: '123'
     })
   ])
-
+  // daily entries
   const [sampleEntry1, sampleEntry2, sampleEntry3] = await Promise.all([
     DailyEntry.create({
       userId: Yeppy.id,
       date: '2020-11-15',
       journal: 'I had a great day today',
-      mood: 'happy',
-      goalsMet: [true, false]
+      mood: 100
     }),
     DailyEntry.create({
       userId: Yeppy.id,
       journal: 'I had a bad day!!!!',
-      mood: 'sad',
-      goalsMet: [false, false]
+      mood: 25
     }),
     DailyEntry.create({
       userId: Beau.id,
       journal: 'I had a great day!!!!',
-      mood: 'happy',
-      goalsMet: [true, true]
+      mood: 75
+    })
+  ])
+  // goals
+  const [goal1Y, goal2Y, goal3Y, goal1B, goal2B, goal3B] = await Promise.all([
+    Goal.create({
+      userId: Yeppy.id,
+      dailyEntryId: sampleEntry1.id,
+      dateCompleted: Date.now(),
+      description: 'Morning stretch',
+      completed: true,
+      active: true
+    }),
+    Goal.create({
+      userId: Yeppy.id,
+      dailyEntryId: sampleEntry1.id,
+      dateCompleted: Date.now(),
+      description: 'Morning meditation',
+      completed: true,
+      active: true
+    }),
+    Goal.create({
+      userId: Yeppy.id,
+      dailyEntryId: sampleEntry1.id,
+      dateCompleted: Date.now(),
+      description: 'Morning barks',
+      completed: false,
+      active: true
+    }),
+    Goal.create({
+      userId: Beau.id,
+      dailyEntryId: sampleEntry3.id,
+      dateCompleted: Date.now(),
+      description: 'eat treats',
+      completed: true,
+      active: true
+    }),
+    Goal.create({
+      userId: Beau.id,
+      dailyEntryId: sampleEntry3.id,
+      dateCompleted: Date.now(),
+      description: 'poo',
+      completed: false,
+      active: true
+    }),
+    Goal.create({
+      userId: Beau.id,
+      dailyEntryId: sampleEntry3.id,
+      dateCompleted: Date.now(),
+      description: 'tummy rubs',
+      completed: true,
+      active: true
     })
   ])
 
-  return [Yeppy, Beau, sampleEntry1, sampleEntry2, sampleEntry3]
+  return [
+    Yeppy,
+    Beau,
+    sampleEntry1,
+    sampleEntry2,
+    sampleEntry3,
+    goal1Y,
+    goal2Y,
+    goal3Y,
+    goal1B,
+    goal2B,
+    goal3B
+  ]
 }
 
 // We've separated the `seed` function from the `runSeed` function.
