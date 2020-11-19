@@ -1,5 +1,5 @@
 body {
-  font-family: sans-serif;
+  font-family: 'Arial', sans-serif;
 }
 
 a {
@@ -22,4 +22,36 @@ nav a {
 .AuthForm {
   padding: 30px;
   width: 500px;
+}
+
+.labelText {
+  font-size: 1.5rem;
+}
+
+.UserHomeDiv {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.GoalCheck {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 50%;
+}
+
+.GoalsList {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.checkBox {
+  width: 4rem;
+  height: 4rem;
+}
+
+.goalDescription {
+  padding-left: 2rem;
 }

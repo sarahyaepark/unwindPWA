@@ -149,8 +149,7 @@ const queryType = new graphql.GraphQLObjectType({
           const goals = await Goal.findAll({
             where: {
               userId: args.userId,
-              active: true,
-              dailyEntryId: args.dailyEntryId
+              active: true
             }
           })
           return goals
@@ -263,19 +262,18 @@ const mutationType = new graphql.GraphQLObjectType({
       },
       async resolve(parent, args) {
         try {
-          if (args.completed) {
-            let updatedGoal = await Goal.update(
-              {
-                completed: args.completed,
-                dateCompleted: Date.now()
-              },
-              {
-                where: {id: args.id},
-                returning: true
-              }
-            )
-            return updatedGoal[1][0].dataValues
-          }
+          let updatedGoal = await Goal.update(
+            {
+              completed: args.completed,
+              dateCompleted: Date.now()
+            },
+            {
+              where: {id: args.id},
+              returning: true
+            }
+          )
+          console.log(updatedGoal)
+          return updatedGoal[1][0].dataValues
           // write in an update for making goals active/inactive
         } catch (err) {
           console.log(err)

@@ -18,19 +18,35 @@ const defaultUser = {}
 const getUser = user => ({type: GET_USER, user})
 const removeUser = () => ({type: REMOVE_USER})
 
-/**
- * THUNK CREATORS
- */
-export const me = () => async dispatch => {
+export const me = () => dispatch => {
   try {
-    const res = await axios.get('/auth/me')
-    dispatch(getUser(res.data || defaultUser))
+    let currentUser = {}
+    if (window.localStorage.getItem('id')) {
+      currentUser = {
+        id: window.localStorage.getItem('id'),
+        firstName: window.localStorage.getItem('firstName'),
+        email: window.localStorage.getItem('email')
+      }
+    } else if (window.sessionStorage.getItem('id')) {
+      currentUser = {
+        id: window.sessionStorage.getItem('id'),
+        firstName: window.sessionStorage.getItem('firstName'),
+        email: window.sessionStorage.getItem('email')
+      }
+    }
+    dispatch(getUser(currentUser))
   } catch (err) {
     console.error(err)
   }
 }
 
-export const auth = (email, password, method, firstName) => async dispatch => {
+export const auth = (
+  email,
+  password,
+  method,
+  checked,
+  firstName
+) => async dispatch => {
   let res
   let cleanEmail = email.toLowerCase()
   try {
@@ -47,13 +63,26 @@ export const auth = (email, password, method, firstName) => async dispatch => {
     return dispatch(getUser({error: authError}))
   }
   try {
+    let userInfo
     if (method === 'login') {
-      console.log(res.data)
-      dispatch(getUser(res.data.data.user))
+      userInfo = res.data.data.user
+      dispatch(getUser(userInfo))
       history.push('/home')
     } else {
-      dispatch(getUser(res.data.data.addUser))
+      userInfo = res.data.data.addUser
+      dispatch(getUser(userInfo))
       history.push('/setGoals')
+    }
+    if (checked) {
+      // store data in local storage
+      window.localStorage.setItem('id', userInfo.id)
+      window.localStorage.setItem('firstName', userInfo.firstName)
+      window.localStorage.setItem('email', userInfo.email)
+    } else {
+      // store data in sessions storage
+      window.sessionStorage.setItem('id', userInfo.id)
+      window.sessionStorage.setItem('firstName', userInfo.firstName)
+      window.sessionStorage.setItem('email', userInfo.email)
     }
   } catch (dispatchOrHistoryErr) {
     console.error(dispatchOrHistoryErr)
@@ -62,8 +91,11 @@ export const auth = (email, password, method, firstName) => async dispatch => {
 
 export const logout = () => async dispatch => {
   try {
+    // delete data from sessions/local storage
     await axios.post('/auth/logout')
     dispatch(removeUser())
+    window.localStorage.clear()
+    window.sessionStorage.clear()
     history.push('/login')
   } catch (err) {
     console.error(err)

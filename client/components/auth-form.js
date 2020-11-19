@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import {auth} from '../store'
@@ -7,11 +7,16 @@ import Button from 'react-bootstrap/Button'
 
 const AuthForm = props => {
   const {name, displayName, handleSubmit, error} = props
-  console.log(error)
+  const [checked, setChecked] = useState(false)
+
   return (
     <div className="AuthDiv">
       <h1>{displayName}</h1>
-      <Form className="AuthForm" onSubmit={handleSubmit} name={name}>
+      <Form
+        className="AuthForm"
+        onSubmit={evt => handleSubmit(evt, checked)}
+        name={name}
+      >
         {displayName === 'Sign Up' ? (
           <Form.Group controlId="formBasicName">
             <Form.Label>First Name</Form.Label>
@@ -42,6 +47,15 @@ const AuthForm = props => {
             Get Started!
           </Button>
         )}
+        <br />
+        <Form.Group controlId="formBasicCheckbox">
+          <Form.Check
+            type="checkbox"
+            checked={checked}
+            onChange={e => setChecked(e.currentTarget.checked)}
+            label="Remember me"
+          />
+        </Form.Group>
       </Form>
       <a href="/auth/google">{displayName} with Google</a>
     </div>
@@ -73,16 +87,16 @@ const mapSignup = state => {
 
 const mapDispatch = dispatch => {
   return {
-    handleSubmit(evt) {
+    handleSubmit(evt, checked) {
       evt.preventDefault()
       const formName = evt.target.name
       const email = evt.target.email.value
       const password = evt.target.password.value
       if (formName === 'login') {
-        dispatch(auth(email, password, formName))
+        dispatch(auth(email, password, formName, checked))
       } else {
         const firstName = evt.target.firstName.value
-        dispatch(auth(email, password, formName, firstName))
+        dispatch(auth(email, password, formName, checked, firstName))
       }
     }
   }

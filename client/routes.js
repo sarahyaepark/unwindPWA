@@ -15,13 +15,12 @@ class Routes extends Component {
 
   render() {
     const {isLoggedIn} = this.props
-    console.log('checking if logged in', isLoggedIn)
     return (
       <Switch>
         {/* Routes placed here are available to all visitors */}
         <Route path="/login" component={Login} />
         <Route path="/signup" component={Signup} />
-        {isLoggedIn && (
+        {isLoggedIn() && (
           <Switch>
             {/* Routes placed here are only available after logging in */}
             <Route path="/home" component={UserHome} />
@@ -42,7 +41,15 @@ const mapState = state => {
   return {
     // Being 'logged in' for our purposes will be defined has having a state.user that has a truthy id.
     // Otherwise, state.user will be an empty object, and state.user.id will be falsey
-    isLoggedIn: !!state.user.id
+    // kisLoggedIn: !!state.user.id,
+    isLoggedIn: function() {
+      if (state.user.id) return state.user.id
+      else if (window.localStorage.getItem('id'))
+        return window.localStorage.getItem('id')
+      else if (window.sessionStorage.getItem('id'))
+        return window.sessionStorage.getItem('id')
+      else return false
+    }
   }
 }
 
@@ -63,5 +70,5 @@ export default withRouter(connect(mapState, mapDispatch)(Routes))
  */
 Routes.propTypes = {
   loadInitialData: PropTypes.func.isRequired,
-  isLoggedIn: PropTypes.bool.isRequired
+  isLoggedIn: PropTypes.func.isRequired
 }

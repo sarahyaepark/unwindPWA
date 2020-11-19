@@ -1,15 +1,22 @@
 import React from 'react'
+import {connect} from 'react-redux'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import {addGoal} from '../store'
 
-const GoalForm = () => {
+const GoalInput = props => {
+  const {handleSubmit} = props
   return (
-    <Form className="AuthDiv">
+    <Form className="AuthDiv" onSubmit={handleSubmit}>
       <Form.Group controlId="goals">
-        <Form.Label>
-          What small goals would you like to accomplish each day?
+        <Form.Label className="labelText">
+          What self care goals would you like to accomplish each day?
         </Form.Label>
-        <Form.Control name="goal1" placeholder="Goal 1" />
+        <Form.Text className="text-muted">
+          You can add or edit goals later just choose three for now 😌
+        </Form.Text>
+        <br />
+        <Form.Control name="goal1" placeholder="Morning stretches..." />
         <br />
         <Form.Control name="goal2" placeholder="Goal 2" />
         <br />
@@ -21,12 +28,20 @@ const GoalForm = () => {
     </Form>
   )
 }
-export default GoalForm
 
-/**
- * CONTAINER
- *   Note that we have two different sets of 'mapStateToProps' functions -
- *   one for Login, and one for Signup. However, they share the same 'mapDispatchToProps'
- *   function, and share the same Component. This is a good example of how we
- *   can stay DRY with interfaces that are very similar to each other!
- */
+const mapDispatch = dispatch => {
+  return {
+    handleSubmit(evt) {
+      evt.preventDefault()
+      let userId
+      if (window.localStorage.getItem('id'))
+        userId = window.localStorage.getItem('id')
+      else userId = window.sessionStorage.getItem('id')
+      dispatch(addGoal(userId, evt.target.goal1.value))
+      dispatch(addGoal(userId, evt.target.goal2.value))
+      dispatch(addGoal(userId, evt.target.goal3.value))
+    }
+  }
+}
+
+export const GoalForm = connect(null, mapDispatch)(GoalInput)
