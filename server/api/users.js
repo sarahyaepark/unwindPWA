@@ -60,7 +60,6 @@ const queryType = new graphql.GraphQLObjectType({
             if (!foundUser.correctPassword(args.password)) {
               return 'Incorrect email or password'
             } else {
-              console.log(foundUser)
               return foundUser
             }
           } else {
@@ -77,7 +76,6 @@ const queryType = new graphql.GraphQLObjectType({
         // code to get data from db
         try {
           const users = await User.findAll({include: [DailyEntry, Goal]})
-          console.log(users)
           return users
         } catch (err) {
           console.log(err)
@@ -262,10 +260,13 @@ const mutationType = new graphql.GraphQLObjectType({
       },
       async resolve(parent, args) {
         try {
+          let dateCompleted
+          if (args.completed) dateCompleted = Date.now()
+          else dateCompleted = null
           let updatedGoal = await Goal.update(
             {
               completed: args.completed,
-              dateCompleted: Date.now()
+              dateCompleted: dateCompleted
             },
             {
               where: {id: args.id},

@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {fetchGoals, me, updateGoal} from '../store'
-import CheckBox from './checkBox'
 
 /**
  * COMPONENT
@@ -23,20 +22,24 @@ export const UserHome = props => {
   )
 
   const handleCheckBoxToggle = (goalId, completed) => {
-    props.updateGoal(userId, goalId, !completed)
-    props.fetchGoals(userId)
+    props.updateGoal(userId, goalId, !completed).then(() => {
+      props.fetchGoals(userId)
+    })
   }
-  console.log(goals)
   return (
     <div className="UserHomeDiv">
-      <h3>Welcome, {firstName}</h3>
+      {firstName !== null ? (
+        <h3>Welcome, {firstName}</h3>
+      ) : (
+        <img src="https://hackernoon.com/images/0*4Gzjgh9Y7Gu8KEtZ.gif" />
+      )}
+
       <div className="GoalsListDiv">
         {goals
           ? goals.map(goal => {
               return (
                 <div key={goal.id} className="GoalsList">
                   <div className="GoalCheck">
-                    {console.log(goal.completed)}
                     {!goal.completed ? (
                       <img
                         className="checkBox"
