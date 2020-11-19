@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React from 'react'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import {auth} from '../store'
@@ -7,8 +7,6 @@ import Button from 'react-bootstrap/Button'
 
 const AuthForm = props => {
   const {name, displayName, handleSubmit, error} = props
-
-  const [signUp, startSignUp] = useState(false)
   console.log(error)
   return (
     <div className="AuthDiv">
@@ -35,38 +33,17 @@ const AuthForm = props => {
             placeholder="Password"
           />
         </Form.Group>
-        {!signUp ? (
-          displayName === 'Login' ? (
-            <Button variant="primary" type="submit">
-              {displayName}
-            </Button>
-          ) : (
-            <Button variant="primary" onClick={() => startSignUp(true)}>
-              Get Started!
-            </Button>
-          )
-        ) : null}
-        {signUp ? (
-          <div>
-            <Form.Group controlId="goals">
-              <Form.Label>
-                What small goals would you like to accomplish each day?
-              </Form.Label>
-              <Form.Control name="goal1" placeholder="Goal 1" />
-              <br />
-              <Form.Control name="goal2" placeholder="Goal 2" />
-              <br />
-              <Form.Control name="goal3" placeholder="Goal 3" />
-            </Form.Group>
-            <Button variant="primary" type="submit">
-              Sign Up
-            </Button>
-          </div>
-        ) : null}
-        <br />
-        <br />
+        {displayName === 'Login' ? (
+          <Button variant="primary" type="submit">
+            {displayName}
+          </Button>
+        ) : (
+          <Button variant="primary" type="submit">
+            Get Started!
+          </Button>
+        )}
       </Form>
-      {signUp ? null : <a href="/auth/google">{displayName} with Google</a>}
+      <a href="/auth/google">{displayName} with Google</a>
     </div>
   )
 }
@@ -99,21 +76,13 @@ const mapDispatch = dispatch => {
     handleSubmit(evt) {
       evt.preventDefault()
       const formName = evt.target.name
-      console.log(evt.target)
       const email = evt.target.email.value
       const password = evt.target.password.value
       if (formName === 'login') {
-        console.log(email, password, formName)
         dispatch(auth(email, password, formName))
       } else {
         const firstName = evt.target.firstName.value
-        const goals = [
-          evt.target.goal1.value,
-          evt.target.goal2.value,
-          evt.target.goal3.value
-        ]
-        console.log(email, password, formName, firstName, goals)
-        dispatch(auth(email, password, formName, firstName, goals))
+        dispatch(auth(email, password, formName, firstName))
       }
     }
   }

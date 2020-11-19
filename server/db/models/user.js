@@ -30,10 +30,6 @@ const User = db.define('user', {
   },
   googleId: {
     type: Sequelize.STRING
-  },
-  goals: {
-    type: Sequelize.ARRAY(Sequelize.STRING),
-    allowNull: false
   }
 })
 

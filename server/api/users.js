@@ -1,17 +1,30 @@
 const graphql = require('graphql')
-const {User} = require('../db/models')
-const {DailyEntry} = require('../db/models')
+const {User, DailyEntry, Goal} = require('../db/models')
 const crypto = require('crypto')
+
+const goalType = new graphql.GraphQLObjectType({
+  name: 'Goal',
+  fields: {
+    id: {type: graphql.GraphQLID},
+    userId: {type: graphql.GraphQLID},
+    dailyEntryId: {type: graphql.GraphQLID},
+    dateCreated: {type: graphql.GraphQLString},
+    dateCompleted: {type: graphql.GraphQLString},
+    description: {type: graphql.GraphQLString},
+    completed: {type: graphql.GraphQLBoolean},
+    active: {type: graphql.GraphQLBoolean}
+  }
+})
 
 const dailyEntryType = new graphql.GraphQLObjectType({
   name: 'DailyEntry',
   fields: {
     id: {type: graphql.GraphQLID},
-    userId: {type: graphql.GraphQLInt},
+    userId: {type: graphql.GraphQLID},
     date: {type: graphql.GraphQLString},
     journal: {type: graphql.GraphQLString},
-    mood: {type: graphql.GraphQLString},
-    goalsMet: {type: graphql.GraphQLList(graphql.GraphQLBoolean)}
+    mood: {type: graphql.GraphQLInt},
+    goals: {type: graphql.GraphQLList(goalType)}
   }
 })
 
@@ -22,7 +35,7 @@ const userType = new graphql.GraphQLObjectType({
     email: {type: graphql.GraphQLString},
     firstName: {type: graphql.GraphQLString},
     password: {type: graphql.GraphQLString},
-    goals: {type: graphql.GraphQLList(graphql.GraphQLString)},
+    goals: {type: graphql.GraphQLList(goalType)},
     dailyEntries: {type: graphql.GraphQLList(dailyEntryType)}
   }
 })
@@ -40,16 +53,19 @@ const queryType = new graphql.GraphQLObjectType({
         // code to get data from db
         try {
           const foundUser = await User.findOne({
-            where: {email: args.email}
+            where: {email: args.email},
+            include: [DailyEntry, Goal]
           })
           if (foundUser) {
             if (!foundUser.correctPassword(args.password)) {
               return 'Incorrect email or password'
             } else {
+              console.log(foundUser)
               return foundUser
             }
+          } else {
+            return 'Incorrect email or password'
           }
-          return foundUser
         } catch (err) {
           console.log(err)
         }
@@ -60,7 +76,7 @@ const queryType = new graphql.GraphQLObjectType({
       resolve: async (parent, args) => {
         // code to get data from db
         try {
-          const users = await User.findAll({include: DailyEntry})
+          const users = await User.findAll({include: [DailyEntry, Goal]})
           console.log(users)
           return users
         } catch (err) {
@@ -77,7 +93,8 @@ const queryType = new graphql.GraphQLObjectType({
         // code to get data from db
         try {
           const found = await DailyEntry.findOne({
-            where: {id: args.id}
+            where: {id: args.id},
+            include: [Goal]
           })
           return found
         } catch (err) {
@@ -94,9 +111,66 @@ const queryType = new graphql.GraphQLObjectType({
         // code to get data from db
         try {
           const dailyEntries = await DailyEntry.findAll({
-            where: {userId: args.userId}
+            where: {userId: args.userId},
+            include: [Goal]
           })
           return dailyEntries
+        } catch (err) {
+          console.log(err)
+        }
+      }
+    },
+    goal: {
+      type: goalType,
+      args: {
+        id: {type: graphql.GraphQLID}
+      },
+      resolve: async (parent, args) => {
+        // code to get data from db
+        try {
+          const found = await Goal.findOne({
+            where: {id: args.id}
+          })
+          return found
+        } catch (err) {
+          console.log(err)
+        }
+      }
+    },
+    activeGoals: {
+      type: graphql.GraphQLList(goalType),
+      args: {
+        userId: {type: graphql.GraphQLID},
+        dailyEntryId: {type: graphql.GraphQLID}
+      },
+      resolve: async (parent, args) => {
+        // code to get data from db
+        try {
+          const goals = await Goal.findAll({
+            where: {
+              userId: args.userId,
+              active: true,
+              dailyEntryId: args.dailyEntryId
+            }
+          })
+          return goals
+        } catch (err) {
+          console.log(err)
+        }
+      }
+    },
+    goals: {
+      type: graphql.GraphQLList(goalType),
+      args: {
+        userId: {type: graphql.GraphQLID}
+      },
+      resolve: async (parent, args) => {
+        // code to get data from db
+        try {
+          const goals = await Goal.findAll({
+            where: {userId: args.userId}
+          })
+          return goals
         } catch (err) {
           console.log(err)
         }
@@ -113,8 +187,7 @@ const mutationType = new graphql.GraphQLObjectType({
       args: {
         firstName: {type: graphql.GraphQLString},
         email: {type: graphql.GraphQLString},
-        password: {type: graphql.GraphQLString},
-        goals: {type: graphql.GraphQLList(graphql.GraphQLString)}
+        password: {type: graphql.GraphQLString}
       },
       async resolve(parent, args) {
         try {
@@ -127,8 +200,7 @@ const mutationType = new graphql.GraphQLObjectType({
             let user = new User({
               email: args.email,
               firstName: args.firstName,
-              password: args.password,
-              goals: args.goals
+              password: args.password
             })
             const created = await User.create(user.dataValues)
             return created
@@ -142,17 +214,15 @@ const mutationType = new graphql.GraphQLObjectType({
       type: dailyEntryType,
       args: {
         journal: {type: graphql.GraphQLString},
-        mood: {type: graphql.GraphQLString},
-        goalsMet: {type: graphql.GraphQLList(graphql.GraphQLBoolean)},
-        userId: {type: graphql.GraphQLInt}
+        mood: {type: graphql.GraphQLInt},
+        userId: {type: graphql.GraphQLID}
       },
       async resolve(parent, args) {
         try {
           let dailyEntry = new DailyEntry({
             userId: args.userId,
             journal: args.journal,
-            mood: args.mood,
-            goalsMet: args.goalsMet
+            mood: args.mood
           })
           const created = await DailyEntry.create(dailyEntry.dataValues)
           return created
@@ -161,16 +231,52 @@ const mutationType = new graphql.GraphQLObjectType({
         }
       }
     },
-    deleteIngredient: {
-      type: dailyEntryType,
+    addGoal: {
+      type: goalType,
       args: {
-        id: {type: graphql.GraphQLID}
+        userId: {type: graphql.GraphQLID},
+        dailyEntryId: {type: graphql.GraphQLID},
+        description: {type: graphql.GraphQLString}
       },
       async resolve(parent, args) {
         try {
-          await DailyEntry.destroy({
-            where: {id: args.id}
+          let goal = new Goal({
+            userId: args.userId,
+            dailyEntryId: args.dailyEntryId,
+            description: args.description
           })
+          const createdGoal = await Goal.create(goal.dataValues)
+          return createdGoal
+        } catch (err) {
+          console.log(err)
+        }
+      }
+    },
+    // update goal
+    updateGoal: {
+      type: goalType,
+      args: {
+        id: {type: graphql.GraphQLID},
+        active: {type: graphql.GraphQLBoolean},
+        completed: {type: graphql.GraphQLBoolean},
+        dateCompleted: {type: graphql.GraphQLString}
+      },
+      async resolve(parent, args) {
+        try {
+          if (args.completed) {
+            let updatedGoal = await Goal.update(
+              {
+                completed: args.completed,
+                dateCompleted: Date.now()
+              },
+              {
+                where: {id: args.id},
+                returning: true
+              }
+            )
+            return updatedGoal[1][0].dataValues
+          }
+          // write in an update for making goals active/inactive
         } catch (err) {
           console.log(err)
         }

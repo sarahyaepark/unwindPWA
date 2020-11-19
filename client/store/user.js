@@ -30,35 +30,31 @@ export const me = () => async dispatch => {
   }
 }
 
-export const auth = (
-  email,
-  password,
-  method,
-  firstName,
-  goals
-) => async dispatch => {
+export const auth = (email, password, method, firstName) => async dispatch => {
   let res
   let cleanEmail = email.toLowerCase()
-  let cleanName
-  if (firstName) {
-    cleanName = firstName.toLowerCase()
-  }
   try {
     if (method === 'login') {
       res = await axios.post(`/api`, {
-        query: `{user(email: "${cleanEmail}", password: "${password}"){id, name, email}}`
+        query: `{user(email: "${cleanEmail}", password: "${password}"),{id, firstName, email}}`
       })
     } else {
       res = await axios.post(`/api`, {
-        query: `mutation{addUser(firstName:"${cleanName}", email: "${cleanEmail}", password: "${password}", goals:${goals}){name}}`
+        query: `mutation{addUser(firstName:"${firstName}", email: "${cleanEmail}", password: "${password}"),{id, firstName, email}}`
       })
     }
   } catch (authError) {
     return dispatch(getUser({error: authError}))
   }
   try {
-    dispatch(getUser(res.data))
-    history.push('/home')
+    if (method === 'login') {
+      console.log(res.data)
+      dispatch(getUser(res.data.data.user))
+      history.push('/home')
+    } else {
+      dispatch(getUser(res.data.data.addUser))
+      history.push('/setGoals')
+    }
   } catch (dispatchOrHistoryErr) {
     console.error(dispatchOrHistoryErr)
   }
