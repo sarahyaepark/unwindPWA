@@ -24,6 +24,7 @@ const dailyEntryType = new graphql.GraphQLObjectType({
     date: {type: graphql.GraphQLString},
     journal: {type: graphql.GraphQLString},
     mood: {type: graphql.GraphQLInt},
+    compliment: {type: graphql.GraphQLString},
     goals: {type: graphql.GraphQLList(goalType)}
   }
 })
@@ -60,7 +61,6 @@ const queryType = new graphql.GraphQLObjectType({
             if (!foundUser.correctPassword(args.password)) {
               return 'Incorrect email or password'
             } else {
-              console.log(foundUser)
               return foundUser
             }
           } else {
@@ -77,7 +77,6 @@ const queryType = new graphql.GraphQLObjectType({
         // code to get data from db
         try {
           const users = await User.findAll({include: [DailyEntry, Goal]})
-          console.log(users)
           return users
         } catch (err) {
           console.log(err)
@@ -213,6 +212,7 @@ const mutationType = new graphql.GraphQLObjectType({
       type: dailyEntryType,
       args: {
         journal: {type: graphql.GraphQLString},
+        compliment: {type: graphql.GraphQLString},
         mood: {type: graphql.GraphQLInt},
         userId: {type: graphql.GraphQLID}
       },
@@ -221,10 +221,42 @@ const mutationType = new graphql.GraphQLObjectType({
           let dailyEntry = new DailyEntry({
             userId: args.userId,
             journal: args.journal,
+            compliment: args.compliment,
             mood: args.mood
           })
           const created = await DailyEntry.create(dailyEntry.dataValues)
           return created
+        } catch (err) {
+          console.log(err)
+        }
+      }
+    },
+    updateEntry: {
+      type: dailyEntryType,
+      args: {
+        userId: {type: graphql.GraphQLID},
+        id: {type: graphql.GraphQLID},
+        date: {type: graphql.GraphQLString},
+        mood: {type: graphql.GraphQLInt},
+        journal: {type: graphql.GraphQLString},
+        compliment: {type: graphql.GraphQLString}
+      },
+      async resolve(parent, args) {
+        try {
+          let updatedEntry = await DailyEntry.update(
+            {
+              mood: args.mood,
+              journal: args.journal,
+              compliment: args.compliment
+            },
+            {
+              where: {userId: args.userId, date: args.date},
+              returning: true
+            }
+          )
+          console.log(updatedEntry)
+          return updatedEntry[1][0].dataValues
+          // write in an update for making goals active/inactive
         } catch (err) {
           console.log(err)
         }
@@ -262,10 +294,13 @@ const mutationType = new graphql.GraphQLObjectType({
       },
       async resolve(parent, args) {
         try {
+          let dateCompleted
+          if (args.completed) dateCompleted = Date.now()
+          else dateCompleted = null
           let updatedGoal = await Goal.update(
             {
               completed: args.completed,
-              dateCompleted: Date.now()
+              dateCompleted: dateCompleted
             },
             {
               where: {id: args.id},

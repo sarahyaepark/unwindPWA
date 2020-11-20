@@ -33,16 +33,13 @@ export const addGoal = (
 export const updateGoal = (userId, goalId, completed) => async dispatch => {
   let res
   try {
-    console.log('INSIDE THUNK', goalId, completed)
     res = await axios.post(`/api`, {
       query: `mutation{updateGoal(id:${goalId}, completed:${completed}),{id,description,completed}}`
     })
-    console.log(res)
   } catch (authError) {
     return dispatch(getGoal({error: authError}))
   }
   try {
-    console.log(res.data.data.updateGoal)
     dispatch(getGoal(res.data.data.updateGoal))
   } catch (dispatchOrHistoryErr) {
     console.error(dispatchOrHistoryErr)

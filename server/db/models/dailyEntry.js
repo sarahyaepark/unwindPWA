@@ -17,6 +17,9 @@ const DailyEntry = db.define('dailyEntry', {
   },
   journal: {
     type: Sequelize.TEXT
+  },
+  compliment: {
+    type: Sequelize.TEXT
   }
 })
 
