@@ -17,9 +17,23 @@ export const addEntry = (
 ) => async dispatch => {
   let res
   try {
-    res = await axios.post(`/api`, {
-      query: `mutation{addDailyEntry(userId:${userId},mood:${mood},journal: "${journal}",compliment:"${compliment}"),{id,journal,mood,compliment}}`
-    })
+    if (journal && compliment) {
+      res = await axios.post(`/api`, {
+        query: `mutation{addDailyEntry(userId:${userId},mood:${mood},journal: "${journal}",compliment:"${compliment}"),{id,journal,mood,compliment}}`
+      })
+    } else if (journal) {
+      res = await axios.post(`/api`, {
+        query: `mutation{addDailyEntry(userId:${userId},mood:${mood},journal: "${journal}"),{id,journal,mood,compliment}}`
+      })
+    } else if (compliment) {
+      res = await axios.post(`/api`, {
+        query: `mutation{addDailyEntry(userId:${userId},mood:${mood},compliment: "${compliment}"),{id,journal,mood,compliment}}`
+      })
+    } else {
+      res = await axios.post(`/api`, {
+        query: `mutation{addDailyEntry(userId:${userId},mood:${mood}),{id,journal,mood,compliment}}`
+      })
+    }
   } catch (authError) {
     return dispatch(getEntry({error: authError}))
   }

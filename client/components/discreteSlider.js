@@ -36,6 +36,7 @@ const marks = [
 ]
 const valuetext = value => {
   // do something
+  window.sessionStorage.setItem('currentMood', value)
 }
 export default function DiscreteSlider() {
   const classes = useStyles()

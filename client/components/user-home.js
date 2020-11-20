@@ -7,9 +7,9 @@ import DailyEntry from './dailyEntry'
  * COMPONENT
  */
 export const UserHome = props => {
-  const {userId, firstName, goals} = props
+  const {userId, firstName, goals, handleSubmit} = props
   const [loaded, loading] = useState(false)
-
+  const [sortedGoals, setSortedGoals] = useState(false)
   useEffect(() => {
     props.me()
     loading(true)
@@ -20,10 +20,19 @@ export const UserHome = props => {
     },
     [loaded]
   )
+  useEffect(
+    () => {
+      if (goals) {
+        setSortedGoals(goals.sort((a, b) => a.id - b.id))
+      }
+    },
+    [goals]
+  )
 
   const handleCheckBoxToggle = (goalId, completed) => {
     props.updateGoal(userId, goalId, !completed).then(() => {
       props.fetchGoals(userId)
+      setSortedGoals(goals.sort((a, b) => a.id - b.id))
     })
   }
 
@@ -47,13 +56,12 @@ export const UserHome = props => {
         <img src="https://hackernoon.com/images/0*4Gzjgh9Y7Gu8KEtZ.gif" />
       )}
       <br />
-
       <div className="GoalsListDiv">
         <h3>🥰 Your Daily Self Care Goals 🥰</h3>
         <br />
         <div>
-          {goals
-            ? goals.map(goal => {
+          {sortedGoals
+            ? sortedGoals.map(goal => {
                 return (
                   <div key={goal.id} className="GoalsList">
                     <div className="GoalCheck">

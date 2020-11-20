@@ -16,8 +16,9 @@ export const addGoal = (
 ) => async dispatch => {
   let res
   try {
+    console.log('adding new goal', userId, description)
     res = await axios.post(`/api`, {
-      query: `mutation{addGoal(userId:"${userId}", description: "${description}"),{description}}`
+      query: `mutation{addGoal(userId:${userId}, description: "${description}"),{description,dateCreated}}`
     })
   } catch (authError) {
     return dispatch(getGoal({error: authError}))
@@ -30,12 +31,25 @@ export const addGoal = (
   }
 }
 
-export const updateGoal = (userId, goalId, completed) => async dispatch => {
+export const updateGoal = (
+  userId,
+  goalId,
+  completed,
+  active
+) => async dispatch => {
   let res
   try {
-    res = await axios.post(`/api`, {
-      query: `mutation{updateGoal(id:${goalId}, completed:${completed}),{id,description,completed}}`
-    })
+    console.log(active)
+    if (active !== undefined) {
+      console.log('in here updating active')
+      res = await axios.post(`/api`, {
+        query: `mutation{updateGoal(id:${goalId}, active:${active}),{id,description,completed}}`
+      })
+    } else {
+      res = await axios.post(`/api`, {
+        query: `mutation{updateGoal(id:${goalId}, completed:${completed}),{id,description,completed}}`
+      })
+    }
   } catch (authError) {
     return dispatch(getGoal({error: authError}))
   }
