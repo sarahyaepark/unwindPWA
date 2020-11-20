@@ -11,7 +11,7 @@ module.exports = {
     filename: './public/bundle.js'
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.png', '.css']
+    extensions: ['.js', '.jsx', '.png', '.css', '.ttf']
   },
   devtool: 'source-map',
   watchOptions: {
@@ -28,7 +28,7 @@ module.exports = {
         test: /\.css$/i,
         use: ['style-loader', 'css-loader']
       },
-      {test: /\.(png|jpg|jpeg|gif|svg)$/, loader: 'url-loader'}
+      {test: /\.(png|jpg|jpeg|gif|svg|ttf)$/, loader: 'url-loader'}
     ]
   }
 }

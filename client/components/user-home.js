@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {fetchGoals, me, updateGoal} from '../store'
-
+import DailyEntry from './dailyEntry'
 /**
  * COMPONENT
  */
@@ -26,48 +26,64 @@ export const UserHome = props => {
       props.fetchGoals(userId)
     })
   }
+
+  const greeting = () => {
+    let currentDate = new Date()
+    let time = currentDate.getHours()
+    if (time >= 4 && time <= 11) {
+      return 'morning'
+    } else if (time >= 12 && time <= 16) {
+      return 'afternoon'
+    } else {
+      return 'night'
+    }
+  }
+
   return (
     <div className="UserHomeDiv">
       {firstName !== null ? (
-        <h3>Welcome, {firstName}</h3>
+        <h3>Time to check in, {firstName} ✨</h3>
       ) : (
         <img src="https://hackernoon.com/images/0*4Gzjgh9Y7Gu8KEtZ.gif" />
       )}
+      <br />
 
       <div className="GoalsListDiv">
-        {goals
-          ? goals.map(goal => {
-              return (
-                <div key={goal.id} className="GoalsList">
-                  <div className="GoalCheck">
-                    {!goal.completed ? (
-                      <img
-                        className="checkBox"
-                        src="https://i.imgur.com/YXbSdoH.png"
-                        onClick={() =>
-                          handleCheckBoxToggle(goal.id, goal.completed)
-                        }
-                      />
-                    ) : (
-                      <img
-                        className="checkBox"
-                        src="https://i.imgur.com/Giad7aJ.png"
-                        onClick={() =>
-                          handleCheckBoxToggle(goal.id, goal.completed)
-                        }
-                      />
-                    )}
-                    <h2 className="goalDescription">{goal.description}</h2>
+        <h3>🥰 Your Daily Self Care Goals 🥰</h3>
+        <br />
+        <div>
+          {goals
+            ? goals.map(goal => {
+                return (
+                  <div key={goal.id} className="GoalsList">
+                    <div className="GoalCheck">
+                      {!goal.completed ? (
+                        <img
+                          className="checkBox"
+                          src="https://i.imgur.com/YXbSdoH.png"
+                          onClick={() =>
+                            handleCheckBoxToggle(goal.id, goal.completed)
+                          }
+                        />
+                      ) : (
+                        <img
+                          className="checkBox"
+                          src="https://i.imgur.com/Giad7aJ.png"
+                          onClick={() =>
+                            handleCheckBoxToggle(goal.id, goal.completed)
+                          }
+                        />
+                      )}
+                      <h2 className="goalDescription">{goal.description}</h2>
+                    </div>
+                    <br />
                   </div>
-                  <br />
-                </div>
-              )
-            })
-          : null}
-
+                )
+              })
+            : null}
+        </div>
         <br />
-        <br />
-        <br />
+        <DailyEntry />
       </div>
     </div>
   )

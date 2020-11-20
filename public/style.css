@@ -1,5 +1,15 @@
+@font-face {
+  font-family: RobotoLight;
+  src: url('./Roboto/Roboto-Light.ttf');
+}
+
+@font-face {
+  font-family: Roboto;
+  src: url('./Roboto/Roboto-Regular.ttf');
+}
+
 body {
-  font-family: 'Arial', sans-serif;
+  font-family: Roboto;
 }
 
 a {
@@ -29,8 +39,10 @@ nav a {
 }
 
 .UserHomeDiv {
+  font-family: Roboto;
   padding-left: 1rem;
   padding-right: 1rem;
+  padding-bottom: 5rem;
 }
 
 .GoalCheck {
@@ -45,13 +57,37 @@ nav a {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+  width: 80vw;
+}
+
+.GoalsListDiv {
+  font-family: Roboto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* justify-content: space-between; */
 }
 
 .checkBox {
-  width: 4rem;
-  height: 4rem;
+  width: 3rem;
+  height: 3rem;
 }
 
 .goalDescription {
   padding-left: 2rem;
+  font-family: RobotoLight;
+}
+
+.DailyEntryDiv {
+  font-family: Roboto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.entryForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
