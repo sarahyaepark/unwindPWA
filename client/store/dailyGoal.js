@@ -35,15 +35,21 @@ export const updateGoal = (
   userId,
   goalId,
   completed,
-  active
+  active,
+  dailyEntryId
 ) => async dispatch => {
   let res
   try {
-    console.log(active)
+    console.log(dailyEntryId, active, '*****************')
     if (active !== undefined) {
       console.log('in here updating active')
       res = await axios.post(`/api`, {
         query: `mutation{updateGoal(id:${goalId}, active:${active}),{id,description,completed}}`
+      })
+    } else if (dailyEntryId !== undefined) {
+      console.log('in here updating dailyentryid in goals')
+      res = await axios.post(`/api`, {
+        query: `mutation{updateGoal(id:${goalId}, dailyEntryId:${dailyEntryId}),{id,description,completed}}`
       })
     } else {
       res = await axios.post(`/api`, {

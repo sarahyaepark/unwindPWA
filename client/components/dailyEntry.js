@@ -5,6 +5,7 @@ import {makeStyles} from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
 import DiscreteSlider from './discreteSlider'
 import Button from 'react-bootstrap/Button'
+import AlertDialog from './submissionAlert'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -17,24 +18,23 @@ const useStyles = makeStyles(theme => ({
 
 export const DailyEntry = props => {
   const classes = useStyles()
-  const {handleSubmit} = props
+  const [journal, setJournal] = useState('')
+  const [compliment, setCompliment] = useState('')
   return (
     <div className="DailyEntryDiv">
       <h3>How did you feel today?</h3>
       <DiscreteSlider />
       <br />
-      <form
-        className="entryForm"
-        noValidate
-        autoComplete="off"
-        onSubmit={handleSubmit}
-      >
+      <form className="entryForm" noValidate autoComplete="off">
         <TextField
           classes={{root: classes.root}}
           id="outlined-basic"
           name="journal"
           label="Write something about your day or anything else you want..."
           variant="outlined"
+          onChange={evt => {
+            setJournal(evt.target.value)
+          }}
         />
         <TextField
           classes={{root: classes.root}}
@@ -42,10 +42,9 @@ export const DailyEntry = props => {
           name="compliment"
           label="Say one nice thing about yourself"
           variant="outlined"
+          onChange={evt => setCompliment(evt.target.value)}
         />
-        <Button type="submit" variant="outline-primary">
-          Submit
-        </Button>
+        <AlertDialog journal={journal} compliment={compliment} />
       </form>
     </div>
   )
@@ -61,27 +60,6 @@ const mapState = state => {
 
 const mapDispatch = dispatch => {
   return {
-    handleSubmit(evt) {
-      evt.preventDefault()
-      let userId
-      if (window.localStorage.getItem('id'))
-        userId = window.localStorage.getItem('id')
-      else userId = window.sessionStorage.getItem('id')
-      let mood = window.sessionStorage.getItem('currentMood')
-      let journal
-      let compliment
-      if (evt.target.journal.value) journal = evt.target.journal.value
-      if (evt.target.compliment.value) compliment = evt.target.compliment.value
-      if (compliment !== undefined && journal !== undefined) {
-        dispatch(addEntry(userId, mood, journal, compliment))
-      } else if (compliment !== undefined) {
-        dispatch(addEntry(userId, mood, null, compliment))
-      } else if (journal !== undefined) {
-        dispatch(addEntry(userId, mood, journal))
-      } else {
-        dispatch(addEntry(userId, mood))
-      }
-    },
     me: () => dispatch(me()),
     addEntry: (userId, mood, journal) =>
       dispatch(addEntry(userId, mood, journal)),

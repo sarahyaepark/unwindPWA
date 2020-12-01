@@ -1,5 +1,6 @@
 import axios from 'axios'
 import history from '../history'
+import {updateGoal} from './dailyGoal'
 
 const GET_ENTRY = 'GET_ENTRY'
 // const REMOVE_USER = 'REMOVE_USER'
@@ -34,6 +35,21 @@ export const addEntry = (
         query: `mutation{addDailyEntry(userId:${userId},mood:${mood}),{id,journal,mood,compliment}}`
       })
     }
+    let goalRes = await axios.post(`/api`, {
+      query: `{activeGoals(userId:${userId}),{description,id,completed,dateCreated}}`
+    })
+    goalRes.data.data.activeGoals.map(goal => {
+      console.log('goal', goal)
+      dispatch(
+        updateGoal(
+          null,
+          goal.id,
+          null,
+          undefined,
+          res.data.data.addDailyEntry.id
+        )
+      )
+    })
   } catch (authError) {
     return dispatch(getEntry({error: authError}))
   }

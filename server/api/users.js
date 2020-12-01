@@ -301,7 +301,8 @@ const mutationType = new graphql.GraphQLObjectType({
         id: {type: graphql.GraphQLID},
         active: {type: graphql.GraphQLBoolean},
         completed: {type: graphql.GraphQLBoolean},
-        dateCompleted: {type: graphql.GraphQLString}
+        dateCompleted: {type: graphql.GraphQLString},
+        dailyEntryId: {type: graphql.GraphQLID}
       },
       async resolve(parent, args) {
         try {
@@ -321,16 +322,30 @@ const mutationType = new graphql.GraphQLObjectType({
               }
             )
           }
-          updatedGoal = await Goal.update(
-            {
-              completed: args.completed,
-              dateCompleted: dateCompleted
-            },
-            {
-              where: {id: args.id},
-              returning: true
-            }
-          )
+          if (args.dailyEntryId !== null) {
+            updatedGoal = await Goal.update(
+              {
+                dailyEntryId: args.dailyEntryId
+              },
+              {
+                where: {id: args.id},
+                returning: true
+              }
+            )
+          }
+          if (args.completed !== null) {
+            updatedGoal = await Goal.update(
+              {
+                completed: args.completed,
+                dateCompleted: dateCompleted
+              },
+              {
+                where: {id: args.id},
+                returning: true
+              }
+            )
+          }
+
           console.log(updatedGoal)
           return updatedGoal[1][0].dataValues
           // write in an update for making goals active/inactive

@@ -6,7 +6,7 @@ const GET_GOALS = 'GET_GOALS'
 
 const getGoals = goals => ({type: GET_GOALS, goals})
 
-function getCurrentDate() {
+export const getCurrentDate = () => {
   let date = new Date()
   let day = date.getDate()
   let month = date.getMonth() + 1
@@ -17,7 +17,7 @@ export const fetchGoals = userId => async dispatch => {
   let res
   try {
     res = await axios.post(`/api`, {
-      query: `{activeGoals(userId:${userId}),{description,id,completed,dateCreated}}`
+      query: `{activeGoals(userId:${userId}),{description,id,completed,dateCreated,dailyEntryId}}`
     })
     res.data.data.activeGoals.map(goal => {
       if (goal.dateCreated !== getCurrentDate()) {
@@ -25,14 +25,14 @@ export const fetchGoals = userId => async dispatch => {
         dispatch(updateGoal(null, goal.id, null, false))
       }
     })
+    let currentGoals = await axios.post(`/api`, {
+      query: `{activeGoals(userId:${userId}),{description,id,completed,dateCreated,dailyEntryId}}`
+    })
+    console.log(currentGoals)
+    dispatch(getGoals(currentGoals.data.data.activeGoals))
+    history.push('/home')
   } catch (authError) {
     return dispatch(getGoals({error: authError}))
-  }
-  try {
-    dispatch(getGoals(res.data.data.activeGoals))
-    history.push('/home')
-  } catch (dispatchOrHistoryErr) {
-    console.error(dispatchOrHistoryErr)
   }
 }
 

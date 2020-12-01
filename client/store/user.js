@@ -20,8 +20,13 @@ const removeUser = () => ({type: REMOVE_USER})
 
 export const me = () => dispatch => {
   try {
+    console.log(
+      'figuring out the order of events',
+      window.localStorage.getItem('id')
+    )
     let currentUser = {}
     if (window.localStorage.getItem('id')) {
+      console.log('gotithere')
       currentUser = {
         id: window.localStorage.getItem('id'),
         firstName: window.localStorage.getItem('firstName'),
@@ -34,6 +39,7 @@ export const me = () => dispatch => {
         email: window.sessionStorage.getItem('email')
       }
     }
+    console.log('getting called here too', currentUser)
     dispatch(getUser(currentUser))
   } catch (err) {
     console.error(err)
@@ -49,32 +55,27 @@ export const auth = (
 ) => async dispatch => {
   let res
   let cleanEmail = email.toLowerCase()
+  let userInfo
   try {
     if (method === 'login') {
       res = await axios.post(`/api`, {
         query: `{user(email: "${cleanEmail}", password: "${password}"),{id, firstName, email}}`
       })
-    } else {
-      res = await axios.post(`/api`, {
-        query: `mutation{addUser(firstName:"${firstName}", email: "${cleanEmail}", password: "${password}"),{id, firstName, email}}`
-      })
-    }
-  } catch (authError) {
-    return dispatch(getUser({error: authError}))
-  }
-  try {
-    let userInfo
-    if (method === 'login') {
+      console.log('~~~~~~~~~~~', res)
       userInfo = res.data.data.user
       dispatch(getUser(userInfo))
       history.push('/home')
     } else {
+      res = await axios.post(`/api`, {
+        query: `mutation{addUser(firstName:"${firstName}", email: "${cleanEmail}", password: "${password}"),{id, firstName, email}}`
+      })
       userInfo = res.data.data.addUser
       dispatch(getUser(userInfo))
       history.push('/setGoals')
     }
     if (checked) {
       // store data in local storage
+      console.log('setting the local storage')
       window.localStorage.setItem('id', userInfo.id)
       window.localStorage.setItem('firstName', userInfo.firstName)
       window.localStorage.setItem('email', userInfo.email)
@@ -84,9 +85,24 @@ export const auth = (
       window.sessionStorage.setItem('firstName', userInfo.firstName)
       window.sessionStorage.setItem('email', userInfo.email)
     }
-  } catch (dispatchOrHistoryErr) {
-    console.error(dispatchOrHistoryErr)
+  } catch (authError) {
+    return dispatch(getUser({error: authError}))
   }
+  // try {
+  //   if (checked) {
+  //     // store data in local storage
+  //     window.localStorage.setItem('id', userInfo.id)
+  //     window.localStorage.setItem('firstName', userInfo.firstName)
+  //     window.localStorage.setItem('email', userInfo.email)
+  //   } else {
+  //     // store data in sessions storage
+  //     window.sessionStorage.setItem('id', userInfo.id)
+  //     window.sessionStorage.setItem('firstName', userInfo.firstName)
+  //     window.sessionStorage.setItem('email', userInfo.email)
+  //   }
+  // } catch (dispatchOrHistoryErr) {
+  //   console.error(dispatchOrHistoryErr)
+  // }
 }
 
 export const logout = () => async dispatch => {
