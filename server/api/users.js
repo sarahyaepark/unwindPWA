@@ -170,14 +170,21 @@ const queryType = new graphql.GraphQLObjectType({
     goals: {
       type: graphql.GraphQLList(goalType),
       args: {
-        userId: {type: graphql.GraphQLID}
+        userId: {type: graphql.GraphQLID},
+        dailyEntryId: {type: graphql.GraphQLID}
       },
       resolve: async (parent, args) => {
         // code to get data from db
         try {
-          const goals = await Goal.findAll({
+          let goals = await Goal.findAll({
             where: {userId: args.userId}
           })
+          if (args.dailyEntryId) {
+            goals = await Goal.findAll({
+              where: {userId: args.userId, dailyEntryId: args.dailyEntryId}
+            })
+            return goals
+          }
           return goals
         } catch (err) {
           console.log(err)

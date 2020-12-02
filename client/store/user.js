@@ -20,13 +20,8 @@ const removeUser = () => ({type: REMOVE_USER})
 
 export const me = () => dispatch => {
   try {
-    console.log(
-      'figuring out the order of events',
-      window.localStorage.getItem('id')
-    )
     let currentUser = {}
     if (window.localStorage.getItem('id')) {
-      console.log('gotithere')
       currentUser = {
         id: window.localStorage.getItem('id'),
         firstName: window.localStorage.getItem('firstName'),
@@ -39,7 +34,6 @@ export const me = () => dispatch => {
         email: window.sessionStorage.getItem('email')
       }
     }
-    console.log('getting called here too', currentUser)
     dispatch(getUser(currentUser))
   } catch (err) {
     console.error(err)

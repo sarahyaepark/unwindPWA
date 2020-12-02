@@ -9,10 +9,12 @@ const getGoals = goals => ({type: GET_GOALS, goals})
 export const getCurrentDate = () => {
   let date = new Date()
   let day = date.getDate()
+  if (day === 1) day = '01'
   let month = date.getMonth() + 1
   let year = date.getFullYear()
   return year + '-' + month + '-' + day
 }
+
 export const fetchGoals = userId => async dispatch => {
   let res
   try {
@@ -28,7 +30,8 @@ export const fetchGoals = userId => async dispatch => {
     let currentGoals = await axios.post(`/api`, {
       query: `{activeGoals(userId:${userId}),{description,id,completed,dateCreated,dailyEntryId}}`
     })
-    console.log(currentGoals)
+    console.log(getCurrentDate())
+    console.log('IN THE FETCH GOALS THUNK!!!', currentGoals)
     dispatch(getGoals(currentGoals.data.data.activeGoals))
     history.push('/home')
   } catch (authError) {

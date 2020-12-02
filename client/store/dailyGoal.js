@@ -5,9 +5,6 @@ const GET_GOAL = 'GET_GOAL'
 // const REMOVE_USER = 'REMOVE_USER'
 
 const getGoal = goal => ({type: GET_GOAL, goal})
-/**
- * THUNK CREATORS
- */
 
 export const addGoal = (
   userId,
@@ -52,6 +49,7 @@ export const updateGoal = (
         query: `mutation{updateGoal(id:${goalId}, dailyEntryId:${dailyEntryId}),{id,description,completed}}`
       })
     } else {
+      console.log('IT SHOULD BE COMING HERE~~~~~')
       res = await axios.post(`/api`, {
         query: `mutation{updateGoal(id:${goalId}, completed:${completed}),{id,description,completed}}`
       })
