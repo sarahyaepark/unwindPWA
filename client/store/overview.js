@@ -65,14 +65,21 @@ export const fetchOverview = userId => async dispatch => {
           date: dailyEntry.date,
           details: [
             {
-              date: dailyEntry.date,
+              // 'date': dailyEntry.date,
               mood: dailyEntry.mood,
               compliment: dailyEntry.compliment,
               journal: dailyEntry.journal,
               goals: currentGoal.data.data.goals
             }
-          ]
-        }
+          ],
+          init: function() {
+            this.total = this.details.reduce(function(prev, e) {
+              console.log('TRYING TO GET TOTAL', prev, e.mood)
+              return prev + e.mood
+            }, 0)
+            return this
+          }
+        }.init()
         console.log(currentGoal.data.data.goals)
         data.push(tempObject)
         return currentGoal.data.data.goals

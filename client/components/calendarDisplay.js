@@ -12,23 +12,56 @@ export const CalendarView = props => {
   useEffect(() => {
     // replace with userId after testing
     props.fetchOverview(1)
-    // loading(true)
+    let now = moment()
+      .endOf('day')
+      .toDate()
+    let time_ago = moment()
+      .startOf('day')
+      .subtract(10, 'year')
+      .toDate()
+    let dummy = d3.timeDays(time_ago, now).map(function(dateElement, index) {
+      return {
+        date: dateElement,
+        details: Array.apply(
+          null,
+          new Array(Math.floor(Math.random() * 15))
+        ).map(function(e, i, arr) {
+          return {
+            name: 'Project',
+            // 'date': function() {
+            //   let projectDate = new Date(dateElement.getTime())
+            //   projectDate.setHours(Math.floor(Math.random() *24))
+            //   projectDate.setMinutes(Math.floor(Math.random()*60))
+            //   return projectDate
+            // }(),
+            value: 50
+          }
+        }),
+        init: function() {
+          this.total = this.details.reduce(function(prev, e) {
+            return prev + e.value
+          }, 0)
+          return this
+        }
+      }.init()
+    })
+    dataReceived(dummy)
   }, [])
-  useEffect(() => {
-    // replace with userId after testing
-    // if (loaded) {
-    dataReceived(overview)
-    console.log('>>>>>>>>', overview)
-    // }
-  }, [])
+  // useEffect(() => {
+  //   // replace with userId after testing
+  //   // if (loaded) {
+  //   dataReceived(overview)
+  //   console.log('>>>>>>>>', overview)
+  //   // }
+  // }, [])
 
   const print = val => {
     console.log(val)
   }
 
-  return data.length > 0 ? (
+  return overview.length > 0 ? (
     <CalendarHeatmap
-      data={data}
+      data={overview}
       color="#b57edc"
       overview="month"
       handler={print}

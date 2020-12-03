@@ -9,7 +9,8 @@ const getGoals = goals => ({type: GET_GOALS, goals})
 export const getCurrentDate = () => {
   let date = new Date()
   let day = date.getDate()
-  if (day === 1) day = '01'
+  console.log(day, day.length)
+  if (day.toString().length === 1) day = '0' + day
   let month = date.getMonth() + 1
   let year = date.getFullYear()
   return year + '-' + month + '-' + day
