@@ -151,8 +151,10 @@ class CalendarHeatmap extends React.Component {
         //     goals: kdfjs
         //   }
         // })
+        console.log(summary)
         let unsorted_summary = [
           {
+            date: summary.goals[0].dateCreated,
             mood: summary.mood,
             compliment: summary.compliment,
             journal: summary.journal,
@@ -692,6 +694,7 @@ class CalendarHeatmap extends React.Component {
         // tooltip_html += `<div class="${styles.header}"><strong>${
         //   d.total ? this.formatTime(d.total) : 'No time'
         // } tracked</strong></div>`
+        console.log(d)
         tooltip_html +=
           '<div>' + moment(d.date).format('dddd, MMM Do YYYY') + '</div><br>'
 
@@ -1096,8 +1099,9 @@ class CalendarHeatmap extends React.Component {
 
         // Get date from the parent node
         let parentNode = d3.select(d3.event.currentTarget.parentNode)
-        let date = new Date(parentNode.attr('date'))
-
+        console.log(parentNode)
+        let date = d.date
+        // console.log(date)
         // Construct tooltip
         console.log(d)
         let formattedMood = this.formatMood(d.mood)
@@ -1110,8 +1114,10 @@ class CalendarHeatmap extends React.Component {
         //   '<div><strong>' +
         //   (d.value ? this.formatTime(d.value) : 'No time') +
         //   ' tracked</strong></div>'
+        // console.log(moment(date).utcformat('dddd, MMM Do YYYY'))
+        console.log(d.date)
         tooltip_html +=
-          '<div>' + moment(date).format('dddd, MMM Do YYYY') + '</div>'
+          '<div>' + moment(d.date).format('dddd, MMM Do YYYY') + '</div>'
         tooltip_html += `<div>journal: ${d.journal}</div>`
         if (d.compliment) {
           tooltip_html += `<div>compliment: ${d.compliment}</div>`
@@ -1126,7 +1132,7 @@ class CalendarHeatmap extends React.Component {
           })
         }
         // Calculate tooltip position
-        let x = weekScale(moment(date).week()) + this.settings.tooltip_padding
+        let x = weekScale(moment(d.date).week()) + this.settings.tooltip_padding
         while (
           this.settings.width - x <
           this.settings.tooltip_width + this.settings.tooltip_padding * 3
@@ -1398,6 +1404,7 @@ class CalendarHeatmap extends React.Component {
         return d.total
       })
       .attr('date', d => {
+        console.log(d.date)
         return d.date
       })
       .attr('offset', 0)

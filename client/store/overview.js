@@ -54,6 +54,7 @@ export const fetchOverview = userId => async dispatch => {
       query: `{dailyEntries(userId:${userId}),{id, date, journal, mood, compliment}}`
     })
     // this returns an array of arrays of objects: daily goal id, completed, description, datecreated
+    console.log(dailyEntries)
     await Promise.all(
       dailyEntries.data.data.dailyEntries.map(async dailyEntry => {
         let currentGoal = await axios.post(`/api`, {

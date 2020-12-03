@@ -11,7 +11,7 @@ export const CalendarView = props => {
 
   useEffect(() => {
     // replace with userId after testing
-    props.fetchOverview(1)
+    props.fetchOverview(3)
     let now = moment()
       .endOf('day')
       .toDate()
