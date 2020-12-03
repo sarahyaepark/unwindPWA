@@ -13,7 +13,7 @@ const GoalInput = props => {
           What self care goals would you like to accomplish each day?
         </Form.Label>
         <Form.Text className="text-muted">
-          You can add or edit goals later just choose three for now 😌
+          You can edit goals later just choose three for now 😌
         </Form.Text>
         <br />
         <Form.Control name="goal1" placeholder="Morning stretches..." />

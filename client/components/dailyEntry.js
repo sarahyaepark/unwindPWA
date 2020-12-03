@@ -5,6 +5,7 @@ import {makeStyles} from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
 import DiscreteSlider from './discreteSlider'
 import Button from 'react-bootstrap/Button'
+import AlertDialog from './submissionAlert'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -15,37 +16,35 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export const DailyEntry = () => {
+export const DailyEntry = props => {
   const classes = useStyles()
-  const handleSubmit = evt => {
-    evt.preventDefault()
-  }
+  const [journal, setJournal] = useState('')
+  const [compliment, setCompliment] = useState('')
   return (
     <div className="DailyEntryDiv">
       <h3>How did you feel today?</h3>
       <DiscreteSlider />
       <br />
-      <form
-        className="entryForm"
-        noValidate
-        autoComplete="off"
-        onSubmit={handleSubmit}
-      >
+      <form className="entryForm" noValidate autoComplete="off">
         <TextField
           classes={{root: classes.root}}
           id="outlined-basic"
+          name="journal"
           label="Write something about your day or anything else you want..."
           variant="outlined"
+          onChange={evt => {
+            setJournal(evt.target.value)
+          }}
         />
         <TextField
           classes={{root: classes.root}}
           id="outlined-basic"
+          name="compliment"
           label="Say one nice thing about yourself"
           variant="outlined"
+          onChange={evt => setCompliment(evt.target.value)}
         />
-        <Button type="submit" variant="outline-primary">
-          Submit
-        </Button>
+        <AlertDialog journal={journal} compliment={compliment} />
       </form>
     </div>
   )

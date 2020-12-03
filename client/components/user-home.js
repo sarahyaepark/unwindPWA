@@ -1,17 +1,27 @@
 import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-import {fetchGoals, me, updateGoal} from '../store'
+import {fetchGoals, me, updateGoal, getCurrentDate} from '../store'
 import DailyEntry from './dailyEntry'
+import Goodnight from './goodnight'
 /**
  * COMPONENT
  */
 export const UserHome = props => {
   const {userId, firstName, goals} = props
   const [loaded, loading] = useState(false)
+  const [sortedGoals, setSortedGoals] = useState(false)
+  const [goodnight, setGoodnight] = useState(false)
+  let currentDate
+
+  const newDay = date => {
+    let today = getCurrentDate()
+    if (today !== date) return true
+    else return false
+  }
 
   useEffect(() => {
-    props.me()
+    // props.me()
     loading(true)
   }, [])
   useEffect(
@@ -20,40 +30,67 @@ export const UserHome = props => {
     },
     [loaded]
   )
+  useEffect(
+    () => {
+      if (goals.length) {
+        console.log(goals)
+        if (goals[0].dailyEntryId) setGoodnight(true)
+        else setGoodnight(false)
+        if (newDay(goals[0].dateCreated)) setGoodnight(false)
+        setSortedGoals(goals.sort((a, b) => a.id - b.id))
+      }
+    },
+    [goals]
+  )
 
   const handleCheckBoxToggle = (goalId, completed) => {
     props.updateGoal(userId, goalId, !completed).then(() => {
       props.fetchGoals(userId)
+      setSortedGoals(goals.sort((a, b) => a.id - b.id))
     })
   }
 
   const greeting = () => {
-    let currentDate = new Date()
-    let time = currentDate.getHours()
-    if (time >= 4 && time <= 11) {
-      return 'morning'
-    } else if (time >= 12 && time <= 16) {
-      return 'afternoon'
+    if (goodnight) {
+      return 'Goodnight'
     } else {
-      return 'night'
+      return 'Time to check in'
     }
   }
-
+  const dayOfTheWeek = () => {
+    let d = new Date()
+    let weekday = new Array(7)
+    weekday[0] = 'Sunday'
+    weekday[1] = 'Monday'
+    weekday[2] = 'Tuesday'
+    weekday[3] = 'Wednesday'
+    weekday[4] = 'Thursday'
+    weekday[5] = 'Friday'
+    weekday[6] = 'Saturday'
+    return weekday[d.getDay()]
+  }
   return (
     <div className="UserHomeDiv">
       {firstName !== null ? (
-        <h3>Time to check in, {firstName} ✨</h3>
+        <div>
+          <h3>
+            {greeting()}, {firstName} ✨
+          </h3>
+          <h4>Happy {dayOfTheWeek()}!</h4>
+        </div>
       ) : (
         <img src="https://hackernoon.com/images/0*4Gzjgh9Y7Gu8KEtZ.gif" />
       )}
       <br />
-
-      <div className="GoalsListDiv">
-        <h3>🥰 Your Daily Self Care Goals 🥰</h3>
-        <br />
-        <div>
-          {goals
-            ? goals.map(goal => {
+      {goodnight ? (
+        <Goodnight />
+      ) : (
+        <div className="GoalsListDiv">
+          <h3>🥰 Your Daily Self Care Goals 🥰</h3>
+          <br />
+          <div>
+            {sortedGoals ? (
+              sortedGoals.map(goal => {
                 return (
                   <div key={goal.id} className="GoalsList">
                     <div className="GoalCheck">
@@ -80,11 +117,14 @@ export const UserHome = props => {
                   </div>
                 )
               })
-            : null}
+            ) : (
+              <img src="https://i.pinimg.com/originals/a4/f2/cb/a4f2cb80ff2ae2772e80bf30e9d78d4c.gif" />
+            )}
+          </div>
+          <br />
+          <DailyEntry newDay={newDay} oldDate={currentDate} />
         </div>
-        <br />
-        <DailyEntry />
-      </div>
+      )}
     </div>
   )
 }
@@ -95,6 +135,7 @@ export const UserHome = props => {
 const mapState = state => {
   return {
     firstName: state.user.firstName,
+    user: state.user,
     userId: state.user.id,
     goals: state.goals
   }

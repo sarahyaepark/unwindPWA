@@ -20,15 +20,25 @@ const AuthForm = props => {
         {displayName === 'Sign Up' ? (
           <Form.Group controlId="formBasicName">
             <Form.Label>First Name</Form.Label>
-            <Form.Control name="firstName" placeholder="Preferred First Name" />
+            <Form.Control
+              required
+              name="firstName"
+              placeholder="Preferred First Name"
+            />
+            <Form.Control.Feedback type="invalid">
+              Please provide a first name.
+            </Form.Control.Feedback>
           </Form.Group>
         ) : null}
         <Form.Group controlId="formBasicEmail">
           <Form.Label>Email address</Form.Label>
-          <Form.Control name="email" placeholder="Enter email" />
+          <Form.Control name="email" placeholder="Enter email" required />
           <Form.Text className="text-muted">
             We'll never share your email with anyone else.
           </Form.Text>
+          <Form.Control.Feedback type="invalid">
+            Please provide a valid email.
+          </Form.Control.Feedback>
         </Form.Group>
         <Form.Group controlId="formBasicPassword">
           <Form.Label>Password</Form.Label>
@@ -36,7 +46,11 @@ const AuthForm = props => {
             type="password"
             name="password"
             placeholder="Password"
+            required
           />
+          <Form.Control.Feedback type="invalid">
+            Please provide a valid password.
+          </Form.Control.Feedback>
         </Form.Group>
         {displayName === 'Login' ? (
           <Button variant="primary" type="submit">
@@ -62,13 +76,6 @@ const AuthForm = props => {
   )
 }
 
-/**
- * CONTAINER
- *   Note that we have two different sets of 'mapStateToProps' functions -
- *   one for Login, and one for Signup. However, they share the same 'mapDispatchToProps'
- *   function, and share the same Component. This is a good example of how we
- *   can stay DRY with interfaces that are very similar to each other!
- */
 const mapLogin = state => {
   return {
     name: 'login',
@@ -92,11 +99,13 @@ const mapDispatch = dispatch => {
       const formName = evt.target.name
       const email = evt.target.email.value
       const password = evt.target.password.value
-      if (formName === 'login') {
-        dispatch(auth(email, password, formName, checked))
-      } else {
-        const firstName = evt.target.firstName.value
-        dispatch(auth(email, password, formName, checked, firstName))
+      if (formName && email && password) {
+        if (formName === 'login') {
+          dispatch(auth(email, password, formName, checked))
+        } else {
+          const firstName = evt.target.firstName.value
+          dispatch(auth(email, password, formName, checked, firstName))
+        }
       }
     }
   }

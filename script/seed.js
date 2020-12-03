@@ -23,12 +23,13 @@ async function seed() {
   const [sampleEntry1, sampleEntry2, sampleEntry3] = await Promise.all([
     DailyEntry.create({
       userId: Yeppy.id,
-      date: '2020-11-15',
+      date: '2020-11-30',
       journal: 'I had a great day today',
       mood: 100
     }),
     DailyEntry.create({
       userId: Yeppy.id,
+      date: '2020-12-01',
       journal: 'I had a bad day!!!!',
       mood: 25
     }),

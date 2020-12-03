@@ -145,12 +145,22 @@ const queryType = new graphql.GraphQLObjectType({
       resolve: async (parent, args) => {
         // code to get data from db
         try {
-          const goals = await Goal.findAll({
+          let goals = await Goal.findAll({
             where: {
+              dateCreated: Date.now(),
               userId: args.userId,
               active: true
             }
           })
+          if (goals.length === 0) {
+            goals = await Goal.findAll({
+              where: {
+                userId: args.userId,
+                active: true
+              }
+            })
+          }
+
           return goals
         } catch (err) {
           console.log(err)
@@ -160,14 +170,21 @@ const queryType = new graphql.GraphQLObjectType({
     goals: {
       type: graphql.GraphQLList(goalType),
       args: {
-        userId: {type: graphql.GraphQLID}
+        userId: {type: graphql.GraphQLID},
+        dailyEntryId: {type: graphql.GraphQLID}
       },
       resolve: async (parent, args) => {
         // code to get data from db
         try {
-          const goals = await Goal.findAll({
+          let goals = await Goal.findAll({
             where: {userId: args.userId}
           })
+          if (args.dailyEntryId) {
+            goals = await Goal.findAll({
+              where: {userId: args.userId, dailyEntryId: args.dailyEntryId}
+            })
+            return goals
+          }
           return goals
         } catch (err) {
           console.log(err)
@@ -272,6 +289,7 @@ const mutationType = new graphql.GraphQLObjectType({
       async resolve(parent, args) {
         try {
           let goal = new Goal({
+            dateCreated: Date.now(),
             userId: args.userId,
             dailyEntryId: args.dailyEntryId,
             description: args.description
@@ -290,23 +308,51 @@ const mutationType = new graphql.GraphQLObjectType({
         id: {type: graphql.GraphQLID},
         active: {type: graphql.GraphQLBoolean},
         completed: {type: graphql.GraphQLBoolean},
-        dateCompleted: {type: graphql.GraphQLString}
+        dateCompleted: {type: graphql.GraphQLString},
+        dailyEntryId: {type: graphql.GraphQLID}
       },
       async resolve(parent, args) {
         try {
           let dateCompleted
           if (args.completed) dateCompleted = Date.now()
           else dateCompleted = null
-          let updatedGoal = await Goal.update(
-            {
-              completed: args.completed,
-              dateCompleted: dateCompleted
-            },
-            {
-              where: {id: args.id},
-              returning: true
-            }
-          )
+          let updatedGoal
+          console.log(args.active)
+          if (args.active !== null) {
+            updatedGoal = await Goal.update(
+              {
+                active: args.active
+              },
+              {
+                where: {id: args.id},
+                returning: true
+              }
+            )
+          }
+          if (args.dailyEntryId !== null) {
+            updatedGoal = await Goal.update(
+              {
+                dailyEntryId: args.dailyEntryId
+              },
+              {
+                where: {id: args.id},
+                returning: true
+              }
+            )
+          }
+          if (args.completed !== null) {
+            updatedGoal = await Goal.update(
+              {
+                completed: args.completed,
+                dateCompleted: dateCompleted
+              },
+              {
+                where: {id: args.id},
+                returning: true
+              }
+            )
+          }
+
           console.log(updatedGoal)
           return updatedGoal[1][0].dataValues
           // write in an update for making goals active/inactive

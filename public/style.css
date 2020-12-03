@@ -91,3 +91,28 @@ nav a {
   flex-direction: column;
   align-items: center;
 }
+
+.goodnightDiv {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.goodnightQuote {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 50%;
+  text-align: center;
+  padding: 2rem;
+  border: 2px solid pink;
+  border-radius: 15px;
+}
+
+h4 {
+  opacity: 70%;
+}
+
+.flipImg {
+  transform: rotate(180deg);
+}
