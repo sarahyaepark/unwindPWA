@@ -69,6 +69,9 @@ const setSaltAndPassword = user => {
 
 User.beforeCreate(setSaltAndPassword)
 User.beforeUpdate(setSaltAndPassword)
+User.beforeBulkUpdate(options => {
+  options.individualHooks = true
+})
 User.beforeBulkCreate(users => {
   users.forEach(setSaltAndPassword)
 })

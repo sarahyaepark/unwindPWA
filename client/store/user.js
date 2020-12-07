@@ -6,7 +6,7 @@ import history from '../history'
  */
 const GET_USER = 'GET_USER'
 const REMOVE_USER = 'REMOVE_USER'
-
+const UPDATE_USER = 'UPDATE_USER'
 /**
  * INITIAL STATE
  */
@@ -17,6 +17,7 @@ const defaultUser = {}
  */
 const getUser = user => ({type: GET_USER, user})
 const removeUser = () => ({type: REMOVE_USER})
+const updateUser = user => ({type: UPDATE_USER, user})
 
 export const me = () => dispatch => {
   try {
@@ -55,9 +56,9 @@ export const auth = (
       res = await axios.post(`/api`, {
         query: `{user(email: "${cleanEmail}", password: "${password}"),{id, firstName, email}}`
       })
-      console.log('~~~~~~~~~~~', res)
       userInfo = res.data.data.user
-      dispatch(getUser(userInfo))
+      if (userInfo.id) dispatch(getUser(userInfo))
+      else return 'error'
       history.push('/home')
     } else {
       res = await axios.post(`/api`, {
@@ -65,7 +66,6 @@ export const auth = (
       })
       userInfo = res.data.data.addUser
       dispatch(getUser(userInfo))
-      history.push('/setGoals')
     }
     if (checked) {
       // store data in local storage
@@ -82,21 +82,48 @@ export const auth = (
   } catch (authError) {
     return dispatch(getUser({error: authError}))
   }
-  // try {
-  //   if (checked) {
-  //     // store data in local storage
-  //     window.localStorage.setItem('id', userInfo.id)
-  //     window.localStorage.setItem('firstName', userInfo.firstName)
-  //     window.localStorage.setItem('email', userInfo.email)
-  //   } else {
-  //     // store data in sessions storage
-  //     window.sessionStorage.setItem('id', userInfo.id)
-  //     window.sessionStorage.setItem('firstName', userInfo.firstName)
-  //     window.sessionStorage.setItem('email', userInfo.email)
-  //   }
-  // } catch (dispatchOrHistoryErr) {
-  //   console.error(dispatchOrHistoryErr)
-  // }
+}
+const updateLocal = firstName => {
+  if (window.localStorage.getItem('id')) {
+    window.localStorage.setItem('firstName', firstName)
+  } else if (window.sessionStorage.getItem('id')) {
+    window.sessionStorage.setItem('firstName', firstName)
+  }
+}
+// eslint-disable-next-line complexity
+export const updateUserInfo = (
+  email,
+  firstName,
+  password,
+  oldPassword
+) => async dispatch => {
+  try {
+    let cleanEmail = email.toLowerCase()
+    if (password && oldPassword) {
+      let checkPass = await axios.post(`/api`, {
+        query: `{user(email: "${cleanEmail}", password: "${oldPassword}"),{id, firstName, email}}`
+      })
+      console.log(checkPass, email, firstName, password, oldPassword)
+      if (checkPass.data.data.user.id) {
+        let res = await axios.post(`/api`, {
+          query: `mutation{updateUser(email:"${cleanEmail}", firstName: "${firstName}", password: "${password}"),{id, firstName, email}}`
+        })
+        console.log('in here')
+        updateLocal(res.data.data.updateUser.firstName)
+        dispatch(updateUser(res.data.data.updateUser))
+      } else {
+        return 'error'
+      }
+    } else {
+      let res = await axios.post(`/api`, {
+        query: `mutation{updateUser(email:"${cleanEmail}", firstName: "${firstName}"),{id, firstName, email}}`
+      })
+      updateLocal(res.data.data.updateUser.firstName)
+      dispatch(updateUser(res.data.data.updateUser))
+    }
+  } catch (err) {
+    console.log(err)
+  }
 }
 
 export const logout = () => async dispatch => {
@@ -121,6 +148,8 @@ export default function(state = defaultUser, action) {
       return action.user
     case REMOVE_USER:
       return defaultUser
+    case UPDATE_USER:
+      return action.user
     default:
       return state
   }
