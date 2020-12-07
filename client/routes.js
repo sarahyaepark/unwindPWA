@@ -8,7 +8,8 @@ import {
   UserHome,
   GoalForm,
   Goodnight,
-  CalendarDisplay
+  CalendarDisplay,
+  AccountSettings
 } from './components'
 import {me} from './store'
 
@@ -34,6 +35,7 @@ class Routes extends Component {
             <Route path="/setGoals" component={GoalForm} />
             <Route path="/goodnight" component={Goodnight} />
             <Route path="/calendarDisplay" component={CalendarDisplay} />
+            <Route path="/account" component={AccountSettings} />
           </Switch>
         )}
         {/* Displays our Login component as a fallback */}

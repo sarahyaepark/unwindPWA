@@ -7,8 +7,6 @@ import BottomNavigationAction from '@material-ui/core/BottomNavigationAction'
 import CreateOutlinedIcon from '@material-ui/icons/CreateOutlined'
 import CalendarTodayOutlinedIcon from '@material-ui/icons/CalendarTodayOutlined'
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined'
-import UserHome from './user-home'
-import CalendarDisplay from './calendarDisplay'
 
 const useStyles = makeStyles({
   root: {
@@ -23,7 +21,7 @@ const useStyles = makeStyles({
 
 export function SimpleBottomNavigation(props) {
   const classes = useStyles()
-  const [value, setValue] = React.useState(0)
+  const [value, setValue] = React.useState('DailyEntry')
   const {isLoggedIn} = props
   return (
     <div>
@@ -52,6 +50,8 @@ export function SimpleBottomNavigation(props) {
             value="Calendar"
           />
           <BottomNavigationAction
+            component={Link}
+            to="/account"
             label="Account"
             icon={<AccountCircleOutlinedIcon />}
             value="Account"

@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import {auth} from '../store'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import history from '../history'
 
 const AuthForm = props => {
   const {name, displayName, handleSubmit, error} = props
@@ -105,6 +106,7 @@ const mapDispatch = dispatch => {
         } else {
           const firstName = evt.target.firstName.value
           dispatch(auth(email, password, formName, checked, firstName))
+          history.push('/setGoals')
         }
       }
     }

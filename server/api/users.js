@@ -225,6 +225,45 @@ const mutationType = new graphql.GraphQLObjectType({
         }
       }
     },
+    updateUser: {
+      type: userType,
+      args: {
+        email: {type: graphql.GraphQLString},
+        firstName: {type: graphql.GraphQLString},
+        password: {type: graphql.GraphQLString}
+      },
+      async resolve(parent, args) {
+        try {
+          let updatedUser
+          if (args.password) {
+            updatedUser = await User.update(
+              {
+                firstName: args.firstName,
+                password: args.password
+              },
+              {
+                where: {email: args.email},
+                returning: true
+              }
+            )
+          } else {
+            updatedUser = await User.update(
+              {
+                firstName: args.firstName
+              },
+              {
+                where: {email: args.email},
+                returning: true
+              }
+            )
+          }
+          console.log(updatedUser[1][0].dataValues)
+          return updatedUser[1][0].dataValues
+        } catch (err) {
+          console.log(err)
+        }
+      }
+    },
     addDailyEntry: {
       type: dailyEntryType,
       args: {
