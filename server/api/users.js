@@ -348,11 +348,25 @@ const mutationType = new graphql.GraphQLObjectType({
         active: {type: graphql.GraphQLBoolean},
         completed: {type: graphql.GraphQLBoolean},
         dateCompleted: {type: graphql.GraphQLString},
-        dailyEntryId: {type: graphql.GraphQLID}
+        dailyEntryId: {type: graphql.GraphQLID},
+        description: {type: graphql.GraphQLString}
       },
       async resolve(parent, args) {
         try {
           let dateCompleted
+          if (args.description) {
+            console.log('updating goal', args.description)
+            let updatedGoal = await Goal.update(
+              {
+                description: args.description
+              },
+              {
+                where: {id: args.id},
+                returning: true
+              }
+            )
+            return updatedGoal[1][0].dataValues
+          }
           if (args.completed) dateCompleted = Date.now()
           else dateCompleted = null
           let updatedGoal

@@ -2,9 +2,10 @@ import axios from 'axios'
 import history from '../history'
 
 const GET_GOAL = 'GET_GOAL'
-// const REMOVE_USER = 'REMOVE_USER'
+const UPDATE_GOAL = 'UPDATE_GOAL'
 
 const getGoal = goal => ({type: GET_GOAL, goal})
+const updatingGoal = goal => ({type: UPDATE_GOAL, goal})
 
 export const addGoal = (
   userId,
@@ -33,12 +34,17 @@ export const updateGoal = (
   goalId,
   completed,
   active,
-  dailyEntryId
+  dailyEntryId,
+  description
 ) => async dispatch => {
   let res
   try {
-    console.log(dailyEntryId, active, '*****************')
-    if (active !== undefined) {
+    if (description) {
+      console.log('updating description', goalId, description, '***')
+      res = await axios.post(`/api`, {
+        query: `mutation{updateGoal(id:${goalId}, description:"${description}"),{id,description,completed}}`
+      })
+    } else if (active !== undefined) {
       console.log('in here updating active')
       res = await axios.post(`/api`, {
         query: `mutation{updateGoal(id:${goalId}, active:${active}),{id,description,completed}}`
@@ -55,10 +61,10 @@ export const updateGoal = (
       })
     }
   } catch (authError) {
-    return dispatch(getGoal({error: authError}))
+    return dispatch(updatingGoal({error: authError}))
   }
   try {
-    dispatch(getGoal(res.data.data.updateGoal))
+    dispatch(updatingGoal(res.data.data.updateGoal))
   } catch (dispatchOrHistoryErr) {
     console.error(dispatchOrHistoryErr)
   }
@@ -70,6 +76,8 @@ export const updateGoal = (
 export default function(state = {}, action) {
   switch (action.type) {
     case GET_GOAL:
+      return action.goal
+    case UPDATE_GOAL:
       return action.goal
     default:
       return state
