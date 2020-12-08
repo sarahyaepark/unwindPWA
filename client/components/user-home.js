@@ -4,6 +4,9 @@ import {connect} from 'react-redux'
 import {fetchGoals, me, updateGoal, getCurrentDate} from '../store'
 import DailyEntry from './dailyEntry'
 import Goodnight from './goodnight'
+import EditableLabel from 'react-inline-editing'
+import EditIcon from '@material-ui/icons/Edit'
+
 /**
  * COMPONENT
  */
@@ -48,6 +51,17 @@ export const UserHome = props => {
       props.fetchGoals(userId)
       setSortedGoals(goals.sort((a, b) => a.id - b.id))
     })
+  }
+
+  // const handleEdit = (goalId) => {}
+
+  const handleFocus = text => {
+    console.log('Focused with text: ' + text)
+  }
+
+  const handleFocusOut = (text, goalId) => {
+    console.log('Left editor with text: ' + text)
+    props.updateGoal(null, goalId, null, null, null, text)
   }
 
   const greeting = () => {
@@ -111,8 +125,21 @@ export const UserHome = props => {
                           }
                         />
                       )}
-                      <h2 className="goalDescription">{goal.description}</h2>
+                      {/* <h2 className="goalDescription">{goal.description}</h2> */}
+                      <EditableLabel
+                        text={goal.description}
+                        labelClassName="goalDescription"
+                        inputWidth="200px"
+                        inputHeight="25px"
+                        labelFontSize="1.5rem"
+                        labelFontWeight="bold"
+                        inputFontWeight="bold"
+                        onFocus={handleFocus}
+                        onFocusOut={text => handleFocusOut(text, goal.id)}
+                      />
+                      <EditIcon className="EditIcon" />
                     </div>
+
                     <br />
                   </div>
                 )
@@ -145,8 +172,17 @@ const mapDispatch = dispatch => {
   return {
     fetchGoals: userId => dispatch(fetchGoals(userId)),
     me: () => dispatch(me()),
-    updateGoal: (userId, goalId, completed) =>
-      dispatch(updateGoal(userId, goalId, completed))
+    updateGoal: (
+      userId,
+      goalId,
+      completed,
+      active,
+      dailyEntryId,
+      description
+    ) =>
+      dispatch(
+        updateGoal(userId, goalId, completed, active, dailyEntryId, description)
+      )
   }
 }
 

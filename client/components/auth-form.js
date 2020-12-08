@@ -5,19 +5,46 @@ import {auth} from '../store'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import history from '../history'
+import {GoalForm} from './goal-form'
 
 const AuthForm = props => {
-  const {name, displayName, handleSubmit, error} = props
+  const {name, displayName, handleAuthSubmit, error} = props
   const [checked, setChecked] = useState(false)
-
-  return (
+  const [goalForm, showGoalForm] = useState(false)
+  const [formName, setFormName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [firstName, setFirstName] = useState('')
+  const signUpSubmit = evt => {
+    evt.preventDefault()
+    console.log(evt)
+    setFormName(evt.target.name)
+    setEmail(evt.target.email.value)
+    setPassword(evt.target.password.value)
+    console.log('clicked', formName, email, password)
+    if (evt.target.firstName) {
+      console.log('in here')
+      setFirstName(evt.target.firstName.value)
+      showGoalForm(true)
+    } else {
+      console.log(
+        'loggin in',
+        evt.target.name,
+        evt.target.email.value,
+        evt.target.password.value
+      )
+      handleAuthSubmit(
+        checked,
+        evt.target.name,
+        evt.target.email.value,
+        evt.target.password.value
+      )
+    }
+  }
+  return !goalForm ? (
     <div className="AuthDiv">
       <h1>{displayName}</h1>
-      <Form
-        className="AuthForm"
-        onSubmit={evt => handleSubmit(evt, checked)}
-        name={name}
-      >
+      <Form className="AuthForm" onSubmit={signUpSubmit} name={name}>
         {displayName === 'Sign Up' ? (
           <Form.Group controlId="formBasicName">
             <Form.Label>First Name</Form.Label>
@@ -55,7 +82,7 @@ const AuthForm = props => {
         </Form.Group>
         {displayName === 'Login' ? (
           <Button variant="primary" type="submit">
-            {displayName}
+            Login
           </Button>
         ) : (
           <Button variant="primary" type="submit">
@@ -72,8 +99,16 @@ const AuthForm = props => {
           />
         </Form.Group>
       </Form>
-      <a href="/auth/google">{displayName} with Google</a>
+      {/* <a href="/auth/google">{displayName} with Google</a> */}
     </div>
+  ) : (
+    <GoalForm
+      checked={checked}
+      formName={formName}
+      email={email}
+      password={password}
+      firstName={firstName}
+    />
   )
 }
 
@@ -95,24 +130,17 @@ const mapSignup = state => {
 
 const mapDispatch = dispatch => {
   return {
-    handleSubmit(evt, checked) {
-      evt.preventDefault()
-      const formName = evt.target.name
-      const email = evt.target.email.value
-      const password = evt.target.password.value
+    handleAuthSubmit(checked, formName, email, password) {
+      console.log('in the dispatch', formName, email, password)
       if (formName && email && password) {
         if (formName === 'login') {
+          console.log('dispatching log in')
           dispatch(auth(email, password, formName, checked))
-        } else {
-          const firstName = evt.target.firstName.value
-          dispatch(auth(email, password, formName, checked, firstName))
-          history.push('/setGoals')
         }
       }
     }
   }
 }
-
 export const Login = connect(mapLogin, mapDispatch)(AuthForm)
 export const Signup = connect(mapSignup, mapDispatch)(AuthForm)
 
@@ -122,6 +150,6 @@ export const Signup = connect(mapSignup, mapDispatch)(AuthForm)
 AuthForm.propTypes = {
   name: PropTypes.string.isRequired,
   displayName: PropTypes.string.isRequired,
-  handleSubmit: PropTypes.func.isRequired,
+  // handleSubmit: PropTypes.func.isRequired,
   error: PropTypes.object
 }

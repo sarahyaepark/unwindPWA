@@ -32,7 +32,7 @@ class Routes extends Component {
           <Switch>
             {/* Routes placed here are only available after logging in */}
             <Route path="/home" component={UserHome} />
-            <Route path="/setGoals" component={GoalForm} />
+            {/* <Route path="/setGoals" component={GoalForm} /> */}
             <Route path="/goodnight" component={Goodnight} />
             <Route path="/calendarDisplay" component={CalendarDisplay} />
             <Route path="/account" component={AccountSettings} />

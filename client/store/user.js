@@ -65,6 +65,7 @@ export const auth = (
         query: `mutation{addUser(firstName:"${firstName}", email: "${cleanEmail}", password: "${password}"),{id, firstName, email}}`
       })
       userInfo = res.data.data.addUser
+      console.log(userInfo)
       dispatch(getUser(userInfo))
     }
     if (checked) {
