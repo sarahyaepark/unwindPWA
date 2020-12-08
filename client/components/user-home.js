@@ -36,7 +36,6 @@ export const UserHome = props => {
   useEffect(
     () => {
       if (goals.length) {
-        console.log(goals)
         if (goals[0].dailyEntryId) setGoodnight(true)
         else setGoodnight(false)
         if (newDay(goals[0].dateCreated)) setGoodnight(false)
@@ -53,14 +52,9 @@ export const UserHome = props => {
     })
   }
 
-  // const handleEdit = (goalId) => {}
-
-  const handleFocus = text => {
-    console.log('Focused with text: ' + text)
-  }
+  const handleFocus = text => {}
 
   const handleFocusOut = (text, goalId) => {
-    console.log('Left editor with text: ' + text)
     props.updateGoal(null, goalId, null, null, null, text)
   }
 

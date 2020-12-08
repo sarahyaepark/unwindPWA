@@ -128,7 +128,6 @@ async function seed() {
   const goals = () => {
     let temp = []
     for (let i = 0; i < sampleEntries.length - 1; i++) {
-      console.log(sampleEntries[i + 1])
       let g1 = Goal.create({
         userId: Yeppy.id,
         dailyEntryId: sampleEntries[i].id,

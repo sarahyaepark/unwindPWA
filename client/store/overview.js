@@ -45,16 +45,13 @@ let data = [{
 */
 
 export const fetchOverview = userId => async dispatch => {
-  console.log('in the fetch overview thunk')
   try {
     let data = []
-    console.log('fetching overviewwwww')
     // this returns an array of objects: date, journal, mood, compliment, and dailyentryId
     let dailyEntries = await axios.post(`/api`, {
       query: `{dailyEntries(userId:${userId}),{id, date, journal, mood, compliment}}`
     })
     // this returns an array of arrays of objects: daily goal id, completed, description, datecreated
-    console.log(dailyEntries)
     await Promise.all(
       dailyEntries.data.data.dailyEntries.map(async dailyEntry => {
         let currentGoal = await axios.post(`/api`, {
@@ -75,18 +72,15 @@ export const fetchOverview = userId => async dispatch => {
           ],
           init: function() {
             this.total = this.details.reduce(function(prev, e) {
-              console.log('TRYING TO GET TOTAL', prev, e.mood)
               return prev + e.mood
             }, 0)
             return this
           }
         }.init()
-        console.log(currentGoal.data.data.goals)
         data.push(tempObject)
         return currentGoal.data.data.goals
       })
     )
-    console.log(data)
     dispatch(getOverview(data))
   } catch (authError) {
     return dispatch(getOverview({error: authError}))

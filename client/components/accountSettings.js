@@ -18,9 +18,7 @@ export const AccountSettings = props => {
   }, [])
   const handleChange = evt => {
     evt.preventDefault()
-    console.log(error)
     let confirm = evt.target.value
-    console.log(confirm, newPass)
     if (confirm.length !== newPass.length) setError('Passwords do not match')
     else {
       for (let i = 0; i < confirm.length; i++) {
@@ -138,7 +136,6 @@ export const AccountSettings = props => {
  * CONTAINER
  */
 const mapState = state => {
-  console.log(state)
   return {
     user: state.user
   }

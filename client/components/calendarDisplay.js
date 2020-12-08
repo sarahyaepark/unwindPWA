@@ -10,7 +10,6 @@ export const CalendarView = props => {
   const {overview, user} = props
 
   useEffect(() => {
-    console.log(props.me)
     props.me()
   }, [])
   useEffect(
@@ -38,7 +37,6 @@ export const CalendarView = props => {
 }
 
 const mapState = state => {
-  console.log(state)
   return {
     overview: state.overview,
     user: state.user

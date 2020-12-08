@@ -10,7 +10,6 @@ import styles from '../../public/calendar-heatmap.css'
 class CalendarHeatmap extends React.Component {
   constructor(props) {
     super(props)
-    console.log('INITIAL CAL DATA', props.data)
     this.settings = {
       gutter: 5,
       item_gutter: 1,
@@ -141,7 +140,6 @@ class CalendarHeatmap extends React.Component {
         d.summary = unsorted_summary.sort((a, b) => {
           return b.value - a.value
         })
-        console.log('>>>>>>>>sorted', d)
         return d
       })
     }

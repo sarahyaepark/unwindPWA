@@ -10,7 +10,6 @@ export default function Goodnight() {
   useEffect(() => {
     axios.get(`https://type.fit/api/quotes`).then(function(response) {
       let randomQuoteIdx = Math.floor(Math.random() * 1000)
-      console.log(response.data[randomQuoteIdx].text)
       while (response.data[randomQuoteIdx].author === 'Donald Trump') {
         randomQuoteIdx = Math.floor(Math.random() * 1000)
       }

@@ -53,6 +53,12 @@ const queryType = new graphql.GraphQLObjectType({
       resolve: async (parent, args) => {
         // code to get data from db
         try {
+          if (!args.password) {
+            const foundUser = await User.findOne({
+              where: {email: args.email}
+            })
+            return foundUser
+          }
           const foundUser = await User.findOne({
             where: {email: args.email},
             include: [DailyEntry, Goal]
