@@ -41,6 +41,18 @@ export const me = () => dispatch => {
   }
 }
 
+export const findUser = async email => {
+  try {
+    let cleanEmail = email.toLowerCase()
+    let res = await axios.post(`/api`, {
+      query: `{user(email: "${cleanEmail}"),{id}}`
+    })
+    if (res.data.data.user) return 'User already exists'
+  } catch (err) {
+    console.log(err)
+  }
+}
+
 export const auth = (
   email,
   password,
@@ -58,19 +70,19 @@ export const auth = (
       })
       userInfo = res.data.data.user
       if (userInfo.id) dispatch(getUser(userInfo))
-      else return 'error'
+      else {
+        return 'error'
+      }
       history.push('/home')
     } else {
       res = await axios.post(`/api`, {
         query: `mutation{addUser(firstName:"${firstName}", email: "${cleanEmail}", password: "${password}"),{id, firstName, email}}`
       })
       userInfo = res.data.data.addUser
-      console.log(userInfo)
       dispatch(getUser(userInfo))
     }
     if (checked) {
       // store data in local storage
-      console.log('setting the local storage')
       window.localStorage.setItem('id', userInfo.id)
       window.localStorage.setItem('firstName', userInfo.firstName)
       window.localStorage.setItem('email', userInfo.email)
@@ -104,12 +116,10 @@ export const updateUserInfo = (
       let checkPass = await axios.post(`/api`, {
         query: `{user(email: "${cleanEmail}", password: "${oldPassword}"),{id, firstName, email}}`
       })
-      console.log(checkPass, email, firstName, password, oldPassword)
       if (checkPass.data.data.user.id) {
         let res = await axios.post(`/api`, {
           query: `mutation{updateUser(email:"${cleanEmail}", firstName: "${firstName}", password: "${password}"),{id, firstName, email}}`
         })
-        console.log('in here')
         updateLocal(res.data.data.updateUser.firstName)
         dispatch(updateUser(res.data.data.updateUser))
       } else {

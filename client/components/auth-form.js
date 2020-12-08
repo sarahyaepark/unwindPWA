@@ -1,40 +1,56 @@
 import React, {useState} from 'react'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
-import {auth} from '../store'
+import {auth, findUser} from '../store'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import history from '../history'
 import {GoalForm} from './goal-form'
 
 const AuthForm = props => {
-  const {name, displayName, handleAuthSubmit, error} = props
+  const {name, displayName} = props
   const [checked, setChecked] = useState(false)
   const [goalForm, showGoalForm] = useState(false)
   const [formName, setFormName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [firstName, setFirstName] = useState('')
+  const [error, setError] = useState('')
+  const [emailError, setEmailError] = useState('')
+  const handleAuthSubmit = (formMethod, formEmail, formPass) => {
+    if (formMethod && formEmail && formPass) {
+      if (formMethod === 'login') {
+        props.auth(formEmail, formPass, formMethod, checked).then(result => {
+          if (result === 'error') setError('Invalid Email or Password')
+        })
+      }
+    }
+  }
   const signUpSubmit = evt => {
     evt.preventDefault()
-    console.log(evt)
     setFormName(evt.target.name)
     setEmail(evt.target.email.value)
-    setPassword(evt.target.password.value)
-    console.log('clicked', formName, email, password)
+    let tempPass = evt.target.password.value
     if (evt.target.firstName) {
-      console.log('in here')
-      setFirstName(evt.target.firstName.value)
-      showGoalForm(true)
+      let tempFirst = evt.target.firstName.value
+      // check for email
+      findUser(evt.target.email.value).then(result => {
+        if (result === 'User already exists') {
+          setEmailError(result)
+        } else {
+          setEmailError('')
+          if (tempPass.length < 8) {
+            setError('Password must be at least 8 characters')
+          } else {
+            setError('')
+            setPassword(tempPass)
+            setFirstName(tempFirst)
+            showGoalForm(true)
+          }
+        }
+      })
     } else {
-      console.log(
-        'loggin in',
-        evt.target.name,
-        evt.target.email.value,
-        evt.target.password.value
-      )
       handleAuthSubmit(
-        checked,
         evt.target.name,
         evt.target.email.value,
         evt.target.password.value
@@ -60,12 +76,17 @@ const AuthForm = props => {
         ) : null}
         <Form.Group controlId="formBasicEmail">
           <Form.Label>Email address</Form.Label>
-          <Form.Control name="email" placeholder="Enter email" required />
+          <Form.Control
+            name="email"
+            placeholder="Enter email"
+            required
+            isInvalid={!!emailError}
+          />
           <Form.Text className="text-muted">
             We'll never share your email with anyone else.
           </Form.Text>
-          <Form.Control.Feedback type="invalid">
-            Please provide a valid email.
+          <Form.Control.Feedback type="invalid" className="invalid-feedback">
+            {emailError}
           </Form.Control.Feedback>
         </Form.Group>
         <Form.Group controlId="formBasicPassword">
@@ -75,9 +96,10 @@ const AuthForm = props => {
             name="password"
             placeholder="Password"
             required
+            isInvalid={!!error}
           />
-          <Form.Control.Feedback type="invalid">
-            Please provide a valid password.
+          <Form.Control.Feedback type="invalid" className="invalid-feedback">
+            {error}
           </Form.Control.Feedback>
         </Form.Group>
         {displayName === 'Login' ? (
@@ -130,15 +152,9 @@ const mapSignup = state => {
 
 const mapDispatch = dispatch => {
   return {
-    handleAuthSubmit(checked, formName, email, password) {
-      console.log('in the dispatch', formName, email, password)
-      if (formName && email && password) {
-        if (formName === 'login') {
-          console.log('dispatching log in')
-          dispatch(auth(email, password, formName, checked))
-        }
-      }
-    }
+    auth: (email, password, login, checked) =>
+      dispatch(auth(email, password, login, checked))
+    // findUser: (email) => dispatch(findUser(email)),
   }
 }
 export const Login = connect(mapLogin, mapDispatch)(AuthForm)

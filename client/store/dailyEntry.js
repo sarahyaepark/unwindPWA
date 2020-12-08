@@ -39,7 +39,6 @@ export const addEntry = (
       query: `{activeGoals(userId:${userId}),{description,id,completed,dateCreated}}`
     })
     goalRes.data.data.activeGoals.map(goal => {
-      console.log('goal', goal)
       dispatch(
         updateGoal(
           null,
