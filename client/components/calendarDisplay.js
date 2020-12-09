@@ -62,7 +62,8 @@ export const CalendarView = props => {
     let total = 0
     let tempData
     if (currentView === 'year') tempData = findYearData()
-    if (currentView === 'month') tempData = findMonthData()
+    else if (currentView === 'month') tempData = findMonthData()
+    else return null
     let dailyCompletedGoals = tempData
       .filter(day => day.details[0].mood > 50)
       .map(day => day.details[0].goals.filter(goal => goal.completed === true))
@@ -75,7 +76,8 @@ export const CalendarView = props => {
   const findFreqData = () => {
     let finalData = []
     if (currentView === 'year') finalData = findYearData()
-    if (currentView === 'month') finalData = findMonthData()
+    else if (currentView === 'month') finalData = findMonthData()
+    else return null
     return finalData.length
   }
 
@@ -87,17 +89,20 @@ export const CalendarView = props => {
       <br />
       {currentView !== '' ? (
         <div className="CalOverview">
-          <div className="DataOverview">
-            <h1>
-              In {dateData}, you checked in to Unwind {findFreqData()} times! 🎉
-            </h1>
-            {findPercentage() ? (
-              <h3>
-                On your happier days, you completed on average{' '}
-                {findPercentage()}% of your daily self care goals.
-              </h3>
-            ) : null}
-          </div>
+          {currentView === 'year' || currentView === 'month' ? (
+            <div className="DataOverview">
+              <h1>
+                In {dateData}, you checked in to Unwind {findFreqData()} times!
+                🎉
+              </h1>
+              {findPercentage() ? (
+                <h3>
+                  On your happier days, you completed on average{' '}
+                  {findPercentage()}% of your daily self care goals.
+                </h3>
+              ) : null}
+            </div>
+          ) : null}
         </div>
       ) : (
         <img
