@@ -22,6 +22,7 @@
 
 a {
   text-decoration: none;
+  color: white;
 }
 
 nav a {
@@ -195,6 +196,14 @@ nav a {
   display: flex;
   align-self: flex-end;
   width: 30%;
+}
+
+.NavButtons {
+  display: flex;
+  flex-direction: column !important;
+  align-items: center;
+  justify-content: center;
+  color: white;
 }
 
 .goodnightDiv {
