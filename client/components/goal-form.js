@@ -15,41 +15,43 @@ const GoalInput = props => {
     </Tooltip>
   )
   return (
-    <Form
-      className="AuthDiv"
-      onSubmit={e =>
-        handleSubmit(e, checked, formName, email, password, firstName)
-      }
-    >
-      <Form.Group controlId="goals">
-        <Form.Label className="labelText">
-          What self care goals would you like to accomplish each day?
-        </Form.Label>
-        <div className="Oneline">
-          <Form.Text className="text-muted">
-            You can edit goals later just choose three for now 😌
-          </Form.Text>
-          <OverlayTrigger
-            placement="right"
-            delay={{show: 150, hide: 400}}
-            overlay={renderTooltip}
-          >
-            <Button variant="outline-info" size="sm">
-              Why just 3?
-            </Button>
-          </OverlayTrigger>
-        </div>
-        <br />
-        <Form.Control name="goal1" placeholder="Morning stretches..." />
-        <br />
-        <Form.Control name="goal2" placeholder="Goal 2" />
-        <br />
-        <Form.Control name="goal3" placeholder="Goal 3" />
-      </Form.Group>
-      <Button variant="primary" type="submit">
-        Sign Up
-      </Button>
-    </Form>
+    <div className="AuthDiv">
+      <Form
+        className="FormDiv"
+        onSubmit={e =>
+          handleSubmit(e, checked, formName, email, password, firstName)
+        }
+      >
+        <Form.Group controlId="goals">
+          <Form.Label className="labelText">
+            What self care goals would you like to accomplish each day?
+          </Form.Label>
+          <div className="Oneline">
+            <Form.Text className="text-muted">
+              You can edit goals later just choose three for now 😌
+            </Form.Text>
+            <OverlayTrigger
+              placement="right"
+              delay={{show: 150, hide: 400}}
+              overlay={renderTooltip}
+            >
+              <Button variant="outline-info" size="sm">
+                Why just 3?
+              </Button>
+            </OverlayTrigger>
+          </div>
+          <br />
+          <Form.Control name="goal1" placeholder="Morning stretches..." />
+          <br />
+          <Form.Control name="goal2" placeholder="Goal 2" />
+          <br />
+          <Form.Control name="goal3" placeholder="Goal 3" />
+        </Form.Group>
+        <Button variant="primary" type="submit">
+          Sign Up
+        </Button>
+      </Form>
+    </div>
   )
 }
 

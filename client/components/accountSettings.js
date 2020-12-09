@@ -76,6 +76,7 @@ export const AccountSettings = props => {
     <div className="AccSettingsDiv">
       <div className="AccSettings">
         <h3>Edit Account Information</h3>
+        <br />
         <Form
           className="AuthForm"
           onSubmit={evt => handleSubmit(evt)}

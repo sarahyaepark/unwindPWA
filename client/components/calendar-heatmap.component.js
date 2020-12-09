@@ -159,10 +159,11 @@ class CalendarHeatmap extends React.Component {
     } else if (this.overview === 'month') {
       window.sessionStorage.setItem('currentView', 'month')
       this.drawMonthOverview()
-    } else if (this.overview === 'week') {
-      window.sessionStorage.setItem('currentView', 'week')
-      this.drawWeekOverview()
     }
+    // else if (this.overview === 'week') {
+    //   window.sessionStorage.setItem('currentView', 'week')
+    //   this.drawWeekOverview()
+    // }
   }
 
   /**
@@ -651,6 +652,7 @@ class CalendarHeatmap extends React.Component {
 
         tooltip_html +=
           '<div>' + moment(d.date).format('dddd, MMM Do YYYY') + '</div><br>'
+        tooltip_html += '<div>' + this.formatMood(d.total) + '</div>'
 
         // Calculate tooltip position
         let x = calcItemX(d) + this.settings.item_size
@@ -667,6 +669,7 @@ class CalendarHeatmap extends React.Component {
           .html(tooltip_html)
           .style('left', x + 'px')
           .style('top', y + 'px')
+          .style('border-radius', '15px')
           .transition()
           .duration(this.settings.transition_duration / 2)
           .ease(d3.easeLinear)
@@ -1065,7 +1068,7 @@ class CalendarHeatmap extends React.Component {
         let tooltip_html = ''
         tooltip_html += `<div class="${
           styles.header
-        }"><h3>${formattedMood}</h3></div><br>`
+        }"><h3>${formattedMood}</h3></div>`
         tooltip_html +=
           '<div>' + moment(d.date).format('dddd, MMM Do YYYY') + '</div>'
         tooltip_html += `<div>journal: ${d.journal}</div>`
@@ -1183,39 +1186,39 @@ class CalendarHeatmap extends React.Component {
           .ease(d3.easeLinear)
           .style('opacity', 1)
       })
-      .on('click', d => {
-        if (this.in_transition) {
-          return
-        }
+    // .on('click', d => {
+    //   if (this.in_transition) {
+    //     return
+    //   }
 
-        // Check week data
-        let week_data = this.props.data.filter(e => {
-          return (
-            d.startOf('week') <= moment(e.date) &&
-            moment(e.date) < d.endOf('week')
-          )
-        })
+    //   // Check week data
+    //   let week_data = this.props.data.filter(e => {
+    //     return (
+    //       d.startOf('week') <= moment(e.date) &&
+    //       moment(e.date) < d.endOf('week')
+    //     )
+    //   })
 
-        // Don't transition if there is no data to show
-        if (!week_data.length) {
-          return
-        }
+    //   // Don't transition if there is no data to show
+    //   if (!week_data.length) {
+    //     return
+    //   }
 
-        this.in_transition = true
+    //   this.in_transition = true
 
-        // Set selected month to the one clicked on
-        this.selected = {date: d}
+    //   // Set selected month to the one clicked on
+    //   this.selected = {date: d}
 
-        // Hide tooltip
-        this.hideTooltip()
+    //   // Hide tooltip
+    //   this.hideTooltip()
 
-        // Remove all year overview related items and labels
-        this.removeMonthOverview()
+    //   // Remove all year overview related items and labels
+    //   this.removeMonthOverview()
 
-        // Redraw the chart
-        this.overview = 'week'
-        this.drawChart()
-      })
+    //   // Redraw the chart
+    //   this.overview = 'week'
+    //   this.drawChart()
+    // })
 
     // Add day labels
     this.labels.selectAll('.label-day').remove()
@@ -1273,329 +1276,329 @@ class CalendarHeatmap extends React.Component {
   /**
    * Draw week overview
    */
-  drawWeekOverview() {
-    console.log('in week overview')
-    // Add current overview to the history
-    if (this.history[this.history.length - 1] !== this.overview) {
-      this.history.push(this.overview)
-    }
+  // drawWeekOverview() {
+  //   console.log('in week overview')
+  //   // Add current overview to the history
+  //   if (this.history[this.history.length - 1] !== this.overview) {
+  //     this.history.push(this.overview)
+  //   }
 
-    // Define beginning and end of the week
-    let start_of_week = moment(this.selected.date).startOf('week')
-    let end_of_week = moment(this.selected.date).endOf('week')
+  //   // Define beginning and end of the week
+  //   let start_of_week = moment(this.selected.date).startOf('week')
+  //   let end_of_week = moment(this.selected.date).endOf('week')
 
-    // Filter data down to the selected week
-    let week_data = this.props.data.filter(d => {
-      return start_of_week <= moment(d.date) && moment(d.date) < end_of_week
-    })
-    let max_value = d3.max(week_data, d => {
-      return d3.max(d.summary, d => {
-        return d.mood
-      })
-    })
-    // Define day labels and axis
-    let day_labels = d3.timeDays(
-      moment().startOf('week'),
-      moment().endOf('week')
-    )
+  //   // Filter data down to the selected week
+  //   let week_data = this.props.data.filter(d => {
+  //     return start_of_week <= moment(d.date) && moment(d.date) < end_of_week
+  //   })
+  //   let max_value = d3.max(week_data, d => {
+  //     return d3.max(d.summary, d => {
+  //       return d.mood
+  //     })
+  //   })
+  //   // Define day labels and axis
+  //   let day_labels = d3.timeDays(
+  //     moment().startOf('week'),
+  //     moment().endOf('week')
+  //   )
 
-    let dayScale = d3
-      .scaleBand()
-      .rangeRound([this.settings.label_padding, this.settings.height])
-      .domain(
-        day_labels.map(d => {
-          return moment(d).weekday()
-        })
-      )
-    // Define week labels and axis
-    let week_labels = [start_of_week]
+  //   let dayScale = d3
+  //     .scaleBand()
+  //     .rangeRound([this.settings.label_padding, this.settings.height])
+  //     .domain(
+  //       day_labels.map(d => {
+  //         return moment(d).weekday()
+  //       })
+  //     )
+  //   // Define week labels and axis
+  //   let week_labels = [start_of_week]
 
-    let weekScale = d3
-      .scaleBand()
-      .rangeRound([this.settings.label_padding, this.settings.width])
-      .padding([0.01])
-      .domain(
-        week_labels.map(weekday => {
-          return weekday.week()
-        })
-      )
-    // Add week data items to the overview
-    this.items.selectAll('.item-block-week').remove()
-    let item_block = this.items
-      .selectAll('.item-block-week')
-      .data(week_data)
-      .enter()
-      .append('g')
-      .attr('class', 'item item-block-week')
-      .style('cursor', 'pointer')
-      .attr('width', () => {
-        return (
-          (this.settings.width - this.settings.label_padding) /
-            week_labels.length -
-          this.settings.gutter * 5
-        )
-      })
-      .attr('height', () => {
-        return Math.min(dayScale.bandwidth(), this.settings.max_block_height)
-      })
-      .attr('transform', d => {
-        return (
-          'translate(' +
-          weekScale(moment(d.date).week()) +
-          ',' +
-          (dayScale(moment(d.date).weekday()) +
-            dayScale.bandwidth() / 1.75 -
-            15) +
-          ')'
-        )
-      })
-      .attr('total', d => {
-        return d.total
-      })
-      .attr('date', d => {
-        return d.date
-      })
-      .attr('offset', 0)
-    // .on('click', d => {
-    //   if (this.in_transition) {
-    //     return
-    //   }
-    //   // Don't transition if there is no data to show
-    //   if (d.total === 0) {
-    //     return
-    //   }
+  //   let weekScale = d3
+  //     .scaleBand()
+  //     .rangeRound([this.settings.label_padding, this.settings.width])
+  //     .padding([0.01])
+  //     .domain(
+  //       week_labels.map(weekday => {
+  //         return weekday.week()
+  //       })
+  //     )
+  //   // Add week data items to the overview
+  //   this.items.selectAll('.item-block-week').remove()
+  //   let item_block = this.items
+  //     .selectAll('.item-block-week')
+  //     .data(week_data)
+  //     .enter()
+  //     .append('g')
+  //     .attr('class', 'item item-block-week')
+  //     .style('cursor', 'pointer')
+  //     .attr('width', () => {
+  //       return (
+  //         (this.settings.width - this.settings.label_padding) /
+  //           week_labels.length -
+  //         this.settings.gutter * 5
+  //       )
+  //     })
+  //     .attr('height', () => {
+  //       return Math.min(dayScale.bandwidth(), this.settings.max_block_height)
+  //     })
+  //     .attr('transform', d => {
+  //       return (
+  //         'translate(' +
+  //         weekScale(moment(d.date).week()) +
+  //         ',' +
+  //         (dayScale(moment(d.date).weekday()) +
+  //           dayScale.bandwidth() / 1.75 -
+  //           15) +
+  //         ')'
+  //       )
+  //     })
+  //     .attr('total', d => {
+  //       return d.total
+  //     })
+  //     .attr('date', d => {
+  //       return d.date
+  //     })
+  //     .attr('offset', 0)
+  //   // .on('click', d => {
+  //   //   if (this.in_transition) {
+  //   //     return
+  //   //   }
+  //   //   // Don't transition if there is no data to show
+  //   //   if (d.total === 0) {
+  //   //     return
+  //   //   }
 
-    //   this.in_transition = true
+  //   //   this.in_transition = true
 
-    //   // Set selected date to the one clicked on
-    //   this.selected = d
+  //   //   // Set selected date to the one clicked on
+  //   //   this.selected = d
 
-    //   // Hide tooltip
-    //   this.hideTooltip()
+  //   //   // Hide tooltip
+  //   //   this.hideTooltip()
 
-    //   // Remove all week overview related items and labels
-    //   this.removeWeekOverview()
+  //   //   // Remove all week overview related items and labels
+  //   //   this.removeWeekOverview()
 
-    //   // Redraw the chart
-    //   this.overview = 'day'
-    //   this.drawChart()
-    // })
-    let item_width =
-      (this.settings.width - this.settings.label_padding) / week_labels.length -
-      this.settings.gutter * 5
+  //   //   // Redraw the chart
+  //   //   this.overview = 'day'
+  //   //   this.drawChart()
+  //   // })
+  //   let item_width =
+  //     (this.settings.width - this.settings.label_padding) / week_labels.length -
+  //     this.settings.gutter * 5
 
-    let itemScale = d3.scaleLinear().rangeRound([0, item_width])
-    let item_gutter = this.settings.item_gutter
-    item_block
-      .selectAll('.item-block-rect')
-      .data(d => d.summary)
-      .enter()
-      .append('rect')
-      .attr('class', 'item item-block-rect')
-      .style('cursor', 'pointer')
-      .attr('x', function(d) {
-        let total = parseInt(d3.select(this.parentNode).attr('total'))
-        let offset = parseInt(d3.select(this.parentNode).attr('offset'))
-        itemScale.domain([0, total])
-        d3.select(this.parentNode).attr('offset', offset + itemScale(d.value))
-        return offset
-      })
-      .attr('width', function(d) {
-        let total = parseInt(d3.select(this.parentNode).attr('total'))
-        itemScale.domain([0, total])
-        return Math.max(itemScale(d.value) - item_gutter, 1)
-      })
-      .attr('height', () => {
-        return Math.min(dayScale.bandwidth(), this.settings.max_block_height)
-      })
-      .attr('fill', d => {
-        let color = d3
-          .scaleLinear()
-          .range(['#ffffff', this.props.color])
-          .domain([-0.15 * max_value, max_value])
-        return color(d.value) || '#ff4500'
-      })
-      .style('opacity', 0)
-      .on('mouseover', d => {
-        if (this.in_transition) {
-          return
-        }
+  //   let itemScale = d3.scaleLinear().rangeRound([0, item_width])
+  //   let item_gutter = this.settings.item_gutter
+  //   item_block
+  //     .selectAll('.item-block-rect')
+  //     .data(d => d.summary)
+  //     .enter()
+  //     .append('rect')
+  //     .attr('class', 'item item-block-rect')
+  //     .style('cursor', 'pointer')
+  //     .attr('x', function(d) {
+  //       let total = parseInt(d3.select(this.parentNode).attr('total'))
+  //       let offset = parseInt(d3.select(this.parentNode).attr('offset'))
+  //       itemScale.domain([0, total])
+  //       d3.select(this.parentNode).attr('offset', offset + itemScale(d.value))
+  //       return offset
+  //     })
+  //     .attr('width', function(d) {
+  //       let total = parseInt(d3.select(this.parentNode).attr('total'))
+  //       itemScale.domain([0, total])
+  //       return Math.max(itemScale(d.value) - item_gutter, 1)
+  //     })
+  //     .attr('height', () => {
+  //       return Math.min(dayScale.bandwidth(), this.settings.max_block_height)
+  //     })
+  //     .attr('fill', d => {
+  //       let color = d3
+  //         .scaleLinear()
+  //         .range(['#ffffff', this.props.color])
+  //         .domain([-0.15 * max_value, max_value])
+  //       return color(d.value) || '#ff4500'
+  //     })
+  //     .style('opacity', 0)
+  //     .on('mouseover', d => {
+  //       if (this.in_transition) {
+  //         return
+  //       }
 
-        // Get date from the parent node
-        let parentNode = d3.select(d3.event.currentTarget.parentNode)
-        let date = new Date(parentNode.attr('date'))
+  //       // Get date from the parent node
+  //       let parentNode = d3.select(d3.event.currentTarget.parentNode)
+  //       let date = new Date(parentNode.attr('date'))
 
-        // Construct tooltip
-        let tooltip_html = ''
-        tooltip_html += `<div class="${styles.header}"><strong>${
-          d.name
-        }</strong></div><br>`
-        // tooltip_html +=
-        //   '<div><strong>' +
-        //   (d.value ? this.formatTime(d.value) : 'No time') +
-        //   ' tracked</strong></div>'
-        tooltip_html +=
-          '<div>on ' + moment(date).format('dddd, MMM Do YYYY') + '</div>'
+  //       // Construct tooltip
+  //       let tooltip_html = ''
+  //       tooltip_html += `<div class="${styles.header}"><strong>${
+  //         d.name
+  //       }</strong></div><br>`
+  //       // tooltip_html +=
+  //       //   '<div><strong>' +
+  //       //   (d.value ? this.formatTime(d.value) : 'No time') +
+  //       //   ' tracked</strong></div>'
+  //       tooltip_html +=
+  //         '<div>on ' + moment(date).format('dddd, MMM Do YYYY') + '</div>'
 
-        // Calculate tooltip position
-        let total = parseInt(parentNode.attr('total'))
-        itemScale.domain([0, total])
-        let x =
-          parseInt(d3.select(d3.event.currentTarget).attr('x')) +
-          itemScale(d.value) / 4 +
-          this.settings.tooltip_width / 4
-        while (
-          this.settings.width - x <
-          this.settings.tooltip_width + this.settings.tooltip_padding * 3
-        ) {
-          x -= 10
-        }
-        let y =
-          dayScale(moment(date).weekday()) + this.settings.tooltip_padding * 1.5
+  //       // Calculate tooltip position
+  //       let total = parseInt(parentNode.attr('total'))
+  //       itemScale.domain([0, total])
+  //       let x =
+  //         parseInt(d3.select(d3.event.currentTarget).attr('x')) +
+  //         itemScale(d.value) / 4 +
+  //         this.settings.tooltip_width / 4
+  //       while (
+  //         this.settings.width - x <
+  //         this.settings.tooltip_width + this.settings.tooltip_padding * 3
+  //       ) {
+  //         x -= 10
+  //       }
+  //       let y =
+  //         dayScale(moment(date).weekday()) + this.settings.tooltip_padding * 1.5
 
-        // Show tooltip
-        this.tooltip
-          .html(tooltip_html)
-          .style('left', x + 'px')
-          .style('top', y + 'px')
-          .transition()
-          .duration(this.settings.transition_duration / 2)
-          .ease(d3.easeLinear)
-          .style('opacity', 1)
-      })
-      .on('mouseout', () => {
-        if (this.in_transition) {
-          return
-        }
-        this.hideTooltip()
-      })
-      .transition()
-      .delay(() => {
-        return (
-          (Math.cos(Math.PI * Math.random()) + 1) *
-          this.settings.transition_duration
-        )
-      })
-      .duration(() => {
-        return this.settings.transition_duration
-      })
-      .ease(d3.easeLinear)
-      .style('opacity', 1)
-      .call(
-        (transition, callback) => {
-          if (transition.empty()) {
-            callback()
-          }
-          let n = 0
-          transition.each(() => ++n).on('end', function() {
-            if (!--n) {
-              callback.apply(this, arguments)
-            }
-          })
-        },
-        () => {
-          this.in_transition = false
-        }
-      )
-    // Add week labels
-    this.labels.selectAll('.label-week').remove()
-    this.labels
-      .selectAll('.label-week')
-      .data(week_labels)
-      .enter()
-      .append('text')
-      .attr('class', 'label label-week')
-      .style('cursor', 'pointer')
-      .style('fill', 'rgb(170, 170, 170)')
-      .attr('font-size', () => {
-        return Math.floor(this.settings.label_padding / 3) + 'px'
-      })
-      .text(d => {
-        return 'Week ' + d.week()
-      })
-      .attr('x', d => {
-        return weekScale(d.week())
-      })
-      .attr('y', this.settings.label_padding / 2)
-      .on('mouseenter', weekday => {
-        if (this.in_transition) {
-          return
-        }
+  //       // Show tooltip
+  //       this.tooltip
+  //         .html(tooltip_html)
+  //         .style('left', x + 'px')
+  //         .style('top', y + 'px')
+  //         .transition()
+  //         .duration(this.settings.transition_duration / 2)
+  //         .ease(d3.easeLinear)
+  //         .style('opacity', 1)
+  //     })
+  //     .on('mouseout', () => {
+  //       if (this.in_transition) {
+  //         return
+  //       }
+  //       this.hideTooltip()
+  //     })
+  //     .transition()
+  //     .delay(() => {
+  //       return (
+  //         (Math.cos(Math.PI * Math.random()) + 1) *
+  //         this.settings.transition_duration
+  //       )
+  //     })
+  //     .duration(() => {
+  //       return this.settings.transition_duration
+  //     })
+  //     .ease(d3.easeLinear)
+  //     .style('opacity', 1)
+  //     .call(
+  //       (transition, callback) => {
+  //         if (transition.empty()) {
+  //           callback()
+  //         }
+  //         let n = 0
+  //         transition.each(() => ++n).on('end', function() {
+  //           if (!--n) {
+  //             callback.apply(this, arguments)
+  //           }
+  //         })
+  //       },
+  //       () => {
+  //         this.in_transition = false
+  //       }
+  //     )
+  //   // Add week labels
+  //   this.labels.selectAll('.label-week').remove()
+  //   this.labels
+  //     .selectAll('.label-week')
+  //     .data(week_labels)
+  //     .enter()
+  //     .append('text')
+  //     .attr('class', 'label label-week')
+  //     .style('cursor', 'pointer')
+  //     .style('fill', 'rgb(170, 170, 170)')
+  //     .attr('font-size', () => {
+  //       return Math.floor(this.settings.label_padding / 3) + 'px'
+  //     })
+  //     .text(d => {
+  //       return 'Week ' + d.week()
+  //     })
+  //     .attr('x', d => {
+  //       return weekScale(d.week())
+  //     })
+  //     .attr('y', this.settings.label_padding / 2)
+  //     .on('mouseenter', weekday => {
+  //       if (this.in_transition) {
+  //         return
+  //       }
 
-        this.items
-          .selectAll('.item-block-week')
-          .transition()
-          .duration(this.settings.transition_duration)
-          .ease(d3.easeLinear)
-          .style('opacity', d => {
-            return moment(d.date).week() === weekday.week() ? 1 : 0.1
-          })
-      })
-      .on('mouseout', () => {
-        if (this.in_transition) {
-          return
-        }
+  //       this.items
+  //         .selectAll('.item-block-week')
+  //         .transition()
+  //         .duration(this.settings.transition_duration)
+  //         .ease(d3.easeLinear)
+  //         .style('opacity', d => {
+  //           return moment(d.date).week() === weekday.week() ? 1 : 0.1
+  //         })
+  //     })
+  //     .on('mouseout', () => {
+  //       if (this.in_transition) {
+  //         return
+  //       }
 
-        this.items
-          .selectAll('.item-block-week')
-          .transition()
-          .duration(this.settings.transition_duration)
-          .ease(d3.easeLinear)
-          .style('opacity', 1)
-      })
+  //       this.items
+  //         .selectAll('.item-block-week')
+  //         .transition()
+  //         .duration(this.settings.transition_duration)
+  //         .ease(d3.easeLinear)
+  //         .style('opacity', 1)
+  //     })
 
-    // Add day labels
-    this.labels.selectAll('.label-day').remove()
-    this.labels
-      .selectAll('.label-day')
-      .data(day_labels)
-      .enter()
-      .append('text')
-      .attr('class', 'label label-day')
-      .style('cursor', 'pointer')
-      .style('fill', 'rgb(170, 170, 170)')
-      .attr('x', this.settings.label_padding / 3)
-      .attr('y', (d, i) => {
-        return dayScale(i) + dayScale.bandwidth() / 1.75
-      })
-      .style('text-anchor', 'left')
-      .attr('font-size', () => {
-        return Math.floor(this.settings.label_padding / 3) + 'px'
-      })
-      .text(d => {
-        return moment(d).format('dddd')[0]
-      })
-      .on('mouseenter', d => {
-        if (this.in_transition) {
-          return
-        }
+  //   // Add day labels
+  //   this.labels.selectAll('.label-day').remove()
+  //   this.labels
+  //     .selectAll('.label-day')
+  //     .data(day_labels)
+  //     .enter()
+  //     .append('text')
+  //     .attr('class', 'label label-day')
+  //     .style('cursor', 'pointer')
+  //     .style('fill', 'rgb(170, 170, 170)')
+  //     .attr('x', this.settings.label_padding / 3)
+  //     .attr('y', (d, i) => {
+  //       return dayScale(i) + dayScale.bandwidth() / 1.75
+  //     })
+  //     .style('text-anchor', 'left')
+  //     .attr('font-size', () => {
+  //       return Math.floor(this.settings.label_padding / 3) + 'px'
+  //     })
+  //     .text(d => {
+  //       return moment(d).format('dddd')[0]
+  //     })
+  //     .on('mouseenter', d => {
+  //       if (this.in_transition) {
+  //         return
+  //       }
 
-        let selected_day = moment(d)
-        this.items
-          .selectAll('.item-block-week')
-          .transition()
-          .duration(this.settings.transition_duration)
-          .ease(d3.easeLinear)
-          .style('opacity', d => {
-            return moment(d.date).day() === selected_day.day() ? 1 : 0.1
-          })
-      })
-      .on('mouseout', () => {
-        if (this.in_transition) {
-          return
-        }
+  //       let selected_day = moment(d)
+  //       this.items
+  //         .selectAll('.item-block-week')
+  //         .transition()
+  //         .duration(this.settings.transition_duration)
+  //         .ease(d3.easeLinear)
+  //         .style('opacity', d => {
+  //           return moment(d.date).day() === selected_day.day() ? 1 : 0.1
+  //         })
+  //     })
+  //     .on('mouseout', () => {
+  //       if (this.in_transition) {
+  //         return
+  //       }
 
-        this.items
-          .selectAll('.item-block-week')
-          .transition()
-          .duration(this.settings.transition_duration)
-          .ease(d3.easeLinear)
-          .style('opacity', 1)
-      })
+  //       this.items
+  //         .selectAll('.item-block-week')
+  //         .transition()
+  //         .duration(this.settings.transition_duration)
+  //         .ease(d3.easeLinear)
+  //         .style('opacity', 1)
+  //     })
 
-    // Add button to switch back to previous overview
-    this.drawButton()
-  }
+  //   // Add button to switch back to previous overview
+  //   this.drawButton()
+  // }
 
   /**
    * Draw day overview
@@ -1893,9 +1896,10 @@ class CalendarHeatmap extends React.Component {
           this.removeYearOverview()
         } else if (this.overview === 'month') {
           this.removeMonthOverview()
-        } else if (this.overview === 'week') {
-          this.removeWeekOverview()
         }
+        // else if (this.overview === 'week') {
+        //   this.removeWeekOverview()
+        // }
         // else if (this.overview === 'day') {
         //   this.removeDayOverview()
         // }
@@ -1984,22 +1988,22 @@ class CalendarHeatmap extends React.Component {
   /**
    * Transition and remove items and labels related to week overview
    */
-  removeWeekOverview() {
-    this.items
-      .selectAll('.item-block-week')
-      .selectAll('.item-block-rect')
-      .transition()
-      .duration(this.settings.transition_duration)
-      .ease(d3.easeLinear)
-      .style('opacity', 0)
-      .attr('x', (d, i) => {
-        return i % 2 === 0 ? -this.settings.width / 3 : this.settings.width / 3
-      })
-      .remove()
-    this.labels.selectAll('.label-day').remove()
-    this.labels.selectAll('.label-week').remove()
-    this.hideBackButton()
-  }
+  // removeWeekOverview() {
+  //   this.items
+  //     .selectAll('.item-block-week')
+  //     .selectAll('.item-block-rect')
+  //     .transition()
+  //     .duration(this.settings.transition_duration)
+  //     .ease(d3.easeLinear)
+  //     .style('opacity', 0)
+  //     .attr('x', (d, i) => {
+  //       return i % 2 === 0 ? -this.settings.width / 3 : this.settings.width / 3
+  //     })
+  //     .remove()
+  //   this.labels.selectAll('.label-day').remove()
+  //   this.labels.selectAll('.label-week').remove()
+  //   this.hideBackButton()
+  // }
 
   /**
    * Transition and remove items and labels related to daily overview

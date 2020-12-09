@@ -16,6 +16,8 @@
 .App {
   font-family: Roboto;
   background-image: linear-gradient(rgb(216, 90, 165), rgb(127, 71, 221));
+  height: auto !important;
+  min-height: 100vh;
 }
 
 a {
@@ -34,7 +36,12 @@ nav a {
 }
 
 .AuthDiv {
-  padding: 30px;
+  display: flex;
+  justify-content: center;
+  /* height: 100%; */
+}
+
+.FormDiv {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -43,6 +50,11 @@ nav a {
   border: 2px solid #12c2e9;
   box-shadow: 5px 5px purple;
   border-radius: 15px;
+  width: 40vw;
+  height: 70vh;
+  padding-top: 2rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
 }
 
 .AccSettings {
@@ -51,6 +63,7 @@ nav a {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: 40vw;
   background-color: rgba(255, 255, 255, 0.6);
   border: 2px solid #12c2e9;
   box-shadow: 5px 5px purple;
@@ -58,8 +71,10 @@ nav a {
 }
 
 .AuthForm {
-  padding: 30px;
-  width: 500px;
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  justify-content: space-around;
 }
 
 .labelText {
@@ -156,6 +171,32 @@ nav a {
   align-items: center;
 }
 
+.greetingDiv {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.complimentDiv {
+  display: flex;
+  height: 50%;
+  font-size: 2rem;
+  padding: 1rem;
+  flex-direction: column;
+  background-color: rgba(255, 255, 255, 0.6);
+  border: 2px solid #12c2e9;
+  border-radius: 15px;
+  box-shadow: 5px 5px purple;
+}
+
+.complimentButton {
+  display: flex;
+  align-self: flex-end;
+  width: 30%;
+}
+
 .goodnightDiv {
   display: flex;
   flex-direction: column;
@@ -165,13 +206,15 @@ nav a {
 .goodnightQuote {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  width: 50%;
+  justify-content: center;
   text-align: center;
-  padding: 2rem;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.6);
   border: 2px solid #12c2e9;
-  box-shadow: 5px 5px #c471ed;
+  box-shadow: 5px 5px purple;
   border-radius: 15px;
+  width: 50%;
+  padding: 2rem;
 }
 
 h4 {
@@ -206,7 +249,7 @@ h4 {
   flex-direction: column;
   padding: 2rem;
   height: 100vh;
-  /* width: 80vw; */
+  width: 95vw;
 }
 .CalOverview {
   /* width: 100vw; */
@@ -226,4 +269,8 @@ h4 {
   width: 60vw;
   padding: 1rem;
   background-color: rgba(255, 255, 255, 0.6);
+}
+
+.DataOverview h1 {
+  font-size: 2.5vw;
 }

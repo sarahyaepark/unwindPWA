@@ -6,6 +6,7 @@ import {fetchOverview, me} from '../store'
 
 export const CalendarView = props => {
   const [dateData, setData] = useState('')
+  const [times, setTimes] = useState('')
   const {overview, currentView, user} = props
 
   useEffect(() => {
@@ -72,7 +73,7 @@ export const CalendarView = props => {
   }
 
   const findFreqData = () => {
-    let finalData
+    let finalData = []
     if (currentView === 'year') finalData = findYearData()
     if (currentView === 'month') finalData = findMonthData()
     return finalData.length
@@ -90,10 +91,12 @@ export const CalendarView = props => {
             <h1>
               In {dateData}, you checked in to Unwind {findFreqData()} times! 🎉
             </h1>
-            <h3>
-              On your happier days, you completed on average {findPercentage()}%
-              of your daily self care goals.
-            </h3>
+            {findPercentage() ? (
+              <h3>
+                On your happier days, you completed on average{' '}
+                {findPercentage()}% of your daily self care goals.
+              </h3>
+            ) : null}
           </div>
         </div>
       ) : (

@@ -125,6 +125,25 @@ const queryType = new graphql.GraphQLObjectType({
         }
       }
     },
+    compliments: {
+      type: graphql.GraphQLList(dailyEntryType),
+      args: {
+        userId: {type: graphql.GraphQLID}
+      },
+      resolve: async (parent, args) => {
+        // code to get data from db
+        try {
+          const dailyEntries = await DailyEntry.findAll({
+            where: {
+              userId: args.userId
+            }
+          })
+          return dailyEntries
+        } catch (err) {
+          console.log(err)
+        }
+      }
+    },
     goal: {
       type: goalType,
       args: {
