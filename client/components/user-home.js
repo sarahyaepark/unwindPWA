@@ -93,15 +93,16 @@ export const UserHome = props => {
       {goodnight ? (
         <Goodnight />
       ) : (
-        <div className="GoalsListDiv">
-          <h3>🥰 Your Daily Self Care Goals 🥰</h3>
-          <br />
-          <div>
-            {sortedGoals ? (
-              sortedGoals.map(goal => {
-                return (
-                  <div key={goal.id} className="GoalsList">
-                    <div className="GoalCheck">
+        <div className="GoalDiv">
+          <div className="GoalsListDiv">
+            <h3>🥰 Your Daily Self Care Goals 🥰</h3>
+            <br />
+            <div className="GoalsList">
+              {sortedGoals ? (
+                sortedGoals.map(goal => {
+                  return (
+                    // <div key={goal.id} >
+                    <div key={goal.id} className="GoalCheck">
                       {!goal.completed ? (
                         <img
                           className="checkBox"
@@ -120,28 +121,33 @@ export const UserHome = props => {
                         />
                       )}
                       {/* <h2 className="goalDescription">{goal.description}</h2> */}
-                      <EditableLabel
-                        text={goal.description}
-                        labelClassName="goalDescription"
-                        inputWidth="200px"
-                        inputHeight="25px"
-                        labelFontSize="1.5rem"
-                        labelFontWeight="bold"
-                        inputFontWeight="bold"
-                        onFocus={handleFocus}
-                        onFocusOut={text => handleFocusOut(text, goal.id)}
-                      />
-                      <EditIcon className="EditIcon" />
-                    </div>
+                      <div className="editLabel">
+                        <EditableLabel
+                          text={goal.description}
+                          labelClassName="goalDescription"
+                          inputWidth="200px"
+                          inputHeight="25px"
+                          labelFontSize="1.5rem"
+                          inputFontSize="1.5rem"
+                          labelFontWeight="bold"
+                          // inputFontWeight="bold"
+                          onFocus={handleFocus}
+                          onFocusOut={text => handleFocusOut(text, goal.id)}
+                        />
+                        <EditIcon className="EditIcon" />
+                      </div>
 
-                    <br />
-                  </div>
-                )
-              })
-            ) : (
-              <img src="https://i.pinimg.com/originals/a4/f2/cb/a4f2cb80ff2ae2772e80bf30e9d78d4c.gif" />
-            )}
+                      <br />
+                    </div>
+                  )
+                })
+              ) : (
+                <img src="https://i.pinimg.com/originals/a4/f2/cb/a4f2cb80ff2ae2772e80bf30e9d78d4c.gif" />
+              )}
+            </div>
+            <br />
           </div>
+          <br />
           <br />
           <DailyEntry newDay={newDay} oldDate={currentDate} />
         </div>

@@ -2,6 +2,7 @@ import React from 'react'
 import {Link} from 'react-router-dom'
 import {connect} from 'react-redux'
 import {makeStyles} from '@material-ui/core/styles'
+import {blue, cyan} from '@material-ui/core/colors'
 import BottomNavigation from '@material-ui/core/BottomNavigation'
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction'
 import CreateOutlinedIcon from '@material-ui/icons/CreateOutlined'
@@ -9,13 +10,15 @@ import CalendarTodayOutlinedIcon from '@material-ui/icons/CalendarTodayOutlined'
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined'
 
 const useStyles = makeStyles({
-  root: {
-    width: 500
-  },
-  stickToBottom: {
+  // root: {
+  //   width: 500
+  // },
+  bottom: {
     width: '100%',
     position: 'fixed',
-    bottom: 0
+    bottom: 0,
+    background: 'rgb(127,71,221)',
+    color: 'green'
   }
 })
 
@@ -32,7 +35,8 @@ export function SimpleBottomNavigation(props) {
             setValue(newValue)
           }}
           showLabels
-          className={classes.stickToBottom}
+          className={classes.bottom}
+          // selected={{color:cyan[100]}}
         >
           <BottomNavigationAction
             component={Link}
@@ -40,6 +44,9 @@ export function SimpleBottomNavigation(props) {
             label="DailyEntry"
             icon={<CreateOutlinedIcon />}
             value="DailyEntry"
+            style={{color: blue[200]}}
+            // classes={classes.buttons}
+            // selected={{color:cyan[100]}}
           />
           <BottomNavigationAction
             component={Link}
@@ -47,6 +54,8 @@ export function SimpleBottomNavigation(props) {
             label="Calendar"
             icon={<CalendarTodayOutlinedIcon />}
             value="Calendar"
+            // classes={classes.buttons}
+            style={{color: blue[200]}}
           />
           <BottomNavigationAction
             component={Link}
@@ -54,6 +63,8 @@ export function SimpleBottomNavigation(props) {
             label="Account"
             icon={<AccountCircleOutlinedIcon />}
             value="Account"
+            // classes={classes.buttons}
+            style={{color: blue[200]}}
           />
         </BottomNavigation>
       ) : null}

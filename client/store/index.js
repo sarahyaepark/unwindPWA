@@ -7,8 +7,16 @@ import dailyGoal from './dailyGoal'
 import goals from './goals'
 import dailyEntry from './dailyEntry'
 import overview from './overview'
+import currentView from './currentView'
 
-const reducer = combineReducers({user, dailyGoal, goals, dailyEntry, overview})
+const reducer = combineReducers({
+  user,
+  dailyGoal,
+  goals,
+  dailyEntry,
+  overview,
+  currentView
+})
 const middleware = composeWithDevTools(
   applyMiddleware(thunkMiddleware, createLogger({collapsed: true}))
 )
@@ -20,3 +28,4 @@ export * from './dailyGoal'
 export * from './goals'
 export * from './dailyEntry'
 export * from './overview'
+export * from './currentView'
