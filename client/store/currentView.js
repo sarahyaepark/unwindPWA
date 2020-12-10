@@ -3,7 +3,6 @@ const GET_CURRENTVIEW = 'GET_CURRENTVIEW'
 const getCurrentView = currentView => ({type: GET_CURRENTVIEW, currentView})
 
 export const setView = overview => dispatch => {
-  console.log(overview)
   dispatch(getCurrentView(overview))
 }
 

@@ -17,7 +17,6 @@ export const CalendarView = props => {
     () => {
       // replace with userId after testing
       props.fetchOverview(user.id)
-      console.log(currentView)
     },
     [user]
   )
@@ -124,7 +123,6 @@ export const CalendarView = props => {
 }
 
 const mapState = state => {
-  console.log(state)
   return {
     overview: state.overview,
     user: state.user,

@@ -45,7 +45,6 @@ class CalendarHeatmap extends React.Component {
   componentDidUpdate() {
     this.parseData()
 
-    console.log(this.state.currentView)
     this.drawChart()
   }
 
@@ -189,7 +188,6 @@ class CalendarHeatmap extends React.Component {
         let summary = this.props.data.reduce((summary, d) => {
           return d.details[0].mood
         }, {})
-        console.log(summary)
         return summary
       }
       return {
@@ -481,7 +479,6 @@ class CalendarHeatmap extends React.Component {
    * Draw year overview
    */
   drawYearOverview() {
-    console.log('in year overview')
     // Add current overview to the history
     if (this.history[this.history.length - 1] !== this.overview) {
       this.history.push(this.overview)
@@ -817,7 +814,6 @@ class CalendarHeatmap extends React.Component {
         this.removeYearOverview()
 
         // Redraw the chart
-        console.log('redrawing into month')
         this.overview = 'month'
         this.drawChart()
       })
@@ -892,7 +888,6 @@ class CalendarHeatmap extends React.Component {
    */
   drawMonthOverview() {
     // Add current overview to the history
-    console.log('in month overview')
     if (this.history[this.history.length - 1] !== this.overview) {
       this.history.push(this.overview)
     }

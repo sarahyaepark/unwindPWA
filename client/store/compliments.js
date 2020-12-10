@@ -13,7 +13,6 @@ export const getCompliments = userId => async dispatch => {
     const compliments = res.data.data.compliments.filter(
       compliment => compliment.compliment !== null
     )
-    console.log(compliments)
     let randomIdx = Math.floor(Math.random() * compliments.length)
     dispatch(getCompliment(compliments[randomIdx]))
   } catch (authError) {
