@@ -6,7 +6,6 @@ import Button from '@material-ui/core/Button'
 import {Link} from 'react-router-dom'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
 import CreateOutlinedIcon from '@material-ui/icons/CreateOutlined'
 import CalendarTodayOutlinedIcon from '@material-ui/icons/CalendarTodayOutlined'
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined'
@@ -40,9 +39,9 @@ export function ButtonAppBar(props) {
     <div className={classes.root}>
       <AppBar position="static" className={classes.root}>
         <Toolbar className={classes.root}>
-          <Typography variant="h6" className={classes.title}>
-            Unwind
-          </Typography>
+          <div className={classes.title}>
+            <img src="https://i.imgur.com/Pca5zcg.png" width="200px" />
+          </div>
           <Link to="/home">
             <Button color="inherit" className="NavButtons">
               <CreateOutlinedIcon style={{color: 'white'}} />
@@ -68,9 +67,9 @@ export function ButtonAppBar(props) {
     <div className={classes.root}>
       <AppBar position="static" className={classes.root}>
         <Toolbar className={classes.root}>
-          <Typography variant="h6" className={classes.title}>
-            Unwind
-          </Typography>
+          <div className={classes.title}>
+            <img src="https://i.imgur.com/Pca5zcg.png" width="200px" />
+          </div>
           <Link to="/login">
             <Button className="NavButtons">Log In</Button>
           </Link>
