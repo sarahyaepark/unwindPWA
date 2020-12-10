@@ -8,30 +8,74 @@
   src: url('./Roboto/Roboto-Regular.ttf');
 }
 
-body {
+/* body {
   font-family: Roboto;
+  background-color: red;
+} */
+
+.App {
+  font-family: Roboto;
+  background-image: linear-gradient(rgb(216, 90, 165), rgb(127, 71, 221));
+  height: auto !important;
+  min-height: 100vh;
 }
 
 a {
   text-decoration: none;
+  color: white;
 }
 
 nav a {
   display: inline-block;
   margin: 1em;
 }
-
-.AuthDiv {
-  padding: 30px;
+.AccSettingsDiv {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
-.AuthForm {
+.AuthDiv {
+  display: flex;
+  justify-content: center;
+  /* height: 100%; */
+}
+
+.FormDiv {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.6);
+  border: 2px solid #12c2e9;
+  box-shadow: 5px 5px purple;
+  border-radius: 15px;
+  width: 40vw;
+  height: 70vh;
+  padding-top: 2rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.AccSettings {
   padding: 30px;
-  width: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 40vw;
+  background-color: rgba(255, 255, 255, 0.6);
+  border: 2px solid #12c2e9;
+  box-shadow: 5px 5px purple;
+  border-radius: 15px;
+}
+
+.AuthForm {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  justify-content: space-around;
 }
 
 .labelText {
@@ -51,6 +95,7 @@ nav a {
   align-items: center;
   justify-content: space-between;
   width: 50%;
+  padding-bottom: 5px;
 }
 
 .GoalsList {
@@ -60,13 +105,30 @@ nav a {
   /* justify-content: space-evenly; */
   width: 70vw;
 }
+.GoalDiv {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
 .GoalsListDiv {
   font-family: Roboto;
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-color: rgba(255, 255, 255, 0.6);
+  border: 2px solid #12c2e9;
+  box-shadow: 5px 5px purple;
+  border-radius: 15px;
+  width: 50vw;
+  padding-top: 1rem;
   /* justify-content: space-around; */
+}
+
+.editLabel {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .checkBox {
@@ -75,7 +137,7 @@ nav a {
 }
 
 .goalDescription {
-  padding-left: 2rem;
+  /* padding-left: 2rem; */
   font-family: RobotoLight;
 }
 
@@ -85,12 +147,63 @@ nav a {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  border: 2px solid #12c2e9;
+  box-shadow: 5px 5px #c471ed;
+  background-color: rgba(255, 255, 255, 0.6);
+  border-radius: 15px;
+  padding: 1.5rem;
+}
+
+.DailyDiv {
+  font-family: Roboto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.alertDialog {
+  padding: 1.5rem;
 }
 
 .entryForm {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.greetingDiv {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.complimentDiv {
+  display: flex;
+  height: 50%;
+  font-size: 2rem;
+  padding: 1rem;
+  flex-direction: column;
+  background-color: rgba(255, 255, 255, 0.6);
+  border: 2px solid #12c2e9;
+  border-radius: 15px;
+  box-shadow: 5px 5px purple;
+}
+
+.complimentButton {
+  display: flex;
+  align-self: flex-end;
+  width: 30%;
+}
+
+.NavButtons {
+  display: flex;
+  flex-direction: column !important;
+  align-items: center;
+  justify-content: center;
+  color: white;
 }
 
 .goodnightDiv {
@@ -102,12 +215,15 @@ nav a {
 .goodnightQuote {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  width: 50%;
+  justify-content: center;
   text-align: center;
-  padding: 2rem;
-  border: 2px solid pink;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.6);
+  border: 2px solid #12c2e9;
+  box-shadow: 5px 5px purple;
   border-radius: 15px;
+  width: 50%;
+  padding: 2rem;
 }
 
 h4 {
@@ -124,6 +240,46 @@ h4 {
   justify-content: space-between;
 }
 
-/* .EditIcon {
-  padding-left: 1rem;
-} */
+.EditIcon {
+  padding-left: 5px;
+}
+
+.Mui-selected {
+  color: white;
+}
+
+.MuiBottomNavigation-root {
+  color: #84ffff;
+}
+
+.CalendarHeatmapDiv {
+  display: flex;
+  /* justify-content: center; */
+  flex-direction: column;
+  padding: 2rem;
+  height: 100vh;
+  width: 95vw;
+}
+.CalOverview {
+  /* width: 100vw; */
+  display: flex;
+  justify-content: center;
+  /* text-align: center; */
+}
+.DataOverview {
+  display: flex;
+  text-align: center;
+  /* align-items: center; */
+  flex-direction: column;
+  /* justify-content: center; */
+  border: 2px solid #12c2e9;
+  box-shadow: 5px 5px purple;
+  border-radius: 15px;
+  width: 60vw;
+  padding: 1rem;
+  background-color: rgba(255, 255, 255, 0.6);
+}
+
+.DataOverview h1 {
+  font-size: 2.5vw;
+}

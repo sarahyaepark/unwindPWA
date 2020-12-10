@@ -1,17 +1,26 @@
 import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-import {fetchGoals, me, updateGoal, getCurrentDate} from '../store'
+import {
+  fetchGoals,
+  me,
+  updateGoal,
+  getCurrentDate,
+  getCompliments
+} from '../store'
 import DailyEntry from './dailyEntry'
 import Goodnight from './goodnight'
 import EditableLabel from 'react-inline-editing'
 import EditIcon from '@material-ui/icons/Edit'
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
+import Tooltip from 'react-bootstrap/Tooltip'
+import Button from 'react-bootstrap/Button'
 
 /**
  * COMPONENT
  */
 export const UserHome = props => {
-  const {userId, firstName, goals} = props
+  const {userId, firstName, goals, compliment} = props
   const [loaded, loading] = useState(false)
   const [sortedGoals, setSortedGoals] = useState(false)
   const [goodnight, setGoodnight] = useState(false)
@@ -29,7 +38,10 @@ export const UserHome = props => {
   }, [])
   useEffect(
     () => {
-      if (loaded) props.fetchGoals(userId)
+      if (loaded) {
+        props.fetchGoals(userId)
+        props.getCompliments(userId)
+      }
     },
     [loaded]
   )
@@ -77,31 +89,58 @@ export const UserHome = props => {
     weekday[6] = 'Saturday'
     return weekday[d.getDay()]
   }
+  const renderTooltip = props => (
+    <Tooltip id="button-tooltip" {...props}>
+      <h5>Talk to yourself like you would to someone you love</h5>
+    </Tooltip>
+  )
+
   return (
     <div className="UserHomeDiv">
       {firstName !== null ? (
-        <div>
-          <h3>
-            {greeting()}, {firstName} ✨
-          </h3>
-          <h4>Happy {dayOfTheWeek()}!</h4>
+        <div className="greetingDiv">
+          <div>
+            <h3>
+              {greeting()}, {firstName} ✨
+            </h3>
+            <h4>Happy {dayOfTheWeek()}!</h4>
+          </div>
+          {compliment ? (
+            <div className="complimentDiv">
+              <h3>
+                From you to you on {compliment.date}: <br />
+                {compliment.compliment}
+              </h3>
+              <OverlayTrigger
+                placement="bottom"
+                delay={{show: 250, hide: 400}}
+                overlay={renderTooltip}
+              >
+                <Button variant="outline-info" className="complimentButton">
+                  Tip💗
+                </Button>
+              </OverlayTrigger>
+            </div>
+          ) : null}
         </div>
       ) : (
         <img src="https://hackernoon.com/images/0*4Gzjgh9Y7Gu8KEtZ.gif" />
       )}
+
       <br />
       {goodnight ? (
         <Goodnight />
       ) : (
-        <div className="GoalsListDiv">
-          <h3>🥰 Your Daily Self Care Goals 🥰</h3>
-          <br />
-          <div>
-            {sortedGoals ? (
-              sortedGoals.map(goal => {
-                return (
-                  <div key={goal.id} className="GoalsList">
-                    <div className="GoalCheck">
+        <div className="GoalDiv">
+          <div className="GoalsListDiv">
+            <h3>🥰 Your Daily Self Care Goals 🥰</h3>
+            <br />
+            <div className="GoalsList">
+              {sortedGoals ? (
+                sortedGoals.map(goal => {
+                  return (
+                    // <div key={goal.id} >
+                    <div key={goal.id} className="GoalCheck">
                       {!goal.completed ? (
                         <img
                           className="checkBox"
@@ -120,28 +159,33 @@ export const UserHome = props => {
                         />
                       )}
                       {/* <h2 className="goalDescription">{goal.description}</h2> */}
-                      <EditableLabel
-                        text={goal.description}
-                        labelClassName="goalDescription"
-                        inputWidth="200px"
-                        inputHeight="25px"
-                        labelFontSize="1.5rem"
-                        labelFontWeight="bold"
-                        inputFontWeight="bold"
-                        onFocus={handleFocus}
-                        onFocusOut={text => handleFocusOut(text, goal.id)}
-                      />
-                      <EditIcon className="EditIcon" />
-                    </div>
+                      <div className="editLabel">
+                        <EditableLabel
+                          text={goal.description}
+                          labelClassName="goalDescription"
+                          inputWidth="200px"
+                          inputHeight="25px"
+                          labelFontSize="1.5rem"
+                          inputFontSize="1.5rem"
+                          labelFontWeight="bold"
+                          // inputFontWeight="bold"
+                          onFocus={handleFocus}
+                          onFocusOut={text => handleFocusOut(text, goal.id)}
+                        />
+                        <EditIcon className="EditIcon" />
+                      </div>
 
-                    <br />
-                  </div>
-                )
-              })
-            ) : (
-              <img src="https://i.pinimg.com/originals/a4/f2/cb/a4f2cb80ff2ae2772e80bf30e9d78d4c.gif" />
-            )}
+                      <br />
+                    </div>
+                  )
+                })
+              ) : (
+                <img src="https://i.pinimg.com/originals/a4/f2/cb/a4f2cb80ff2ae2772e80bf30e9d78d4c.gif" />
+              )}
+            </div>
+            <br />
           </div>
+          <br />
           <br />
           <DailyEntry newDay={newDay} oldDate={currentDate} />
         </div>
@@ -158,7 +202,8 @@ const mapState = state => {
     firstName: state.user.firstName,
     user: state.user,
     userId: state.user.id,
-    goals: state.goals
+    goals: state.goals,
+    compliment: state.compliment
   }
 }
 
@@ -166,6 +211,7 @@ const mapDispatch = dispatch => {
   return {
     fetchGoals: userId => dispatch(fetchGoals(userId)),
     me: () => dispatch(me()),
+    getCompliments: userId => dispatch(getCompliments(userId)),
     updateGoal: (
       userId,
       goalId,

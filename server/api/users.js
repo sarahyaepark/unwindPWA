@@ -125,6 +125,25 @@ const queryType = new graphql.GraphQLObjectType({
         }
       }
     },
+    compliments: {
+      type: graphql.GraphQLList(dailyEntryType),
+      args: {
+        userId: {type: graphql.GraphQLID}
+      },
+      resolve: async (parent, args) => {
+        // code to get data from db
+        try {
+          const dailyEntries = await DailyEntry.findAll({
+            where: {
+              userId: args.userId
+            }
+          })
+          return dailyEntries
+        } catch (err) {
+          console.log(err)
+        }
+      }
+    },
     goal: {
       type: goalType,
       args: {
@@ -263,7 +282,6 @@ const mutationType = new graphql.GraphQLObjectType({
               }
             )
           }
-          console.log(updatedUser[1][0].dataValues)
           return updatedUser[1][0].dataValues
         } catch (err) {
           console.log(err)
@@ -316,7 +334,6 @@ const mutationType = new graphql.GraphQLObjectType({
               returning: true
             }
           )
-          console.log(updatedEntry)
           return updatedEntry[1][0].dataValues
           // write in an update for making goals active/inactive
         } catch (err) {
@@ -361,7 +378,6 @@ const mutationType = new graphql.GraphQLObjectType({
         try {
           let dateCompleted
           if (args.description) {
-            console.log('updating goal', args.description)
             let updatedGoal = await Goal.update(
               {
                 description: args.description
@@ -376,7 +392,6 @@ const mutationType = new graphql.GraphQLObjectType({
           if (args.completed) dateCompleted = Date.now()
           else dateCompleted = null
           let updatedGoal
-          console.log(args.active)
           if (args.active !== null) {
             updatedGoal = await Goal.update(
               {
@@ -412,7 +427,6 @@ const mutationType = new graphql.GraphQLObjectType({
             )
           }
 
-          console.log(updatedGoal)
           return updatedGoal[1][0].dataValues
           // write in an update for making goals active/inactive
         } catch (err) {

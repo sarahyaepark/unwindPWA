@@ -5,45 +5,6 @@ const GET_OVERVIEW = 'GET_OVERVIEW'
 
 const getOverview = overview => ({type: GET_OVERVIEW, overview})
 
-// example data format
-
-/*
-let data = [{
-    date,
-    details: [
-        {
-            date,
-            mood,
-            compliment,
-            journal
-            goals: [
-                {
-                    description,
-                    completed
-                }
-            ]
-        }
-    ],
-    {
-    date,
-    details: [
-        {
-            date,
-            mood,
-            compliment,
-            journal
-            goals: [
-                {
-                    description,
-                    completed
-                }
-            ]
-        }
-    ]
-},
-}]
-*/
-
 export const fetchOverview = userId => async dispatch => {
   try {
     let data = []

@@ -6,6 +6,7 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
+import {withStyles} from '@material-ui/core/styles'
 import {addEntry} from '../store'
 import history from '../history'
 
@@ -16,6 +17,22 @@ export function AlertDialog(props) {
   let compliment
   if (props.journal !== '') journal = props.journal
   if (props.compliment !== '') compliment = props.compliment
+
+  const StyledButton = withStyles({
+    root: {
+      background: 'linear-gradient(45deg, #7F7FD5 30%, #91EAE4 90%)',
+      borderRadius: 3,
+      border: 0,
+      color: 'white',
+      height: 48,
+      padding: '0 30px',
+      boxShadow: '0 3px 5px 2px rgba(145, 234, 228, .3)'
+    },
+    label: {
+      textTransform: 'capitalize'
+    }
+  })(Button)
+
   const handleClickOpen = () => {
     setOpen(true)
   }
@@ -25,10 +42,15 @@ export function AlertDialog(props) {
   }
 
   return (
-    <div>
-      <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+    <div className="alertDialog">
+      <StyledButton
+        size="large"
+        variant="outlined"
+        color="primary"
+        onClick={handleClickOpen}
+      >
         I'm done!
-      </Button>
+      </StyledButton>
       <Dialog
         open={open}
         onClose={handleClose}

@@ -1,9 +1,10 @@
 /* eslint-disable camelcase */
 /* eslint-disable max-statements */
 import * as React from 'react'
-
+import {setView} from '../store'
 import moment from 'moment'
 import * as d3 from 'd3'
+import {connect} from 'react-redux'
 
 import styles from '../../public/calendar-heatmap.css'
 
@@ -14,15 +15,17 @@ class CalendarHeatmap extends React.Component {
       gutter: 5,
       item_gutter: 1,
       width: 1000,
-      height: 200,
-      item_size: 10,
+      height: 1000,
+      item_size: 100,
       label_padding: 40,
       max_block_height: 20,
       transition_duration: 500,
       tooltip_width: 250,
       tooltip_padding: 15
     }
-
+    this.state = {
+      currentView: 'year'
+    }
     this.in_transition = false
     this.overview = this.props.overview
     this.history = ['global']
@@ -41,6 +44,7 @@ class CalendarHeatmap extends React.Component {
 
   componentDidUpdate() {
     this.parseData()
+
     this.drawChart()
   }
 
@@ -109,7 +113,6 @@ class CalendarHeatmap extends React.Component {
   }
 
   formatMood(moodNum) {
-    console.log(moodNum)
     if (moodNum === 10) return '😔'
     else if (moodNum === 25) return '😕'
     else if (moodNum === 50) return '😐'
@@ -126,7 +129,6 @@ class CalendarHeatmap extends React.Component {
     if (!this.props.data[0].summary) {
       this.props.data.map(d => {
         let summary = d.details[0]
-        console.log(summary)
         if (summary.mood === 0) summary.mood = 10
         let unsorted_summary = [
           {
@@ -146,17 +148,21 @@ class CalendarHeatmap extends React.Component {
   }
 
   drawChart() {
+    this.props.setView(this.overview)
     if (this.overview === 'global') {
+      window.sessionStorage.setItem('currentView', 'global')
       this.drawGlobalOverview()
     } else if (this.overview === 'year') {
+      window.sessionStorage.setItem('currentView', 'year')
       this.drawYearOverview()
     } else if (this.overview === 'month') {
+      window.sessionStorage.setItem('currentView', 'month')
       this.drawMonthOverview()
-    } else if (this.overview === 'week') {
-      this.drawWeekOverview()
-    } else if (this.overview === 'day') {
-      this.drawDayOverview()
     }
+    // else if (this.overview === 'week') {
+    //   window.sessionStorage.setItem('currentView', 'week')
+    //   this.drawWeekOverview()
+    // }
   }
 
   /**
@@ -180,15 +186,13 @@ class CalendarHeatmap extends React.Component {
       let date = moment(d)
       let getSummary = () => {
         let summary = this.props.data.reduce((summary, d) => {
-          console.log(summary)
-          return 100
+          return d.details[0].mood
         }, {})
         return summary
       }
       return {
         date: date,
         total: this.props.data.map(data => {
-          console.log(data)
           if (data.details.mood === 0) return 10
           return data.details.mood
         }),
@@ -198,7 +202,6 @@ class CalendarHeatmap extends React.Component {
 
     // Calculate max value of all the years in the dataset
     let max_value = d3.max(year_data, d => {
-      console.log(d)
       return d.total
     })
 
@@ -249,7 +252,7 @@ class CalendarHeatmap extends React.Component {
           .scaleLinear()
           .range(['#ffffff', this.props.color])
           .domain([-0.15 * max_value, max_value])
-        return color(d.total) || '#ff4500'
+        return '#7f47dd' || '#ff4500'
       })
       .on('click', d => {
         if (this.in_transition) {
@@ -281,7 +284,6 @@ class CalendarHeatmap extends React.Component {
 
         // Construct tooltip
         let tooltip_html = ''
-        // tooltip_html += '<div><span><strong>Total time tracked:</strong></span>'
 
         let sec = parseInt(d.total, 10)
         let days = Math.floor(sec / 86400)
@@ -477,7 +479,6 @@ class CalendarHeatmap extends React.Component {
    * Draw year overview
    */
   drawYearOverview() {
-    console.log('in year overview')
     // Add current overview to the history
     if (this.history[this.history.length - 1] !== this.overview) {
       this.history.push(this.overview)
@@ -486,7 +487,8 @@ class CalendarHeatmap extends React.Component {
     // Define start and end date of the selected year
     let start_of_year = moment(this.selected.date).startOf('year')
     let end_of_year = moment(this.selected.date).endOf('year')
-
+    let currentYear = start_of_year.toString().split(' ')[3]
+    window.sessionStorage.setItem('year', currentYear)
     // Filter data down to the selected year
     let year_data = this.props.data.filter(d => {
       return start_of_year <= moment(d.date) && moment(d.date) < end_of_year
@@ -494,7 +496,6 @@ class CalendarHeatmap extends React.Component {
 
     // Calculate max value of the year data
     let max_value = d3.max(year_data, d => d.total)
-    console.log('max', max_value)
     let color = d3
       .scaleLinear()
       .range(['#ffffff', this.props.color])
@@ -511,7 +512,6 @@ class CalendarHeatmap extends React.Component {
         this.settings.label_padding
       )
     }
-
     let calcItemY = d => {
       return (
         this.settings.label_padding +
@@ -521,7 +521,6 @@ class CalendarHeatmap extends React.Component {
     }
 
     let calcItemSize = d => {
-      console.log(d)
       // calculate number of completed goals
       let completedGoals = d.details[0].goals.filter(
         goal => goal.completed === true
@@ -531,7 +530,6 @@ class CalendarHeatmap extends React.Component {
       if (completedGoals.length === 1) goalSize = 45
       if (completedGoals.length === 2) goalSize = 80
       if (completedGoals.length === 3) goalSize = 125
-      console.log(max_value, goalSize, d.total)
       if (max_value <= 0) {
         return 10
       }
@@ -572,31 +570,31 @@ class CalendarHeatmap extends React.Component {
         if (d.total === 0) return color(10)
         return d.total > 0 ? color(d.total) : 'transparent'
       })
-      .on('click', d => {
-        if (this.in_transition) {
-          return
-        }
+      // .on('click', d => {
+      //   if (this.in_transition) {
+      //     return
+      //   }
 
-        // Don't transition if there is no data to show
-        if (d.total === 0) {
-          return
-        }
+      //   // Don't transition if there is no data to show
+      //   if (d.total === 0) {
+      //     return
+      //   }
 
-        this.in_transition = true
+      //   this.in_transition = true
 
-        // Set selected date to the one clicked on
-        this.selected = d
+      //   // Set selected date to the one clicked on
+      //   this.selected = d
 
-        // Hide tooltip
-        this.hideTooltip()
+      //   // Hide tooltip
+      //   this.hideTooltip()
 
-        // Remove all year overview related items and labels
-        this.removeYearOverview()
+      //   // Remove all year overview related items and labels
+      //   this.removeYearOverview()
 
-        // Redraw the chart
-        this.overview = 'day'
-        this.drawChart()
-      })
+      //   // Redraw the chart
+      //   this.overview = 'day'
+      //   this.drawChart()
+      // })
       .on('mouseover', d => {
         if (this.in_transition) {
           return
@@ -649,9 +647,9 @@ class CalendarHeatmap extends React.Component {
         // Construct tooltip
         let tooltip_html = ''
 
-        console.log(d)
         tooltip_html +=
           '<div>' + moment(d.date).format('dddd, MMM Do YYYY') + '</div><br>'
+        tooltip_html += '<div>' + this.formatMood(d.total) + '</div>'
 
         // Calculate tooltip position
         let x = calcItemX(d) + this.settings.item_size
@@ -668,6 +666,7 @@ class CalendarHeatmap extends React.Component {
           .html(tooltip_html)
           .style('left', x + 'px')
           .style('top', y + 'px')
+          .style('border-radius', '15px')
           .transition()
           .duration(this.settings.transition_duration / 2)
           .ease(d3.easeLinear)
@@ -889,7 +888,6 @@ class CalendarHeatmap extends React.Component {
    */
   drawMonthOverview() {
     // Add current overview to the history
-    console.log('in month overview')
     if (this.history[this.history.length - 1] !== this.overview) {
       this.history.push(this.overview)
     }
@@ -897,7 +895,22 @@ class CalendarHeatmap extends React.Component {
     // Define beginning and end of the month
     let start_of_month = moment(this.selected.date).startOf('month')
     let end_of_month = moment(this.selected.date).endOf('month')
-
+    let currentMonth = start_of_month.toString().split(' ')[1]
+    let monthMap = {
+      Jan: 'January',
+      Feb: 'February',
+      Mar: 'March',
+      Apr: 'April',
+      May: 'May',
+      Jun: 'June',
+      Jul: 'July',
+      Aug: 'August',
+      Sep: 'September',
+      Oct: 'October',
+      Nov: 'November',
+      Dec: 'December'
+    }
+    window.sessionStorage.setItem('month', monthMap[currentMonth])
     // Filter data down to the selected month
     let month_data = this.props.data.filter(d => {
       return start_of_month <= moment(d.date) && moment(d.date) < end_of_month
@@ -968,7 +981,6 @@ class CalendarHeatmap extends React.Component {
         )
       })
       .attr('total', d => {
-        console.log(d.total)
         if (d.total === 0) d.total = 10
         return d.total
       })
@@ -976,36 +988,35 @@ class CalendarHeatmap extends React.Component {
         return d.date
       })
       .attr('offset', 0)
-      .on('click', d => {
-        if (this.in_transition) {
-          return
-        }
+    // .on('click', d => {
+    //   if (this.in_transition) {
+    //     return
+    //   }
 
-        // Don't transition if there is no data to show
-        if (d.total === 0) {
-          return
-        }
+    //   // Don't transition if there is no data to show
+    //   if (d.total === 0) {
+    //     return
+    //   }
 
-        this.in_transition = true
+    //   this.in_transition = true
 
-        // Set selected date to the one clicked on
-        this.selected = d
+    //   // Set selected date to the one clicked on
+    //   this.selected = d
 
-        // Hide tooltip
-        this.hideTooltip()
+    //   // Hide tooltip
+    //   this.hideTooltip()
 
-        // Remove all month overview related items and labels
-        this.removeMonthOverview()
+    //   // Remove all month overview related items and labels
+    //   this.removeMonthOverview()
 
-        // Redraw the chart
-        this.overview = 'day'
-        this.drawChart()
-      })
+    //   // Redraw the chart
+    //   this.overview = 'day'
+    //   this.drawChart()
+    // })
     let item_width =
       (this.settings.width - this.settings.label_padding) / week_labels.length -
       this.settings.gutter * 5
     let itemScale = d3.scaleLinear().rangeRound([0, item_width])
-    console.log(item_block.data)
     let item_gutter = this.settings.item_gutter
     item_block
       .selectAll('.item-block-rect')
@@ -1022,7 +1033,6 @@ class CalendarHeatmap extends React.Component {
         return offset
       })
       .attr('width', function(d) {
-        console.log(d)
         let total = parseInt(d3.select(this.parentNode).attr('total'))
         itemScale.domain([0, total])
         // if (d.mood === 0) return Math.max(itemScale(10) - item_gutter, 1)
@@ -1047,23 +1057,13 @@ class CalendarHeatmap extends React.Component {
 
         // Get date from the parent node
         let parentNode = d3.select(d3.event.currentTarget.parentNode)
-        console.log(parentNode)
         let date = d.date
-        // console.log(date)
         // Construct tooltip
-        console.log(d)
         let formattedMood = this.formatMood(d.mood)
-        console.log(formattedMood)
         let tooltip_html = ''
         tooltip_html += `<div class="${
           styles.header
-        }"><h3>${formattedMood}</h3></div><br>`
-        // tooltip_html +=
-        //   '<div><strong>' +
-        //   (d.value ? this.formatTime(d.value) : 'No time') +
-        //   ' tracked</strong></div>'
-        // console.log(moment(date).utcformat('dddd, MMM Do YYYY'))
-        console.log(d.date)
+        }"><h3>${formattedMood}</h3></div>`
         tooltip_html +=
           '<div>' + moment(d.date).format('dddd, MMM Do YYYY') + '</div>'
         tooltip_html += `<div>journal: ${d.journal}</div>`
@@ -1181,39 +1181,39 @@ class CalendarHeatmap extends React.Component {
           .ease(d3.easeLinear)
           .style('opacity', 1)
       })
-      .on('click', d => {
-        if (this.in_transition) {
-          return
-        }
+    // .on('click', d => {
+    //   if (this.in_transition) {
+    //     return
+    //   }
 
-        // Check week data
-        let week_data = this.props.data.filter(e => {
-          return (
-            d.startOf('week') <= moment(e.date) &&
-            moment(e.date) < d.endOf('week')
-          )
-        })
+    //   // Check week data
+    //   let week_data = this.props.data.filter(e => {
+    //     return (
+    //       d.startOf('week') <= moment(e.date) &&
+    //       moment(e.date) < d.endOf('week')
+    //     )
+    //   })
 
-        // Don't transition if there is no data to show
-        if (!week_data.length) {
-          return
-        }
+    //   // Don't transition if there is no data to show
+    //   if (!week_data.length) {
+    //     return
+    //   }
 
-        this.in_transition = true
+    //   this.in_transition = true
 
-        // Set selected month to the one clicked on
-        this.selected = {date: d}
+    //   // Set selected month to the one clicked on
+    //   this.selected = {date: d}
 
-        // Hide tooltip
-        this.hideTooltip()
+    //   // Hide tooltip
+    //   this.hideTooltip()
 
-        // Remove all year overview related items and labels
-        this.removeMonthOverview()
+    //   // Remove all year overview related items and labels
+    //   this.removeMonthOverview()
 
-        // Redraw the chart
-        this.overview = 'week'
-        this.drawChart()
-      })
+    //   // Redraw the chart
+    //   this.overview = 'week'
+    //   this.drawChart()
+    // })
 
     // Add day labels
     this.labels.selectAll('.label-day').remove()
@@ -1271,592 +1271,599 @@ class CalendarHeatmap extends React.Component {
   /**
    * Draw week overview
    */
-  drawWeekOverview() {
-    console.log('in week overview')
-    // Add current overview to the history
-    if (this.history[this.history.length - 1] !== this.overview) {
-      this.history.push(this.overview)
-    }
+  // drawWeekOverview() {
+  //   console.log('in week overview')
+  //   // Add current overview to the history
+  //   if (this.history[this.history.length - 1] !== this.overview) {
+  //     this.history.push(this.overview)
+  //   }
 
-    // Define beginning and end of the week
-    let start_of_week = moment(this.selected.date).startOf('week')
-    let end_of_week = moment(this.selected.date).endOf('week')
+  //   // Define beginning and end of the week
+  //   let start_of_week = moment(this.selected.date).startOf('week')
+  //   let end_of_week = moment(this.selected.date).endOf('week')
 
-    // Filter data down to the selected week
-    let week_data = this.props.data.filter(d => {
-      return start_of_week <= moment(d.date) && moment(d.date) < end_of_week
-    })
-    let max_value = d3.max(week_data, d => {
-      return d3.max(d.summary, d => {
-        console.log(d)
-        return d.mood
-      })
-    })
-    // Define day labels and axis
-    let day_labels = d3.timeDays(
-      moment().startOf('week'),
-      moment().endOf('week')
-    )
+  //   // Filter data down to the selected week
+  //   let week_data = this.props.data.filter(d => {
+  //     return start_of_week <= moment(d.date) && moment(d.date) < end_of_week
+  //   })
+  //   let max_value = d3.max(week_data, d => {
+  //     return d3.max(d.summary, d => {
+  //       return d.mood
+  //     })
+  //   })
+  //   // Define day labels and axis
+  //   let day_labels = d3.timeDays(
+  //     moment().startOf('week'),
+  //     moment().endOf('week')
+  //   )
 
-    let dayScale = d3
-      .scaleBand()
-      .rangeRound([this.settings.label_padding, this.settings.height])
-      .domain(
-        day_labels.map(d => {
-          return moment(d).weekday()
-        })
-      )
-    // Define week labels and axis
-    let week_labels = [start_of_week]
+  //   let dayScale = d3
+  //     .scaleBand()
+  //     .rangeRound([this.settings.label_padding, this.settings.height])
+  //     .domain(
+  //       day_labels.map(d => {
+  //         return moment(d).weekday()
+  //       })
+  //     )
+  //   // Define week labels and axis
+  //   let week_labels = [start_of_week]
 
-    let weekScale = d3
-      .scaleBand()
-      .rangeRound([this.settings.label_padding, this.settings.width])
-      .padding([0.01])
-      .domain(
-        week_labels.map(weekday => {
-          return weekday.week()
-        })
-      )
-    // Add week data items to the overview
-    this.items.selectAll('.item-block-week').remove()
-    let item_block = this.items
-      .selectAll('.item-block-week')
-      .data(week_data)
-      .enter()
-      .append('g')
-      .attr('class', 'item item-block-week')
-      .style('cursor', 'pointer')
-      .attr('width', () => {
-        return (
-          (this.settings.width - this.settings.label_padding) /
-            week_labels.length -
-          this.settings.gutter * 5
-        )
-      })
-      .attr('height', () => {
-        return Math.min(dayScale.bandwidth(), this.settings.max_block_height)
-      })
-      .attr('transform', d => {
-        return (
-          'translate(' +
-          weekScale(moment(d.date).week()) +
-          ',' +
-          (dayScale(moment(d.date).weekday()) +
-            dayScale.bandwidth() / 1.75 -
-            15) +
-          ')'
-        )
-      })
-      .attr('total', d => {
-        return d.total
-      })
-      .attr('date', d => {
-        console.log(d.date)
-        return d.date
-      })
-      .attr('offset', 0)
-      .on('click', d => {
-        if (this.in_transition) {
-          return
-        }
-        // Don't transition if there is no data to show
-        if (d.total === 0) {
-          return
-        }
+  //   let weekScale = d3
+  //     .scaleBand()
+  //     .rangeRound([this.settings.label_padding, this.settings.width])
+  //     .padding([0.01])
+  //     .domain(
+  //       week_labels.map(weekday => {
+  //         return weekday.week()
+  //       })
+  //     )
+  //   // Add week data items to the overview
+  //   this.items.selectAll('.item-block-week').remove()
+  //   let item_block = this.items
+  //     .selectAll('.item-block-week')
+  //     .data(week_data)
+  //     .enter()
+  //     .append('g')
+  //     .attr('class', 'item item-block-week')
+  //     .style('cursor', 'pointer')
+  //     .attr('width', () => {
+  //       return (
+  //         (this.settings.width - this.settings.label_padding) /
+  //           week_labels.length -
+  //         this.settings.gutter * 5
+  //       )
+  //     })
+  //     .attr('height', () => {
+  //       return Math.min(dayScale.bandwidth(), this.settings.max_block_height)
+  //     })
+  //     .attr('transform', d => {
+  //       return (
+  //         'translate(' +
+  //         weekScale(moment(d.date).week()) +
+  //         ',' +
+  //         (dayScale(moment(d.date).weekday()) +
+  //           dayScale.bandwidth() / 1.75 -
+  //           15) +
+  //         ')'
+  //       )
+  //     })
+  //     .attr('total', d => {
+  //       return d.total
+  //     })
+  //     .attr('date', d => {
+  //       return d.date
+  //     })
+  //     .attr('offset', 0)
+  //   // .on('click', d => {
+  //   //   if (this.in_transition) {
+  //   //     return
+  //   //   }
+  //   //   // Don't transition if there is no data to show
+  //   //   if (d.total === 0) {
+  //   //     return
+  //   //   }
 
-        this.in_transition = true
+  //   //   this.in_transition = true
 
-        // Set selected date to the one clicked on
-        this.selected = d
+  //   //   // Set selected date to the one clicked on
+  //   //   this.selected = d
 
-        // Hide tooltip
-        this.hideTooltip()
+  //   //   // Hide tooltip
+  //   //   this.hideTooltip()
 
-        // Remove all week overview related items and labels
-        this.removeWeekOverview()
+  //   //   // Remove all week overview related items and labels
+  //   //   this.removeWeekOverview()
 
-        // Redraw the chart
-        this.overview = 'day'
-        this.drawChart()
-      })
-    let item_width =
-      (this.settings.width - this.settings.label_padding) / week_labels.length -
-      this.settings.gutter * 5
+  //   //   // Redraw the chart
+  //   //   this.overview = 'day'
+  //   //   this.drawChart()
+  //   // })
+  //   let item_width =
+  //     (this.settings.width - this.settings.label_padding) / week_labels.length -
+  //     this.settings.gutter * 5
 
-    let itemScale = d3.scaleLinear().rangeRound([0, item_width])
-    let item_gutter = this.settings.item_gutter
-    item_block
-      .selectAll('.item-block-rect')
-      .data(d => d.summary)
-      .enter()
-      .append('rect')
-      .attr('class', 'item item-block-rect')
-      .style('cursor', 'pointer')
-      .attr('x', function(d) {
-        let total = parseInt(d3.select(this.parentNode).attr('total'))
-        let offset = parseInt(d3.select(this.parentNode).attr('offset'))
-        itemScale.domain([0, total])
-        d3.select(this.parentNode).attr('offset', offset + itemScale(d.value))
-        return offset
-      })
-      .attr('width', function(d) {
-        let total = parseInt(d3.select(this.parentNode).attr('total'))
-        itemScale.domain([0, total])
-        return Math.max(itemScale(d.value) - item_gutter, 1)
-      })
-      .attr('height', () => {
-        return Math.min(dayScale.bandwidth(), this.settings.max_block_height)
-      })
-      .attr('fill', d => {
-        let color = d3
-          .scaleLinear()
-          .range(['#ffffff', this.props.color])
-          .domain([-0.15 * max_value, max_value])
-        return color(d.value) || '#ff4500'
-      })
-      .style('opacity', 0)
-      .on('mouseover', d => {
-        if (this.in_transition) {
-          return
-        }
+  //   let itemScale = d3.scaleLinear().rangeRound([0, item_width])
+  //   let item_gutter = this.settings.item_gutter
+  //   item_block
+  //     .selectAll('.item-block-rect')
+  //     .data(d => d.summary)
+  //     .enter()
+  //     .append('rect')
+  //     .attr('class', 'item item-block-rect')
+  //     .style('cursor', 'pointer')
+  //     .attr('x', function(d) {
+  //       let total = parseInt(d3.select(this.parentNode).attr('total'))
+  //       let offset = parseInt(d3.select(this.parentNode).attr('offset'))
+  //       itemScale.domain([0, total])
+  //       d3.select(this.parentNode).attr('offset', offset + itemScale(d.value))
+  //       return offset
+  //     })
+  //     .attr('width', function(d) {
+  //       let total = parseInt(d3.select(this.parentNode).attr('total'))
+  //       itemScale.domain([0, total])
+  //       return Math.max(itemScale(d.value) - item_gutter, 1)
+  //     })
+  //     .attr('height', () => {
+  //       return Math.min(dayScale.bandwidth(), this.settings.max_block_height)
+  //     })
+  //     .attr('fill', d => {
+  //       let color = d3
+  //         .scaleLinear()
+  //         .range(['#ffffff', this.props.color])
+  //         .domain([-0.15 * max_value, max_value])
+  //       return color(d.value) || '#ff4500'
+  //     })
+  //     .style('opacity', 0)
+  //     .on('mouseover', d => {
+  //       if (this.in_transition) {
+  //         return
+  //       }
 
-        // Get date from the parent node
-        let parentNode = d3.select(d3.event.currentTarget.parentNode)
-        let date = new Date(parentNode.attr('date'))
+  //       // Get date from the parent node
+  //       let parentNode = d3.select(d3.event.currentTarget.parentNode)
+  //       let date = new Date(parentNode.attr('date'))
 
-        // Construct tooltip
-        let tooltip_html = ''
-        tooltip_html += `<div class="${styles.header}"><strong>${
-          d.name
-        }</strong></div><br>`
-        // tooltip_html +=
-        //   '<div><strong>' +
-        //   (d.value ? this.formatTime(d.value) : 'No time') +
-        //   ' tracked</strong></div>'
-        tooltip_html +=
-          '<div>on ' + moment(date).format('dddd, MMM Do YYYY') + '</div>'
+  //       // Construct tooltip
+  //       let tooltip_html = ''
+  //       tooltip_html += `<div class="${styles.header}"><strong>${
+  //         d.name
+  //       }</strong></div><br>`
+  //       // tooltip_html +=
+  //       //   '<div><strong>' +
+  //       //   (d.value ? this.formatTime(d.value) : 'No time') +
+  //       //   ' tracked</strong></div>'
+  //       tooltip_html +=
+  //         '<div>on ' + moment(date).format('dddd, MMM Do YYYY') + '</div>'
 
-        // Calculate tooltip position
-        let total = parseInt(parentNode.attr('total'))
-        itemScale.domain([0, total])
-        let x =
-          parseInt(d3.select(d3.event.currentTarget).attr('x')) +
-          itemScale(d.value) / 4 +
-          this.settings.tooltip_width / 4
-        while (
-          this.settings.width - x <
-          this.settings.tooltip_width + this.settings.tooltip_padding * 3
-        ) {
-          x -= 10
-        }
-        let y =
-          dayScale(moment(date).weekday()) + this.settings.tooltip_padding * 1.5
+  //       // Calculate tooltip position
+  //       let total = parseInt(parentNode.attr('total'))
+  //       itemScale.domain([0, total])
+  //       let x =
+  //         parseInt(d3.select(d3.event.currentTarget).attr('x')) +
+  //         itemScale(d.value) / 4 +
+  //         this.settings.tooltip_width / 4
+  //       while (
+  //         this.settings.width - x <
+  //         this.settings.tooltip_width + this.settings.tooltip_padding * 3
+  //       ) {
+  //         x -= 10
+  //       }
+  //       let y =
+  //         dayScale(moment(date).weekday()) + this.settings.tooltip_padding * 1.5
 
-        // Show tooltip
-        this.tooltip
-          .html(tooltip_html)
-          .style('left', x + 'px')
-          .style('top', y + 'px')
-          .transition()
-          .duration(this.settings.transition_duration / 2)
-          .ease(d3.easeLinear)
-          .style('opacity', 1)
-      })
-      .on('mouseout', () => {
-        if (this.in_transition) {
-          return
-        }
-        this.hideTooltip()
-      })
-      .transition()
-      .delay(() => {
-        return (
-          (Math.cos(Math.PI * Math.random()) + 1) *
-          this.settings.transition_duration
-        )
-      })
-      .duration(() => {
-        return this.settings.transition_duration
-      })
-      .ease(d3.easeLinear)
-      .style('opacity', 1)
-      .call(
-        (transition, callback) => {
-          if (transition.empty()) {
-            callback()
-          }
-          let n = 0
-          transition.each(() => ++n).on('end', function() {
-            if (!--n) {
-              callback.apply(this, arguments)
-            }
-          })
-        },
-        () => {
-          this.in_transition = false
-        }
-      )
-    // Add week labels
-    this.labels.selectAll('.label-week').remove()
-    this.labels
-      .selectAll('.label-week')
-      .data(week_labels)
-      .enter()
-      .append('text')
-      .attr('class', 'label label-week')
-      .style('cursor', 'pointer')
-      .style('fill', 'rgb(170, 170, 170)')
-      .attr('font-size', () => {
-        return Math.floor(this.settings.label_padding / 3) + 'px'
-      })
-      .text(d => {
-        return 'Week ' + d.week()
-      })
-      .attr('x', d => {
-        return weekScale(d.week())
-      })
-      .attr('y', this.settings.label_padding / 2)
-      .on('mouseenter', weekday => {
-        if (this.in_transition) {
-          return
-        }
+  //       // Show tooltip
+  //       this.tooltip
+  //         .html(tooltip_html)
+  //         .style('left', x + 'px')
+  //         .style('top', y + 'px')
+  //         .transition()
+  //         .duration(this.settings.transition_duration / 2)
+  //         .ease(d3.easeLinear)
+  //         .style('opacity', 1)
+  //     })
+  //     .on('mouseout', () => {
+  //       if (this.in_transition) {
+  //         return
+  //       }
+  //       this.hideTooltip()
+  //     })
+  //     .transition()
+  //     .delay(() => {
+  //       return (
+  //         (Math.cos(Math.PI * Math.random()) + 1) *
+  //         this.settings.transition_duration
+  //       )
+  //     })
+  //     .duration(() => {
+  //       return this.settings.transition_duration
+  //     })
+  //     .ease(d3.easeLinear)
+  //     .style('opacity', 1)
+  //     .call(
+  //       (transition, callback) => {
+  //         if (transition.empty()) {
+  //           callback()
+  //         }
+  //         let n = 0
+  //         transition.each(() => ++n).on('end', function() {
+  //           if (!--n) {
+  //             callback.apply(this, arguments)
+  //           }
+  //         })
+  //       },
+  //       () => {
+  //         this.in_transition = false
+  //       }
+  //     )
+  //   // Add week labels
+  //   this.labels.selectAll('.label-week').remove()
+  //   this.labels
+  //     .selectAll('.label-week')
+  //     .data(week_labels)
+  //     .enter()
+  //     .append('text')
+  //     .attr('class', 'label label-week')
+  //     .style('cursor', 'pointer')
+  //     .style('fill', 'rgb(170, 170, 170)')
+  //     .attr('font-size', () => {
+  //       return Math.floor(this.settings.label_padding / 3) + 'px'
+  //     })
+  //     .text(d => {
+  //       return 'Week ' + d.week()
+  //     })
+  //     .attr('x', d => {
+  //       return weekScale(d.week())
+  //     })
+  //     .attr('y', this.settings.label_padding / 2)
+  //     .on('mouseenter', weekday => {
+  //       if (this.in_transition) {
+  //         return
+  //       }
 
-        this.items
-          .selectAll('.item-block-week')
-          .transition()
-          .duration(this.settings.transition_duration)
-          .ease(d3.easeLinear)
-          .style('opacity', d => {
-            return moment(d.date).week() === weekday.week() ? 1 : 0.1
-          })
-      })
-      .on('mouseout', () => {
-        if (this.in_transition) {
-          return
-        }
+  //       this.items
+  //         .selectAll('.item-block-week')
+  //         .transition()
+  //         .duration(this.settings.transition_duration)
+  //         .ease(d3.easeLinear)
+  //         .style('opacity', d => {
+  //           return moment(d.date).week() === weekday.week() ? 1 : 0.1
+  //         })
+  //     })
+  //     .on('mouseout', () => {
+  //       if (this.in_transition) {
+  //         return
+  //       }
 
-        this.items
-          .selectAll('.item-block-week')
-          .transition()
-          .duration(this.settings.transition_duration)
-          .ease(d3.easeLinear)
-          .style('opacity', 1)
-      })
+  //       this.items
+  //         .selectAll('.item-block-week')
+  //         .transition()
+  //         .duration(this.settings.transition_duration)
+  //         .ease(d3.easeLinear)
+  //         .style('opacity', 1)
+  //     })
 
-    // Add day labels
-    this.labels.selectAll('.label-day').remove()
-    this.labels
-      .selectAll('.label-day')
-      .data(day_labels)
-      .enter()
-      .append('text')
-      .attr('class', 'label label-day')
-      .style('cursor', 'pointer')
-      .style('fill', 'rgb(170, 170, 170)')
-      .attr('x', this.settings.label_padding / 3)
-      .attr('y', (d, i) => {
-        return dayScale(i) + dayScale.bandwidth() / 1.75
-      })
-      .style('text-anchor', 'left')
-      .attr('font-size', () => {
-        return Math.floor(this.settings.label_padding / 3) + 'px'
-      })
-      .text(d => {
-        return moment(d).format('dddd')[0]
-      })
-      .on('mouseenter', d => {
-        if (this.in_transition) {
-          return
-        }
+  //   // Add day labels
+  //   this.labels.selectAll('.label-day').remove()
+  //   this.labels
+  //     .selectAll('.label-day')
+  //     .data(day_labels)
+  //     .enter()
+  //     .append('text')
+  //     .attr('class', 'label label-day')
+  //     .style('cursor', 'pointer')
+  //     .style('fill', 'rgb(170, 170, 170)')
+  //     .attr('x', this.settings.label_padding / 3)
+  //     .attr('y', (d, i) => {
+  //       return dayScale(i) + dayScale.bandwidth() / 1.75
+  //     })
+  //     .style('text-anchor', 'left')
+  //     .attr('font-size', () => {
+  //       return Math.floor(this.settings.label_padding / 3) + 'px'
+  //     })
+  //     .text(d => {
+  //       return moment(d).format('dddd')[0]
+  //     })
+  //     .on('mouseenter', d => {
+  //       if (this.in_transition) {
+  //         return
+  //       }
 
-        let selected_day = moment(d)
-        this.items
-          .selectAll('.item-block-week')
-          .transition()
-          .duration(this.settings.transition_duration)
-          .ease(d3.easeLinear)
-          .style('opacity', d => {
-            return moment(d.date).day() === selected_day.day() ? 1 : 0.1
-          })
-      })
-      .on('mouseout', () => {
-        if (this.in_transition) {
-          return
-        }
+  //       let selected_day = moment(d)
+  //       this.items
+  //         .selectAll('.item-block-week')
+  //         .transition()
+  //         .duration(this.settings.transition_duration)
+  //         .ease(d3.easeLinear)
+  //         .style('opacity', d => {
+  //           return moment(d.date).day() === selected_day.day() ? 1 : 0.1
+  //         })
+  //     })
+  //     .on('mouseout', () => {
+  //       if (this.in_transition) {
+  //         return
+  //       }
 
-        this.items
-          .selectAll('.item-block-week')
-          .transition()
-          .duration(this.settings.transition_duration)
-          .ease(d3.easeLinear)
-          .style('opacity', 1)
-      })
+  //       this.items
+  //         .selectAll('.item-block-week')
+  //         .transition()
+  //         .duration(this.settings.transition_duration)
+  //         .ease(d3.easeLinear)
+  //         .style('opacity', 1)
+  //     })
 
-    // Add button to switch back to previous overview
-    this.drawButton()
-  }
+  //   // Add button to switch back to previous overview
+  //   this.drawButton()
+  // }
 
   /**
    * Draw day overview
    */
-  drawDayOverview() {
-    // Add current overview to the history
-    if (this.history[this.history.length - 1] !== this.overview) {
-      this.history.push(this.overview)
-    }
+  // drawDayOverview() {
+  //   // Add current overview to the history
+  //   if (this.history[this.history.length - 1] !== this.overview) {
+  //     this.history.push(this.overview)
+  //   }
 
-    // Initialize selected date to today if it was not set
-    if (!Object.keys(this.selected).length) {
-      this.selected = this.props.data[this.props.data.length - 1]
-    }
+  //   // Initialize selected date to today if it was not set
+  //   if (!Object.keys(this.selected).length) {
+  //     this.selected = this.props.data[this.props.data.length - 1]
+  //   }
 
-    let project_labels = this.selected.summary.map(project => {
-      return project.name
-    })
-    let projectScale = d3
-      .scaleBand()
-      .rangeRound([this.settings.label_padding, this.settings.height])
-      .domain(project_labels)
+  //   let project_labels = this.selected.summary.map(project => {
+  //     console.log(project)
+  //     return project.date
+  //   })
+  //   let projectScale = d3
+  //     .scaleBand()
+  //     .rangeRound([this.settings.label_padding, this.settings.height])
+  //     .domain(project_labels)
 
-    let itemScale = d3
-      .scaleTime()
-      .range([this.settings.label_padding * 2, this.settings.width])
-      .domain([
-        moment(this.selected.date).startOf('day'),
-        moment(this.selected.date).endOf('day')
-      ])
-    this.items.selectAll('.item-block').remove()
-    this.items
-      .selectAll('.item-block')
-      .data(this.selected.details)
-      .enter()
-      .append('rect')
-      .attr('class', 'item item-block')
-      .style('cursor', 'pointer')
-      .attr('x', d => {
-        return itemScale(moment(d.date))
-      })
-      .attr('y', d => {
-        return projectScale(d.name) + projectScale.bandwidth() / 2 - 15
-      })
-      .attr('width', d => {
-        let end = itemScale(d3.timeSecond.offset(moment(d.date), d.value))
-        return Math.max(end - itemScale(moment(d.date)), 1)
-      })
-      .attr('height', () => {
-        return Math.min(
-          projectScale.bandwidth(),
-          this.settings.max_block_height
-        )
-      })
-      .attr('fill', () => {
-        return this.props.color
-      })
-      .style('opacity', 0)
-      .on('mouseover', d => {
-        if (this.in_transition) {
-          return
-        }
+  //   let itemScale = d3
+  //     .scaleTime()
+  //     .range([this.settings.label_padding * 2, this.settings.width])
+  //     .domain([
+  //       moment(this.selected.date).startOf('day'),
+  //       moment(this.selected.date).endOf('day')
+  //     ])
+  //   this.items.selectAll('.item-block').remove()
+  //   this.items
+  //     .selectAll('.item-block')
+  //     .data(this.selected.details)
+  //     .enter()
+  //     .append('rect')
+  //     .attr('class', 'item item-block')
+  //     .style('cursor', 'pointer')
+  //     .attr('x', d => {
+  //       return itemScale(moment(d.date))
+  //     })
+  //     .attr('y', d => {
+  //       return projectScale(d.name) + projectScale.bandwidth() / 2 - 15
+  //     })
+  //     .attr('width', d => {
+  //       let end = itemScale(d3.timeSecond.offset(moment(d.date), d.value))
+  //       return Math.max(end - itemScale(moment(d.date)), 1)
+  //     })
+  //     .attr('height', () => {
+  //       return Math.min(
+  //         projectScale.bandwidth(),
+  //         this.settings.max_block_height
+  //       )
+  //     })
+  //     .attr('fill', () => {
+  //       return this.props.color
+  //     })
+  //     .style('opacity', 0)
+  //     .on('mouseover', d => {
+  //       if (this.in_transition) {
+  //         return
+  //       }
 
-        // Construct tooltip
-        let tooltip_html = ''
-        tooltip_html += `<div class="${styles.header}"><strong>${
-          d.name
-        }</strong><div><br>`
-        // tooltip_html +=
-        //   '<div><strong>' +
-        //   (d.value ? this.formatTime(d.value) : 'No time') +
-        //   ' tracked</strong></div>'
-        tooltip_html +=
-          '<div>on ' +
-          moment(d.date).format('dddd, MMM Do YYYY HH:mm') +
-          '</div>'
+  //       // Construct tooltip
+  //       let tooltip_html = ''
+  //       tooltip_html += `<div class="${styles.header}"><strong>${
+  //         d.name
+  //       }</strong><div><br>`
+  //       // tooltip_html +=
+  //       //   '<div><strong>' +
+  //       //   (d.value ? this.formatTime(d.value) : 'No time') +
+  //       //   ' tracked</strong></div>'
+  //       tooltip_html +=
+  //         '<div>on ' +
+  //         moment(d.date).format('dddd, MMM Do YYYY HH:mm') +
+  //         '</div>'
 
-        // Calculate tooltip position
-        let x = d.value * 100 / (60 * 60 * 24) + itemScale(moment(d.date))
-        while (
-          this.settings.width - x <
-          this.settings.tooltip_width + this.settings.tooltip_padding * 3
-        ) {
-          x -= 10
-        }
-        let y =
-          projectScale(d.name) +
-          projectScale.bandwidth() / 2 +
-          this.settings.tooltip_padding / 2
+  //       // Calculate tooltip position
+  //       let x = d.value * 100 / (60 * 60 * 24) + itemScale(moment(d.date))
+  //       while (
+  //         this.settings.width - x <
+  //         this.settings.tooltip_width + this.settings.tooltip_padding * 3
+  //       ) {
+  //         x -= 10
+  //       }
+  //       let y =
+  //         projectScale(d.name) +
+  //         projectScale.bandwidth() / 2 +
+  //         this.settings.tooltip_padding / 2
 
-        // Show tooltip
-        this.tooltip
-          .html(tooltip_html)
-          .style('left', x + 'px')
-          .style('top', y + 'px')
-          .transition()
-          .duration(this.settings.transition_duration / 2)
-          .ease(d3.easeLinear)
-          .style('opacity', 1)
-      })
-      .on('mouseout', () => {
-        if (this.in_transition) {
-          return
-        }
-        this.hideTooltip()
-      })
-      .on('click', d => {
-        if (!!this.props.handler && typeof this.props.handler == 'function') {
-          this.props.handler(d)
-        }
-      })
-      .transition()
-      .delay(() => {
-        return (
-          (Math.cos(Math.PI * Math.random()) + 1) *
-          this.settings.transition_duration
-        )
-      })
-      .duration(() => {
-        return this.settings.transition_duration
-      })
-      .ease(d3.easeLinear)
-      .style('opacity', 0.5)
-      .call(
-        (transition, callback) => {
-          if (transition.empty()) {
-            callback()
-          }
-          let n = 0
-          transition.each(() => ++n).on('end', function() {
-            if (!--n) {
-              callback.apply(this, arguments)
-            }
-          })
-        },
-        () => {
-          this.in_transition = false
-        }
-      )
+  //       // Show tooltip
+  //       this.tooltip
+  //         .html(tooltip_html)
+  //         .style('left', x + 'px')
+  //         .style('top', y + 'px')
+  //         .transition()
+  //         .duration(this.settings.transition_duration / 2)
+  //         .ease(d3.easeLinear)
+  //         .style('opacity', 1)
+  //     })
+  //     .on('mouseout', () => {
+  //       if (this.in_transition) {
+  //         return
+  //       }
+  //       this.hideTooltip()
+  //     })
+  //     .on('click', d => {
+  //       if (!!this.props.handler && typeof this.props.handler == 'function') {
+  //         this.props.handler(d)
+  //       }
+  //     })
+  //     .transition()
+  //     .delay(() => {
+  //       return (
+  //         (Math.cos(Math.PI * Math.random()) + 1) *
+  //         this.settings.transition_duration
+  //       )
+  //     })
+  //     .duration(() => {
+  //       return this.settings.transition_duration
+  //     })
+  //     .ease(d3.easeLinear)
+  //     .style('opacity', 0.5)
+  //     .call(
+  //       (transition, callback) => {
+  //         if (transition.empty()) {
+  //           callback()
+  //         }
+  //         let n = 0
+  //         transition.each(() => ++n).on('end', function() {
+  //           if (!--n) {
+  //             callback.apply(this, arguments)
+  //           }
+  //         })
+  //       },
+  //       () => {
+  //         this.in_transition = false
+  //       }
+  //     )
 
-    // Add time labels
-    let timeLabels = d3.timeHours(
-      moment(this.selected.date).startOf('day'),
-      moment(this.selected.date).endOf('day')
-    )
-    let timeScale = d3
-      .scaleTime()
-      .range([this.settings.label_padding * 2, this.settings.width])
-      .domain([0, timeLabels.length])
-    this.labels.selectAll('.label-time').remove()
-    this.labels
-      .selectAll('.label-time')
-      .data(timeLabels)
-      .enter()
-      .append('text')
-      .attr('class', 'label label-time')
-      .style('cursor', 'pointer')
-      .style('fill', 'rgb(170, 170, 170)')
-      .attr('font-size', () => {
-        return Math.floor(this.settings.label_padding / 3) + 'px'
-      })
-      .text(d => {
-        return moment(d).format('HH:mm')
-      })
-      .attr('x', (d, i) => {
-        return timeScale(i)
-      })
-      .attr('y', this.settings.label_padding / 2)
-      .on('mouseenter', d => {
-        if (this.in_transition) {
-          return
-        }
+  //   // Add time labels
+  //   // let timeLabels = d3.timeHours(
+  //   //   moment(this.selected.date).startOf('day'),
+  //   //   moment(this.selected.date).endOf('day')
+  //   // )
+  //   // let timeScale = d3
+  //   //   .scaleTime()
+  //   //   .range([this.settings.label_padding * 2, this.settings.width])
+  //   //   .domain([0, timeLabels.length])
+  //   // this.labels.selectAll('.label-time').remove()
+  //   // this.labels
+  //     // .selectAll('.label-time')
+  //     // .data(timeLabels)
+  //     // .enter()
+  //     // .append('text')
+  //     // .attr('class', 'label label-time')
+  //     // .style('cursor', 'pointer')
+  //     // .style('fill', 'rgb(170, 170, 170)')
+  //     // .attr('font-size', () => {
+  //     //   return Math.floor(this.settings.label_padding / 3) + 'px'
+  //     // })
+  //     // .text(d => {
+  //     //   return moment(d).format('HH:mm')
+  //     // })
+  //     // .attr('x', (d, i) => {
+  //     //   return timeScale(i)
+  //     // })
+  //     // .attr('y', this.settings.label_padding / 2)
+  //     // .on('mouseenter', d => {
+  //     //   if (this.in_transition) {
+  //     //     return
+  //     //   }
 
-        let selected = itemScale(moment(d))
-        this.items
-          .selectAll('.item-block')
-          .transition()
-          .duration(this.settings.transition_duration)
-          .ease(d3.easeLinear)
-          .style('opacity', d => {
-            let start = itemScale(moment(d.date))
-            let end = itemScale(moment(d.date).add(d.value, 'seconds'))
-            return selected >= start && selected <= end ? 1 : 0.1
-          })
-      })
-      .on('mouseout', () => {
-        if (this.in_transition) {
-          return
-        }
+  //     //   let selected = itemScale(moment(d))
+  //     //   this.items
+  //     //     .selectAll('.item-block')
+  //     //     .transition()
+  //     //     .duration(this.settings.transition_duration)
+  //     //     .ease(d3.easeLinear)
+  //     //     .style('opacity', d => {
+  //     //       let start = itemScale(moment(d.date))
+  //     //       let end = itemScale(moment(d.date).add(d.value, 'seconds'))
+  //     //       return selected >= start && selected <= end ? 1 : 0.1
+  //     //     })
+  //     // })
+  //     // .on('mouseout', () => {
+  //     //   if (this.in_transition) {
+  //     //     return
+  //     //   }
 
-        this.items
-          .selectAll('.item-block')
-          .transition()
-          .duration(this.settings.transition_duration)
-          .ease(d3.easeLinear)
-          .style('opacity', 0.5)
-      })
+  //       // this.items
+  //       //   .selectAll('.item-block')
+  //       //   .transition()
+  //       //   .duration(this.settings.transition_duration)
+  //       //   .ease(d3.easeLinear)
+  //       //   .style('opacity', 0.5)
+  //     // })
 
-    // Add project labels
-    let label_padding = this.settings.label_padding
-    this.labels.selectAll('.label-project').remove()
-    this.labels
-      .selectAll('.label-project')
-      .data(project_labels)
-      .enter()
-      .append('text')
-      .attr('class', 'label label-project')
-      .style('cursor', 'pointer')
-      .style('fill', 'rgb(170, 170, 170)')
-      .attr('x', this.settings.gutter)
-      .attr('y', d => {
-        return projectScale(d) + projectScale.bandwidth() / 2
-      })
-      .attr('min-height', () => {
-        return projectScale.bandwidth()
-      })
-      .style('text-anchor', 'left')
-      .attr('font-size', () => {
-        return Math.floor(this.settings.label_padding / 3) + 'px'
-      })
-      .text(d => d)
-      .each(function() {
-        let obj = d3.select(this),
-          text_length = obj.node().getComputedTextLength(),
-          text = obj.text()
-        while (text_length > label_padding * 1.5 && text.length > 0) {
-          text = text.slice(0, -1)
-          obj.text(text + '...')
-          text_length = obj.node().getComputedTextLength()
-        }
-      })
-      .on('mouseenter', project => {
-        if (this.in_transition) {
-          return
-        }
+  //   // Add project labels
+  //   // let label_padding = this.settings.label_padding
+  //   // this.labels.selectAll('.label-project').remove()
+  //   // this.labels
+  //   //   .selectAll('.label-project')
+  //   //   .data(project_labels)
+  //   //   .enter()
+  //   //   .append('text')
+  //   //   .attr('class', 'label label-project')
+  //   //   .style('cursor', 'pointer')
+  //   //   .style('fill', 'rgb(170, 170, 170)')
+  //   //   .attr('x', this.settings.gutter)
+  //   //   .attr('y', d => {
+  //   //     return projectScale(d) + projectScale.bandwidth() / 2
+  //   //   })
+  //   //   .attr('min-height', () => {
+  //   //     return projectScale.bandwidth()
+  //   //   })
+  //   //   .style('text-anchor', 'left')
+  //   //   .attr('font-size', () => {
+  //   //     return Math.floor(this.settings.label_padding / 3) + 'px'
+  //   //   })
+  //   //   .text(d => d)
+  //   //   .each(function() {
+  //   //     let obj = d3.select(this),
+  //   //       text_length = obj.node().getComputedTextLength(),
+  //   //       text = obj.text()
+  //   //     while (text_length > label_padding * 1.5 && text.length > 0) {
+  //   //       text = text.slice(0, -1)
+  //   //       obj.text(text + '...')
+  //   //       text_length = obj.node().getComputedTextLength()
+  //   //     }
+  //   //   })
+  //   //   .on('mouseenter', project => {
+  //   //     if (this.in_transition) {
+  //   //       return
+  //   //     }
 
-        this.items
-          .selectAll('.item-block')
-          .transition()
-          .duration(this.settings.transition_duration)
-          .ease(d3.easeLinear)
-          .style('opacity', d => {
-            return d.name === project ? 1 : 0.1
-          })
-      })
-      .on('mouseout', () => {
-        if (this.in_transition) {
-          return
-        }
+  //   //     this.items
+  //   //       .selectAll('.item-block')
+  //   //       .transition()
+  //   //       .duration(this.settings.transition_duration)
+  //   //       .ease(d3.easeLinear)
+  //   //       .style('opacity', d => {
+  //   //         return d.name === project ? 1 : 0.1
+  //   //       })
+  //   //   })
+  //   //   .on('mouseout', () => {
+  //   //     if (this.in_transition) {
+  //   //       return
+  //   //     }
 
-        this.items
-          .selectAll('.item-block')
-          .transition()
-          .duration(this.settings.transition_duration)
-          .ease(d3.easeLinear)
-          .style('opacity', 0.5)
-      })
+  //   //     this.items
+  //   //       .selectAll('.item-block')
+  //   //       .transition()
+  //   //       .duration(this.settings.transition_duration)
+  //   //       .ease(d3.easeLinear)
+  //   //       .style('opacity', 0.5)
+  //   //   })
 
-    // Add button to switch back to previous overview
-    this.drawButton()
-  }
+  //   // Add button to switch back to previous overview
+  //   this.drawButton()
+  // }
+
+  // drawDayOverview() {
+  //   if (this.history[this.history.length - 1] !== this.overview) {
+  //     this.history.push(this.overview)
+  //   }
+  //   this.in_transition = false
+  //   this.drawButton()
+  // }
 
   /**
    * Draw the button for navigation purposes
@@ -1884,11 +1891,13 @@ class CalendarHeatmap extends React.Component {
           this.removeYearOverview()
         } else if (this.overview === 'month') {
           this.removeMonthOverview()
-        } else if (this.overview === 'week') {
-          this.removeWeekOverview()
-        } else if (this.overview === 'day') {
-          this.removeDayOverview()
         }
+        // else if (this.overview === 'week') {
+        //   this.removeWeekOverview()
+        // }
+        // else if (this.overview === 'day') {
+        //   this.removeDayOverview()
+        // }
 
         // Redraw the chart
         this.history.pop()
@@ -1974,39 +1983,39 @@ class CalendarHeatmap extends React.Component {
   /**
    * Transition and remove items and labels related to week overview
    */
-  removeWeekOverview() {
-    this.items
-      .selectAll('.item-block-week')
-      .selectAll('.item-block-rect')
-      .transition()
-      .duration(this.settings.transition_duration)
-      .ease(d3.easeLinear)
-      .style('opacity', 0)
-      .attr('x', (d, i) => {
-        return i % 2 === 0 ? -this.settings.width / 3 : this.settings.width / 3
-      })
-      .remove()
-    this.labels.selectAll('.label-day').remove()
-    this.labels.selectAll('.label-week').remove()
-    this.hideBackButton()
-  }
+  // removeWeekOverview() {
+  //   this.items
+  //     .selectAll('.item-block-week')
+  //     .selectAll('.item-block-rect')
+  //     .transition()
+  //     .duration(this.settings.transition_duration)
+  //     .ease(d3.easeLinear)
+  //     .style('opacity', 0)
+  //     .attr('x', (d, i) => {
+  //       return i % 2 === 0 ? -this.settings.width / 3 : this.settings.width / 3
+  //     })
+  //     .remove()
+  //   this.labels.selectAll('.label-day').remove()
+  //   this.labels.selectAll('.label-week').remove()
+  //   this.hideBackButton()
+  // }
 
   /**
    * Transition and remove items and labels related to daily overview
    */
   removeDayOverview() {
-    this.items
-      .selectAll('.item-block')
-      .transition()
-      .duration(this.settings.transition_duration)
-      .ease(d3.easeLinear)
-      .style('opacity', 0)
-      .attr('x', (d, i) => {
-        return i % 2 === 0 ? -this.settings.width / 3 : this.settings.width / 3
-      })
-      .remove()
-    this.labels.selectAll('.label-time').remove()
-    this.labels.selectAll('.label-project').remove()
+    // this.items
+    //   .selectAll('.item-block')
+    //   .transition()
+    //   .duration(this.settings.transition_duration)
+    //   .ease(d3.easeLinear)
+    //   .style('opacity', 0)
+    //   .attr('x', (d, i) => {
+    //     return i % 2 === 0 ? -this.settings.width / 3 : this.settings.width / 3
+    //   })
+    //   .remove()
+    // this.labels.selectAll('.label-time').remove()
+    // this.labels.selectAll('.label-project').remove()
     this.hideBackButton()
   }
 
@@ -2074,4 +2083,16 @@ CalendarHeatmap.defaultProps = {
   handler: undefined
 }
 
-export default CalendarHeatmap
+const mapState = state => {
+  return {}
+}
+
+const mapDispatch = dispatch => {
+  return {
+    setView: overview => dispatch(setView(overview))
+  }
+}
+
+export default connect(mapState, mapDispatch)(CalendarHeatmap)
+
+// export default CalendarHeatmap

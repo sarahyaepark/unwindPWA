@@ -59,68 +59,70 @@ const AuthForm = props => {
   }
   return !goalForm ? (
     <div className="AuthDiv">
-      <h1>{displayName}</h1>
-      <Form className="AuthForm" onSubmit={signUpSubmit} name={name}>
-        {displayName === 'Sign Up' ? (
-          <Form.Group controlId="formBasicName">
-            <Form.Label>First Name</Form.Label>
+      <div className="FormDiv">
+        <h1>{displayName}</h1>
+        <Form className="AuthForm" onSubmit={signUpSubmit} name={name}>
+          {displayName === 'Sign Up' ? (
+            <Form.Group controlId="formBasicName">
+              <Form.Label>First Name</Form.Label>
+              <Form.Control
+                required
+                name="firstName"
+                placeholder="Preferred First Name"
+              />
+              <Form.Control.Feedback type="invalid">
+                Please provide a first name.
+              </Form.Control.Feedback>
+            </Form.Group>
+          ) : null}
+          <Form.Group controlId="formBasicEmail">
+            <Form.Label>Email address</Form.Label>
             <Form.Control
+              name="email"
+              placeholder="Enter email"
               required
-              name="firstName"
-              placeholder="Preferred First Name"
+              isInvalid={!!emailError}
             />
-            <Form.Control.Feedback type="invalid">
-              Please provide a first name.
+            <Form.Text className="text-muted">
+              We'll never share your email with anyone else.
+            </Form.Text>
+            <Form.Control.Feedback type="invalid" className="invalid-feedback">
+              {emailError}
             </Form.Control.Feedback>
           </Form.Group>
-        ) : null}
-        <Form.Group controlId="formBasicEmail">
-          <Form.Label>Email address</Form.Label>
-          <Form.Control
-            name="email"
-            placeholder="Enter email"
-            required
-            isInvalid={!!emailError}
-          />
-          <Form.Text className="text-muted">
-            We'll never share your email with anyone else.
-          </Form.Text>
-          <Form.Control.Feedback type="invalid" className="invalid-feedback">
-            {emailError}
-          </Form.Control.Feedback>
-        </Form.Group>
-        <Form.Group controlId="formBasicPassword">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            name="password"
-            placeholder="Password"
-            required
-            isInvalid={!!error}
-          />
-          <Form.Control.Feedback type="invalid" className="invalid-feedback">
-            {error}
-          </Form.Control.Feedback>
-        </Form.Group>
-        {displayName === 'Login' ? (
-          <Button variant="primary" type="submit">
-            Login
-          </Button>
-        ) : (
-          <Button variant="primary" type="submit">
-            Get Started!
-          </Button>
-        )}
-        <br />
-        <Form.Group controlId="formBasicCheckbox">
-          <Form.Check
-            type="checkbox"
-            checked={checked}
-            onChange={e => setChecked(e.currentTarget.checked)}
-            label="Remember me"
-          />
-        </Form.Group>
-      </Form>
+          <Form.Group controlId="formBasicPassword">
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              type="password"
+              name="password"
+              placeholder="Password"
+              required
+              isInvalid={!!error}
+            />
+            <Form.Control.Feedback type="invalid" className="invalid-feedback">
+              {error}
+            </Form.Control.Feedback>
+          </Form.Group>
+          {displayName === 'Login' ? (
+            <Button variant="primary" type="submit">
+              Login
+            </Button>
+          ) : (
+            <Button variant="primary" type="submit">
+              Get Started!
+            </Button>
+          )}
+          <br />
+          <Form.Group controlId="formBasicCheckbox">
+            <Form.Check
+              type="checkbox"
+              checked={checked}
+              onChange={e => setChecked(e.currentTarget.checked)}
+              label="Remember me"
+            />
+          </Form.Group>
+        </Form>
+      </div>
       {/* <a href="/auth/google">{displayName} with Google</a> */}
     </div>
   ) : (

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import {connect} from 'react-redux'
-import {me, auth, updateUserInfo} from '../store'
+import {me, auth, updateUserInfo, logout} from '../store'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import {ToastContainer, toast} from 'react-toastify'
@@ -73,59 +73,69 @@ export const AccountSettings = props => {
     }
   }
   return props.user ? (
-    <div className="AuthDiv">
-      <h3>Edit Account Information</h3>
-      <Form
-        className="AuthForm"
-        onSubmit={evt => handleSubmit(evt)}
-        name={name}
-      >
-        <h5>Update Name</h5>
-        <Form.Group controlId="formBasicName">
-          <Form.Label>First Name</Form.Label>
-          <Form.Control name="firstName" placeholder={props.user.firstName} />
-        </Form.Group>
-        <hr />
-        <h5>Update Password</h5>
-        <Form.Group controlId="formBasicPassword">
-          <Form.Label>Current Password</Form.Label>
-          <Form.Control
-            type="password"
-            name="oldPassword"
-            placeholder="Current Password"
-            isInvalid={!!infoError}
-          />
+    <div className="AccSettingsDiv">
+      <div className="AccSettings">
+        <h3>Edit Account Information</h3>
+        <br />
+        <Form
+          className="AuthForm"
+          onSubmit={evt => handleSubmit(evt)}
+          name={name}
+        >
+          <h5>Update Name</h5>
+          <Form.Group controlId="formBasicName">
+            <Form.Label>First Name</Form.Label>
+            <Form.Control name="firstName" placeholder={props.user.firstName} />
+          </Form.Group>
+          <hr />
+          <h5>Update Password</h5>
+          <Form.Group controlId="formBasicPassword">
+            <Form.Label>Current Password</Form.Label>
+            <Form.Control
+              type="password"
+              name="oldPassword"
+              placeholder="Current Password"
+              isInvalid={!!infoError}
+            />
+            <Form.Control.Feedback type="invalid" className="invalid-feedback">
+              {infoError}
+            </Form.Control.Feedback>
+          </Form.Group>
+          <Form.Group controlId="formBasicNewPassword">
+            <Form.Label>New Password</Form.Label>
+            <Form.Control
+              type="password"
+              name="newPassword"
+              placeholder="New Password"
+              onChange={e => setPass(e.target.value)}
+            />
+          </Form.Group>
+          <Form.Group controlId="formBasicConfirmPassword">
+            <Form.Label>Confirm New Password</Form.Label>
+            <Form.Control
+              type="password"
+              name="confirmPassword"
+              placeholder="Confirm New Password"
+              onChange={evt => handleChange(evt)}
+              isInvalid={!!error}
+            />
+          </Form.Group>
           <Form.Control.Feedback type="invalid" className="invalid-feedback">
-            {infoError}
+            {error}
           </Form.Control.Feedback>
-        </Form.Group>
-        <Form.Group controlId="formBasicNewPassword">
-          <Form.Label>New Password</Form.Label>
-          <Form.Control
-            type="password"
-            name="newPassword"
-            placeholder="New Password"
-            onChange={e => setPass(e.target.value)}
-          />
-        </Form.Group>
-        <Form.Group controlId="formBasicConfirmPassword">
-          <Form.Label>Confirm New Password</Form.Label>
-          <Form.Control
-            type="password"
-            name="confirmPassword"
-            placeholder="Confirm New Password"
-            onChange={evt => handleChange(evt)}
-            isInvalid={!!error}
-          />
-        </Form.Group>
-        <Form.Control.Feedback type="invalid" className="invalid-feedback">
-          {error}
-        </Form.Control.Feedback>
-        <Button variant="primary" type="submit">
-          Update Information
-        </Button>
-        <ToastContainer />
-      </Form>
+          <Button variant="primary" type="submit">
+            Update Information
+          </Button>
+          <ToastContainer />
+        </Form>
+      </div>
+      <br />
+      <Button variant="outline-danger" onClick={props.logout}>
+        Log Out
+      </Button>
+      <br />
+      <br />
+      <br />
     </div>
   ) : (
     <img src="https://i.pinimg.com/originals/a4/f2/cb/a4f2cb80ff2ae2772e80bf30e9d78d4c.gif" />
@@ -144,6 +154,7 @@ const mapState = state => {
 const mapDispatch = dispatch => {
   return {
     me: () => dispatch(me()),
+    logout: () => dispatch(logout()),
     auth: (email, password, login) => dispatch(auth(email, password, login)),
     updateUserInfo: (id, firstName, password, oldPassword) =>
       dispatch(updateUserInfo(id, firstName, password, oldPassword))

@@ -5,10 +5,9 @@ import Routes from './routes'
 
 const App = () => {
   return (
-    <div>
+    <div className="App">
       <Navbar />
       <Routes />
-      <BottomNav />
     </div>
   )
 }
