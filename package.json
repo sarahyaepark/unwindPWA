@@ -51,6 +51,7 @@
     "d3": "^4.11.0",
     "express": "^4.16.4",
     "express-graphql": "^0.11.0",
+    "express-ipfilter": "^1.1.2",
     "express-session": "^1.17.1",
     "graphiql": "^1.0.6",
     "graphql": "^15.4.0",
