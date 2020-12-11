@@ -3,13 +3,9 @@ const pkg = require('../../package.json')
 
 const databaseName = pkg.name + (process.env.NODE_ENV === 'test' ? '-test' : '')
 
-const db = new Sequelize(
-  'db-postgresql-sfo2-12541-do-user-8423247-0.b.db.ondigitalocean.com?ssl=true:25060' ||
-    `postgres://localhost:5432/${databaseName}`,
-  {
-    logging: false
-  }
-)
+const db = new Sequelize(process.env.DATABASE_URL, {
+  logging: false
+})
 module.exports = db
 
 // This is a global Mocha hook used for resource cleanup.
