@@ -12,10 +12,10 @@ const app = express()
 const schema = require('./api/users')
 const {graphqlHTTP} = require('express-graphql')
 const socketio = require('socket.io')
-const ipfilter = require('express-ipfilter').IpFilter
+// const ipfilter = require('express-ipfilter').IpFilter
 module.exports = app
 
-const ips = ['127.0.0.1', '198.199.123.176', '198.211.116.215']
+// const ips = ['127.0.0.1', '198.199.123.176', '198.211.116.215']
 
 // This is a global Mocha hook, used for resource cleanup.
 // Otherwise, Mocha v4+ never quits after tests.
@@ -32,6 +32,14 @@ if (process.env.NODE_ENV === 'test') {
  * Node process on process.env
  */
 if (process.env.NODE_ENV !== 'production') require('../secrets')
+
+if (process.env.NODE_ENV === 'production') {
+  app.use((req, res, next) => {
+    if (req.header('x-forwarded-proto') !== 'https')
+      res.redirect(`https://${req.header('host')}${req.url}`)
+    else next()
+  })
+}
 
 // passport registration
 passport.serializeUser((user, done) => done(null, user.id))
