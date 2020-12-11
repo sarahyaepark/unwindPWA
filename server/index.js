@@ -12,7 +12,10 @@ const app = express()
 const schema = require('./api/users')
 const {graphqlHTTP} = require('express-graphql')
 const socketio = require('socket.io')
+const ipfilter = require('express-ipfilter').IpFilter
 module.exports = app
+
+const ips = ['127.0.0.1', '198.199.123.176']
 
 // This is a global Mocha hook, used for resource cleanup.
 // Otherwise, Mocha v4+ never quits after tests.
@@ -62,6 +65,9 @@ const createApp = () => {
       saveUninitialized: false
     })
   )
+
+  app.use(ipfilter(ips, {mode: 'allow'}))
+
   app.use(passport.initialize())
   app.use(passport.session())
 
