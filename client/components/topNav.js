@@ -10,6 +10,7 @@ import CreateOutlinedIcon from '@material-ui/icons/CreateOutlined'
 import CalendarTodayOutlinedIcon from '@material-ui/icons/CalendarTodayOutlined'
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined'
 import ExitToAppIcon from '@material-ui/icons/ExitToApp'
+import GitHubIcon from '@material-ui/icons/GitHub'
 
 // const navTheme = createMuiTheme({
 //   navTheme: {
@@ -60,6 +61,16 @@ export function ButtonAppBar(props) {
           <Button color="inherit" className="NavButtons" onClick={props.logout}>
             <ExitToAppIcon style={{color: 'white'}} />
           </Button>
+          <Button
+            color="inherit"
+            className="NavButtons"
+            onClick={e => {
+              e.preventDefault()
+              window.location.href = 'https://github.com/sarahyaepark/unwindPWA'
+            }}
+          >
+            <GitHubIcon style={{color: 'white'}} />
+          </Button>
         </Toolbar>
       </AppBar>
     </div>
@@ -76,6 +87,16 @@ export function ButtonAppBar(props) {
           <Link to="/signup">
             <Button className="NavButtons">Sign Up</Button>
           </Link>
+          <Button
+            color="inherit"
+            className="NavButtons"
+            onClick={e => {
+              e.preventDefault()
+              window.location.href = 'https://github.com/sarahyaepark/unwindPWA'
+            }}
+          >
+            <GitHubIcon style={{color: 'white'}} />
+          </Button>
         </Toolbar>
       </AppBar>
     </div>
