@@ -4,9 +4,9 @@ const pkg = require('../../package.json')
 const databaseName = pkg.name + (process.env.NODE_ENV === 'test' ? '-test' : '')
 
 const db = new Sequelize(
-  process.env.DATABASE_URL || `postgres://localhost:5432/${databaseName}`,
+  'db-postgresql-sfo2-12541-do-user-8423247-0.b.db.ondigitalocean.com?ssl=true:25060' ||
+    `postgres://localhost:5432/${databaseName}`,
   {
-    ssl: true,
     logging: false
   }
 )
