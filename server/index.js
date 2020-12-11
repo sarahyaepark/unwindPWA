@@ -74,7 +74,7 @@ const createApp = () => {
     })
   )
 
-  app.use(ipfilter(ips, {mode: 'allow'}))
+  // app.use(ipfilter(ips, {mode: 'allow'}))
 
   app.use(passport.initialize())
   app.use(passport.session())
