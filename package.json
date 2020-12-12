@@ -7,7 +7,6 @@
   },
   "main": "index.js",
   "scripts": {
-    "build": "webpack --config webpack.config.js",
     "build-client": "webpack",
     "build-client-watch": "webpack -w",
     "deploy": "script/deploy",
