@@ -15,8 +15,6 @@ const socketio = require('socket.io')
 // const ipfilter = require('express-ipfilter').IpFilter
 module.exports = app
 
-// const ips = ['127.0.0.1', '198.199.123.176', '198.211.116.215']
-
 // This is a global Mocha hook, used for resource cleanup.
 // Otherwise, Mocha v4+ never quits after tests.
 if (process.env.NODE_ENV === 'test') {
