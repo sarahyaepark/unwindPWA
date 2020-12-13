@@ -105,7 +105,7 @@ export const UserHome = props => {
             </h3>
             <h4>Happy {dayOfTheWeek()}!</h4>
           </div>
-          {compliment ? (
+          {compliment.date ? (
             <div className="complimentDiv">
               <h3>
                 From you to you on {compliment.date}: <br />
@@ -121,7 +121,20 @@ export const UserHome = props => {
                 </Button>
               </OverlayTrigger>
             </div>
-          ) : null}
+          ) : (
+            <div className="complimentDiv">
+              <h3>Give yourself a compliment!</h3>
+              <OverlayTrigger
+                placement="bottom"
+                delay={{show: 250, hide: 400}}
+                overlay={renderTooltip}
+              >
+                <Button variant="outline-info" className="complimentButton">
+                  Tip💗
+                </Button>
+              </OverlayTrigger>
+            </div>
+          )}
         </div>
       ) : (
         <img src="https://hackernoon.com/images/0*4Gzjgh9Y7Gu8KEtZ.gif" />
