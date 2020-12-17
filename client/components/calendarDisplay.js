@@ -24,7 +24,7 @@ export const CalendarView = props => {
     () => {
       setData(window.sessionStorage.getItem(currentView))
     },
-    [currentView]
+    [window.sessionStorage.getItem(currentView)]
   )
 
   const findYearData = () => {
@@ -79,6 +79,7 @@ export const CalendarView = props => {
     else return null
     return finalData.length
   }
+  console.log(dateData)
 
   return overview.length > 0 ? (
     <div className="CalendarHeatmapDiv">
@@ -88,7 +89,7 @@ export const CalendarView = props => {
       <br />
       {currentView !== '' ? (
         <div className="CalOverview">
-          {currentView === 'year' || currentView === 'month' ? (
+          {dateData !== '' && dateData !== null ? (
             <div className="DataOverview">
               <h1>
                 In {dateData}, you checked in to Unwind {findFreqData()} times!

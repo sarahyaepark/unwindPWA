@@ -291,7 +291,6 @@ const mutationType = new graphql.GraphQLObjectType({
     addDailyEntry: {
       type: dailyEntryType,
       args: {
-        date: Date.now(),
         journal: {type: graphql.GraphQLString},
         compliment: {type: graphql.GraphQLString},
         mood: {type: graphql.GraphQLInt},
@@ -300,6 +299,7 @@ const mutationType = new graphql.GraphQLObjectType({
       async resolve(parent, args) {
         try {
           let dailyEntry = new DailyEntry({
+            date: Date.now(),
             userId: args.userId,
             journal: args.journal,
             compliment: args.compliment,
