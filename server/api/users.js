@@ -381,6 +381,7 @@ const mutationType = new graphql.GraphQLObjectType({
           if (args.description) {
             let updatedGoal = await Goal.update(
               {
+                dateCreated: Date.now(),
                 description: args.description
               },
               {
@@ -396,6 +397,7 @@ const mutationType = new graphql.GraphQLObjectType({
           if (args.active !== null) {
             updatedGoal = await Goal.update(
               {
+                dateCreated: Date.now(),
                 active: args.active
               },
               {
@@ -418,6 +420,7 @@ const mutationType = new graphql.GraphQLObjectType({
           if (args.completed !== null) {
             updatedGoal = await Goal.update(
               {
+                dateCreated: Date.now(),
                 completed: args.completed,
                 dateCompleted: dateCompleted
               },
