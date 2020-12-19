@@ -41,6 +41,16 @@ const userType = new graphql.GraphQLObjectType({
   }
 })
 
+const getCurrentDate = () => {
+  let date = new Date()
+  let day = date.getDate()
+  if (day.toString().length === 1) day = '0' + day
+  let month = date.getMonth() + 1
+  if (month.toString().length === 1) month = '0' + month
+  let year = date.getFullYear()
+  return year + '-' + month + '-' + day
+}
+
 const queryType = new graphql.GraphQLObjectType({
   name: 'Query',
   fields: {
@@ -172,7 +182,7 @@ const queryType = new graphql.GraphQLObjectType({
         try {
           let goals = await Goal.findAll({
             where: {
-              dateCreated: Date.now(),
+              dateCreated: getCurrentDate(),
               userId: args.userId,
               active: true
             }
@@ -299,7 +309,7 @@ const mutationType = new graphql.GraphQLObjectType({
       async resolve(parent, args) {
         try {
           let dailyEntry = new DailyEntry({
-            date: Date.now(),
+            date: getCurrentDate(),
             userId: args.userId,
             journal: args.journal,
             compliment: args.compliment,
@@ -352,7 +362,7 @@ const mutationType = new graphql.GraphQLObjectType({
       async resolve(parent, args) {
         try {
           let goal = new Goal({
-            dateCreated: Date.now(),
+            dateCreated: getCurrentDate(),
             userId: args.userId,
             dailyEntryId: args.dailyEntryId,
             description: args.description
@@ -381,7 +391,7 @@ const mutationType = new graphql.GraphQLObjectType({
           if (args.description) {
             let updatedGoal = await Goal.update(
               {
-                dateCreated: Date.now(),
+                dateCreated: getCurrentDate(),
                 description: args.description
               },
               {
@@ -391,13 +401,13 @@ const mutationType = new graphql.GraphQLObjectType({
             )
             return updatedGoal[1][0].dataValues
           }
-          if (args.completed) dateCompleted = Date.now()
+          if (args.completed) dateCompleted = getCurrentDate()
           else dateCompleted = null
           let updatedGoal
           if (args.active !== null) {
             updatedGoal = await Goal.update(
               {
-                dateCreated: Date.now(),
+                dateCreated: getCurrentDate(),
                 active: args.active
               },
               {
@@ -420,7 +430,7 @@ const mutationType = new graphql.GraphQLObjectType({
           if (args.completed !== null) {
             updatedGoal = await Goal.update(
               {
-                dateCreated: Date.now(),
+                dateCreated: getCurrentDate(),
                 completed: args.completed,
                 dateCompleted: dateCompleted
               },
