@@ -23,6 +23,7 @@ export const fetchGoals = userId => async dispatch => {
       query: `{activeGoals(userId:${userId}),{description,id,completed,dateCreated,dailyEntryId}}`
     })
     res.data.data.activeGoals.map(goal => {
+      console.log('checking the date creation>>>>', goal, getCurrentDate())
       if (goal.dateCreated !== getCurrentDate()) {
         updated = true
         dispatch(addGoal(userId, goal.description))
