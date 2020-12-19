@@ -6,9 +6,15 @@ const GET_ENTRY = 'GET_ENTRY'
 // const REMOVE_USER = 'REMOVE_USER'
 
 const getEntry = entry => ({type: GET_ENTRY, entry})
-/**
- * THUNK CREATORS
- */
+
+export const getCurrentDate = () => {
+  let date = new Date()
+  let day = date.getDate()
+  if (day.toString().length === 1) day = '0' + day
+  let month = date.getMonth() + 1
+  let year = date.getFullYear()
+  return year + '-' + month + '-' + day
+}
 
 export const addEntry = (
   userId,
@@ -84,7 +90,7 @@ export const updateEntry = (
   let res
   try {
     res = await axios.post(`/api`, {
-      query: `mutation{updateEntry(userId:${userId}, date:"${Date.now()}, mood:"${mood}", journal:"${journal}",compliment:"${compliment}"),{id,userId,mood,journal,date,compliment}}`
+      query: `mutation{updateEntry(userId:${userId}, date:"${getCurrentDate()}, mood:"${mood}", journal:"${journal}",compliment:"${compliment}"),{id,userId,mood,journal,date,compliment}}`
     })
   } catch (authError) {
     return dispatch(getEntry({error: authError}))
