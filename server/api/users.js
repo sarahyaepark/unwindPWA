@@ -188,6 +188,7 @@ const queryType = new graphql.GraphQLObjectType({
               active: true
             }
           })
+          console.log('original search for active goals with same date:', goals)
           if (goals.length === 0) {
             goals = await Goal.findAll({
               where: {
@@ -195,6 +196,7 @@ const queryType = new graphql.GraphQLObjectType({
                 active: true
               }
             })
+            console.log('second search for active goals with any date:', goals)
           }
 
           return goals
