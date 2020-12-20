@@ -181,7 +181,6 @@ const queryType = new graphql.GraphQLObjectType({
       resolve: async (parent, args) => {
         // code to get data from db
         try {
-          console.log('time in the active goal--->', args.dateCreated)
           let goals = await Goal.findAll({
             where: {
               dateCreated: args.dateCreated,
@@ -311,7 +310,6 @@ const mutationType = new graphql.GraphQLObjectType({
       },
       async resolve(parent, args) {
         try {
-          console.log('time in the daily entry creation--->', args.dateCreated)
           let dailyEntry = new DailyEntry({
             date: args.dateCreated,
             userId: args.userId,
@@ -366,7 +364,6 @@ const mutationType = new graphql.GraphQLObjectType({
       },
       async resolve(parent, args) {
         try {
-          console.log('time in the user goal creation--->', args.dateCreated)
           let goal = new Goal({
             dateCreated: args.dateCreated,
             userId: args.userId,
@@ -395,7 +392,6 @@ const mutationType = new graphql.GraphQLObjectType({
       async resolve(parent, args) {
         try {
           // let dateCompleted
-          console.log('time in the update goal--->', args.dateCreated)
           if (args.description) {
             let updatedGoal = await Goal.update(
               {

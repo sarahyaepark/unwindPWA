@@ -72,7 +72,7 @@ export const UserHome = props => {
 
   const greeting = () => {
     if (goodnight) {
-      return 'Goodnight'
+      return 'See you tomorrow'
     } else {
       return 'Time to check in'
     }

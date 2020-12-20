@@ -79,7 +79,6 @@ export const CalendarView = props => {
     else return null
     return finalData.length
   }
-  console.log(dateData)
 
   return overview.length > 0 ? (
     <div className="CalendarHeatmapDiv">
