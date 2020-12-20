@@ -370,7 +370,9 @@ const mutationType = new graphql.GraphQLObjectType({
             dailyEntryId: args.dailyEntryId,
             description: args.description
           })
+          console.log('before creating goal in api call:', goal)
           const createdGoal = await Goal.create(goal.dataValues)
+          console.log('addgoal api call:', createdGoal)
           return createdGoal
         } catch (err) {
           console.log(err)
