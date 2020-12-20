@@ -175,20 +175,20 @@ const queryType = new graphql.GraphQLObjectType({
       type: graphql.GraphQLList(goalType),
       args: {
         userId: {type: graphql.GraphQLID},
-        dailyEntryId: {type: graphql.GraphQLID}
+        dailyEntryId: {type: graphql.GraphQLID},
+        dateCreated: {type: graphql.GraphQLString}
       },
       resolve: async (parent, args) => {
         // code to get data from db
         try {
-          console.log('time in the active goal--->', getCurrentDate())
+          console.log('time in the active goal--->', args.dateCreated)
           let goals = await Goal.findAll({
             where: {
-              dateCreated: getCurrentDate(),
+              dateCreated: args.dateCreated,
               userId: args.userId,
               active: true
             }
           })
-          console.log('original search for active goals with same date:', goals)
           if (goals.length === 0) {
             goals = await Goal.findAll({
               where: {
@@ -196,7 +196,6 @@ const queryType = new graphql.GraphQLObjectType({
                 active: true
               }
             })
-            console.log('second search for active goals with any date:', goals)
           }
 
           return goals
@@ -307,13 +306,14 @@ const mutationType = new graphql.GraphQLObjectType({
         journal: {type: graphql.GraphQLString},
         compliment: {type: graphql.GraphQLString},
         mood: {type: graphql.GraphQLInt},
-        userId: {type: graphql.GraphQLID}
+        userId: {type: graphql.GraphQLID},
+        dateCreated: {type: graphql.GraphQLString}
       },
       async resolve(parent, args) {
         try {
-          console.log('time in the daily entry creation--->', getCurrentDate())
+          console.log('time in the daily entry creation--->', args.dateCreated)
           let dailyEntry = new DailyEntry({
-            date: getCurrentDate(),
+            date: args.dateCreated,
             userId: args.userId,
             journal: args.journal,
             compliment: args.compliment,
@@ -361,20 +361,19 @@ const mutationType = new graphql.GraphQLObjectType({
       args: {
         userId: {type: graphql.GraphQLID},
         dailyEntryId: {type: graphql.GraphQLID},
-        description: {type: graphql.GraphQLString}
+        description: {type: graphql.GraphQLString},
+        dateCreated: {type: graphql.GraphQLString}
       },
       async resolve(parent, args) {
         try {
-          console.log('time in the user goal creation--->', getCurrentDate())
+          console.log('time in the user goal creation--->', args.dateCreated)
           let goal = new Goal({
-            dateCreated: getCurrentDate(),
+            dateCreated: args.dateCreated,
             userId: args.userId,
             dailyEntryId: args.dailyEntryId,
             description: args.description
           })
-          console.log('before creating goal in api call:', goal)
           const createdGoal = await Goal.create(goal.dataValues)
-          console.log('addgoal api call:', createdGoal)
           return createdGoal
         } catch (err) {
           console.log(err)
@@ -390,16 +389,17 @@ const mutationType = new graphql.GraphQLObjectType({
         completed: {type: graphql.GraphQLBoolean},
         dateCompleted: {type: graphql.GraphQLString},
         dailyEntryId: {type: graphql.GraphQLID},
-        description: {type: graphql.GraphQLString}
+        description: {type: graphql.GraphQLString},
+        dateCreated: {type: graphql.GraphQLString}
       },
       async resolve(parent, args) {
         try {
-          let dateCompleted
-          console.log('time in the update goal--->', getCurrentDate())
+          // let dateCompleted
+          console.log('time in the update goal--->', args.dateCreated)
           if (args.description) {
             let updatedGoal = await Goal.update(
               {
-                dateCreated: getCurrentDate(),
+                dateCreated: args.dateCreated,
                 description: args.description
               },
               {
@@ -409,13 +409,13 @@ const mutationType = new graphql.GraphQLObjectType({
             )
             return updatedGoal[1][0].dataValues
           }
-          if (args.completed) dateCompleted = getCurrentDate()
-          else dateCompleted = null
+          // if (args.completed) dateCompleted = args.dateCreated,
+          // else dateCompleted = null
           let updatedGoal
           if (args.active !== null) {
             updatedGoal = await Goal.update(
               {
-                dateCreated: getCurrentDate(),
+                dateCreated: args.dateCreated,
                 active: args.active
               },
               {
@@ -438,9 +438,9 @@ const mutationType = new graphql.GraphQLObjectType({
           if (args.completed !== null) {
             updatedGoal = await Goal.update(
               {
-                dateCreated: getCurrentDate(),
-                completed: args.completed,
-                dateCompleted: dateCompleted
+                dateCreated: args.dateCreated,
+                completed: args.completed
+                // dateCompleted: dateCompleted
               },
               {
                 where: {id: args.id},

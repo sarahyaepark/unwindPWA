@@ -7,6 +7,15 @@ const UPDATE_GOAL = 'UPDATE_GOAL'
 const getGoal = goal => ({type: GET_GOAL, goal})
 const updatingGoal = goal => ({type: UPDATE_GOAL, goal})
 
+export const getCurrentDate = () => {
+  let date = new Date()
+  let day = date.getDate()
+  if (day.toString().length === 1) day = '0' + day
+  let month = date.getMonth() + 1
+  let year = date.getFullYear()
+  return year + '-' + month + '-' + day
+}
+
 export const addGoal = (
   userId,
   description,
@@ -15,7 +24,7 @@ export const addGoal = (
   let res
   try {
     res = await axios.post(`/api`, {
-      query: `mutation{addGoal(userId:${userId}, description: "${description}"),{description,dateCreated}}`
+      query: `mutation{addGoal(userId:${userId}, dateCreated:"${getCurrentDate()}", description: "${description}"),{description,dateCreated}}`
     })
   } catch (authError) {
     return dispatch(getGoal({error: authError}))
@@ -40,19 +49,19 @@ export const updateGoal = (
   try {
     if (description) {
       res = await axios.post(`/api`, {
-        query: `mutation{updateGoal(id:${goalId}, description:"${description}"),{id,description,completed}}`
+        query: `mutation{updateGoal(id:${goalId}, dateCreated:"${getCurrentDate()}", description:"${description}"),{id,description,completed}}`
       })
     } else if (active !== undefined) {
       res = await axios.post(`/api`, {
-        query: `mutation{updateGoal(id:${goalId}, active:${active}),{id,description,completed}}`
+        query: `mutation{updateGoal(id:${goalId}, dateCreated:"${getCurrentDate()}", active:${active}),{id,description,completed}}`
       })
     } else if (dailyEntryId !== undefined) {
       res = await axios.post(`/api`, {
-        query: `mutation{updateGoal(id:${goalId}, dailyEntryId:${dailyEntryId}),{id,description,completed}}`
+        query: `mutation{updateGoal(id:${goalId}, dateCreated:"${getCurrentDate()}", dailyEntryId:${dailyEntryId}),{id,description,completed}}`
       })
     } else {
       res = await axios.post(`/api`, {
-        query: `mutation{updateGoal(id:${goalId}, completed:${completed}),{id,description,completed}}`
+        query: `mutation{updateGoal(id:${goalId}, dateCreated:"${getCurrentDate()}", completed:${completed}),{id,description,completed}}`
       })
     }
   } catch (authError) {

@@ -20,7 +20,7 @@ export const fetchGoals = userId => async dispatch => {
   try {
     let updated = false
     res = await axios.post(`/api`, {
-      query: `{activeGoals(userId:${userId}),{description,id,completed,dateCreated,dailyEntryId}}`
+      query: `{activeGoals(userId:${userId}, dateCreated:"${getCurrentDate()}"),{description,id,completed,dateCreated,dailyEntryId}}`
     })
     res.data.data.activeGoals.map(goal => {
       console.log('checking the date creation>>>>', goal, getCurrentDate())
