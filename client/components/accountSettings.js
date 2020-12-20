@@ -13,6 +13,7 @@ export const AccountSettings = props => {
   const [newPass, setPass] = useState('')
   const [error, setError] = useState('')
   const [infoError, setInfoError] = useState('')
+  const [formRef, setFormRef] = useState('')
   useEffect(() => {
     props.me()
   }, [])
@@ -48,20 +49,25 @@ export const AccountSettings = props => {
       evt.target.confirmPassword.value
     ) {
       if (error === '') {
-        props
-          .updateUserInfo(
-            props.user.email,
-            firstName,
-            evt.target.newPassword.value,
-            evt.target.oldPassword.value
-          )
-          .then(result => {
-            if (result === 'error') setInfoError('Invalid Password')
-            else {
-              setInfoError('')
-              notify()
-            }
-          })
+        if (evt.target.newPassword.value !== evt.target.oldPassword.value) {
+          props
+            .updateUserInfo(
+              props.user.email,
+              firstName,
+              evt.target.newPassword.value,
+              evt.target.oldPassword.value
+            )
+            .then(result => {
+              if (result === 'error') setInfoError('Invalid Password')
+              else {
+                setInfoError('')
+                notify()
+                formRef.reset()
+              }
+            })
+        } else {
+          setInfoError('Current Password and New Password must be different!')
+        }
       } else {
         props.me()
         setInfoError('Invalid Information')
@@ -69,6 +75,7 @@ export const AccountSettings = props => {
     } else {
       props.updateUserInfo(props.user.email, firstName).then(result => {
         notify()
+        formRef.reset()
       })
     }
   }
@@ -79,6 +86,7 @@ export const AccountSettings = props => {
         <br />
         <Form
           className="AuthForm"
+          ref={el => setFormRef(el)}
           onSubmit={evt => handleSubmit(evt)}
           name={name}
         >
