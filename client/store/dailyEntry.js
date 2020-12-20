@@ -26,23 +26,23 @@ export const addEntry = (
   try {
     if (journal && compliment) {
       res = await axios.post(`/api`, {
-        query: `mutation{addDailyEntry(userId:${userId},mood:${mood},journal: "${journal}",compliment:"${compliment}"),{id,journal,mood,compliment}}`
+        query: `mutation{addDailyEntry(userId:${userId},mood:${mood},journal: "${journal}",compliment:"${compliment}", dateCreated:"${getCurrentDate()}"),{id,journal,mood,compliment}}`
       })
     } else if (journal) {
       res = await axios.post(`/api`, {
-        query: `mutation{addDailyEntry(userId:${userId},mood:${mood},journal: "${journal}"),{id,journal,mood,compliment}}`
+        query: `mutation{addDailyEntry(userId:${userId},mood:${mood},journal: "${journal}", dateCreated:"${getCurrentDate()}"),{id,journal,mood,compliment}}`
       })
     } else if (compliment) {
       res = await axios.post(`/api`, {
-        query: `mutation{addDailyEntry(userId:${userId},mood:${mood},compliment: "${compliment}"),{id,journal,mood,compliment}}`
+        query: `mutation{addDailyEntry(userId:${userId},mood:${mood},compliment: "${compliment}", dateCreated:"${getCurrentDate()}"),{id,journal,mood,compliment}}`
       })
     } else {
       res = await axios.post(`/api`, {
-        query: `mutation{addDailyEntry(userId:${userId},mood:${mood}),{id,journal,mood,compliment}}`
+        query: `mutation{addDailyEntry(userId:${userId},mood:${mood}, dateCreated:"${getCurrentDate()}"),{id,journal,mood,compliment}}`
       })
     }
     let goalRes = await axios.post(`/api`, {
-      query: `{activeGoals(userId:${userId}),{description,id,completed,dateCreated}}`
+      query: `{activeGoals(userId:${userId}, dateCreated:"${getCurrentDate()}"),{description,id,completed,dateCreated}}`
     })
     goalRes.data.data.activeGoals.map(goal => {
       dispatch(
