@@ -1,6 +1,6 @@
 import axios from 'axios'
 import history from '../history'
-import {addGoal, updateGoal} from './dailyGoal'
+// import {addGoal, updateGoal} from './dailyGoal'
 
 const GET_GOALS = 'GET_GOALS'
 
@@ -19,19 +19,33 @@ export const fetchGoals = userId => async dispatch => {
   let res
   try {
     let updated = false
+    let currentDate = getCurrentDate()
     res = await axios.post(`/api`, {
-      query: `{activeGoals(userId:${userId}, dateCreated:"${getCurrentDate()}"),{description,id,completed,dateCreated,dailyEntryId}}`
+      query: `{activeGoals(userId:${userId}, dateCreated:"${currentDate}"),{description,id,completed,dateCreated,dailyEntryId}}`
     })
-    res.data.data.activeGoals.map(goal => {
-      if (goal.dateCreated !== getCurrentDate()) {
-        updated = true
-        dispatch(addGoal(userId, goal.description))
-        dispatch(updateGoal(null, goal.id, null, false))
-      }
-    })
+    if (res.data.data.activeGoals[0].dateCreated !== currentDate) {
+      await Promise.all(
+        res.data.data.activeGoals.map(async goal => {
+          if (goal.dateCreated !== currentDate) {
+            updated = true
+            res = await axios.post(`/api`, {
+              query: `mutation{addGoal(userId:${userId}, dateCreated:"${currentDate}", description: "${
+                goal.description
+              }"),{description,dateCreated}}`
+            })
+            // dispatch(addGoal(userId, goal.description))
+            res = await axios.post(`/api`, {
+              query: `mutation{updateGoal(id:${
+                goal.id
+              }, dateCreated:"${currentDate}", active:${false}),{id,description,completed}}`
+            })
+          }
+        })
+      )
+    }
     if (updated) {
       let currentGoals = await axios.post(`/api`, {
-        query: `{activeGoals(userId:${userId}),{description,id,completed,dateCreated,dailyEntryId}}`
+        query: `{activeGoals(userId:${userId}, dateCreated:"${currentDate}"),{description,id,completed,dateCreated,dailyEntryId}}`
       })
       dispatch(getGoals(currentGoals.data.data.activeGoals))
     } else {
