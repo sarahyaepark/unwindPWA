@@ -34,6 +34,11 @@ export default function FormDialog() {
   const handleSubmit = e => {
     e.preventDefault()
     // convert into env variables
+    console.log(
+      process.env.SERVICE_ID,
+      process.env.TEMPLATE_ID,
+      process.env.EMAIL_USER_ID
+    )
     emailjs
       .sendForm(
         process.env.SERVICE_ID,
