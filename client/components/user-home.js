@@ -15,7 +15,7 @@ import EditIcon from '@material-ui/icons/Edit'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
 import Button from 'react-bootstrap/Button'
-
+import Feedback from './feedback'
 /**
  * COMPONENT
  */
@@ -203,6 +203,8 @@ export const UserHome = props => {
           <DailyEntry newDay={newDay} oldDate={currentDate} />
         </div>
       )}
+      <br />
+      <Feedback />
     </div>
   )
 }

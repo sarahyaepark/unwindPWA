@@ -3,6 +3,7 @@ import CalendarHeatmap from './calendar-heatmap.component'
 import * as d3 from 'd3'
 import {connect} from 'react-redux'
 import {fetchOverview, me} from '../store'
+import Feedback from './feedback'
 
 export const CalendarView = props => {
   const [dateData, setData] = useState('')
@@ -110,6 +111,8 @@ export const CalendarView = props => {
           height="200px"
         />
       )}
+      <br />
+      <Feedback />
     </div>
   ) : (
     <div className="CalendarHeatmap">

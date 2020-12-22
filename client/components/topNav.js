@@ -24,11 +24,12 @@ const useStyles = makeStyles(theme => ({
     background: 'rgb(127,71,221)',
     color: 'white'
   },
-  menuButton: {
-    marginRight: theme.spacing(2)
-  },
   title: {
     flexGrow: 1
+  },
+  button: {
+    margin: theme.spacing(1),
+    color: 'white'
   }
 }))
 
@@ -44,32 +45,45 @@ export function ButtonAppBar(props) {
             <img src="https://i.imgur.com/Pca5zcg.png" width="200px" />
           </div>
           <Link to="/home">
-            <Button color="inherit" className="NavButtons">
-              <CreateOutlinedIcon style={{color: 'white'}} />
+            <Button
+              className={classes.button}
+              startIcon={<CreateOutlinedIcon style={{color: 'white'}} />}
+            >
+              Daily Entry
             </Button>
           </Link>
           <Link to="/calendarDisplay">
-            <Button color="inherit" className="NavButtons">
-              <CalendarTodayOutlinedIcon style={{color: 'white'}} />
+            <Button
+              className={classes.button}
+              startIcon={<CalendarTodayOutlinedIcon style={{color: 'white'}} />}
+            >
+              Overview
             </Button>
           </Link>
           <Link to="/account">
-            <Button color="inherit" className="NavButtons">
-              <AccountCircleOutlinedIcon style={{color: 'white'}} />
+            <Button
+              className={classes.button}
+              startIcon={<AccountCircleOutlinedIcon style={{color: 'white'}} />}
+            >
+              Account
             </Button>
           </Link>
-          <Button color="inherit" className="NavButtons" onClick={props.logout}>
-            <ExitToAppIcon style={{color: 'white'}} />
+          <Button
+            className={classes.button}
+            onClick={props.logout}
+            startIcon={<ExitToAppIcon style={{color: 'white'}} />}
+          >
+            Log Out
           </Button>
           <Button
-            color="inherit"
-            className="NavButtons"
+            className={classes.button}
             onClick={e => {
               e.preventDefault()
               window.location.href = 'https://github.com/sarahyaepark/unwindPWA'
             }}
+            startIcon={<GitHubIcon style={{color: 'white'}} />}
           >
-            <GitHubIcon style={{color: 'white'}} />
+            GitHub
           </Button>
         </Toolbar>
       </AppBar>
