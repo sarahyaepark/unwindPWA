@@ -1,6 +1,12 @@
 import React, {useEffect, useState} from 'react'
 
-import {Navbar, BottomNav, MobileLoading, MobileNav} from './components'
+import {
+  Navbar,
+  BottomNav,
+  MobileLoading,
+  MobileNav,
+  Welcome
+} from './components'
 import Routes from './routes'
 
 const App = () => {
@@ -20,6 +26,7 @@ const App = () => {
   ) : (
     <div className="App">
       <Navbar />
+      <Welcome />
       <Routes />
     </div>
   )
