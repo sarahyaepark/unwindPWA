@@ -9,7 +9,6 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import emailjs from 'emailjs-com'
 import {ToastContainer, toast} from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import {SERVICE_ID, TEMPLATE_ID, EMAIL_USER_ID} from '../../server/db'
 
 export default function FormDialog() {
   const [open, setOpen] = useState(false)
