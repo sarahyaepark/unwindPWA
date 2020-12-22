@@ -7,10 +7,23 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import emailjs from 'emailjs-com'
+import {ToastContainer, toast} from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 export default function FormDialog() {
   const [open, setOpen] = useState(false)
   //   const [sug, setSug] = useState('')
+  const notify = () =>
+    toast.success('🦄 Suggestion Sent. Thanks!', {
+      position: 'top-right',
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined
+    })
+
   const handleClickOpen = () => {
     setOpen(true)
   }
@@ -23,13 +36,14 @@ export default function FormDialog() {
     // convert into env variables
     emailjs
       .sendForm(
-        'service_0z0z4el',
-        'template_rtd4eti',
+        process.env.SERVICE_ID,
+        process.env.TEMPLATE_ID,
         e.target,
-        'user_MlshXDjHSMdzfT7ABJGOL'
+        process.env.EMAIL_USER_ID
       )
       .then(
         result => {
+          notify()
           setOpen(false)
         },
         error => {
@@ -87,6 +101,7 @@ export default function FormDialog() {
           </Button> */}
         </DialogActions>
       </Dialog>
+      <ToastContainer />
     </div>
   )
 }
