@@ -83,7 +83,7 @@ export const CalendarView = props => {
 
   return overview.length > 0 ? (
     <div className="CalendarHeatmapDiv">
-      <CalendarHeatmap data={overview} color="#b57edc" overview="year" />
+      <CalendarHeatmap data={overview} color="#91EAE4" overview="year" />
       <br />
       <br />
       <br />

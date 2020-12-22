@@ -252,7 +252,7 @@ class CalendarHeatmap extends React.Component {
           .scaleLinear()
           .range(['#ffffff', this.props.color])
           .domain([-0.15 * max_value, max_value])
-        return '#7f47dd' || '#ff4500'
+        return '#BFF3EF' || '#ff4500'
       })
       .on('click', d => {
         if (this.in_transition) {
@@ -1047,7 +1047,7 @@ class CalendarHeatmap extends React.Component {
           .range(['#ffffff', this.props.color])
           .domain([-0.15 * max_value, max_value])
         if (d.mood === 0) return color(10)
-        return color(d.mood) || '#ff4500'
+        return color(d.mood) || '#BFF3EF'
       })
       .style('opacity', 0)
       .on('mouseover', d => {
@@ -2081,7 +2081,7 @@ class CalendarHeatmap extends React.Component {
 CalendarHeatmap.defaultProps = {
   data: [],
   overview: 'year',
-  color: '#ff4500',
+  color: '#91EAE4',
   handler: undefined
 }
 

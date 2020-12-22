@@ -167,20 +167,17 @@ export const UserHome = props => {
               {sortedGoals ? (
                 sortedGoals.map(goal => {
                   return (
-                    // <div key={goal.id} >
                     <div key={goal.id} className="GoalCheck">
                       <ToggleButton goalId={goal.id} />
-                      {/* <h2 className="goalDescription">{goal.description}</h2> */}
                       <div className="editLabel">
                         <EditableLabel
                           text={goal.description}
                           labelClassName="goalDescription"
                           inputWidth="200px"
                           inputHeight="25px"
-                          labelFontSize="1.5rem"
-                          inputFontSize="1.5rem"
+                          labelFontSize="1.3rem"
+                          inputFontSize="1.3rem"
                           labelFontWeight="bold"
-                          // inputFontWeight="bold"
                           onFocus={handleFocus}
                           onFocusOut={text => handleFocusOut(text, goal.id)}
                         />

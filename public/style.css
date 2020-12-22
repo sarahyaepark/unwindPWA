@@ -14,8 +14,8 @@
 } */
 
 .App {
-  font-family: Roboto;
-  background-image: linear-gradient(rgb(216, 90, 165), rgb(127, 71, 221));
+  font-family: Roboto !important;
+  background-image: linear-gradient(rgb(127, 71, 221), #f7ddfc);
   height: auto !important;
   min-height: 100vh;
 }
@@ -205,7 +205,7 @@ nav a {
 .complimentDiv {
   display: flex;
   height: 50%;
-  font-size: 2rem;
+  font-size: 1.5rem;
   padding: 1rem;
   flex-direction: column;
   background-color: rgba(255, 255, 255, 0.6);
@@ -303,7 +303,11 @@ h4 {
 }
 
 .DataOverview h1 {
-  font-size: 2.5vw;
+  font-size: 1.5rem;
+}
+
+.DataOverview h3 {
+  font-size: 1.3rem;
 }
 
 .feedback {
@@ -313,4 +317,24 @@ h4 {
 
 .MuiToggleButton-root.Mui-selected {
   background-color: red;
+}
+
+.complimentDiv h3 {
+  font-size: 1.5rem;
+}
+
+.GoalsListDiv h3 {
+  font-size: 1.5rem;
+}
+
+.UserHomeDiv h3 {
+  font-size: 1.5rem;
+}
+
+.goodnightDiv h4 {
+  font-size: 1.3rem;
+}
+
+.goodnightDiv h3 {
+  font-size: 1.5rem;
 }
