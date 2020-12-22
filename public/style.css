@@ -310,3 +310,7 @@ h4 {
   display: flex;
   justify-content: center;
 }
+
+.MuiToggleButton-root.Mui-selected {
+  background-color: red;
+}

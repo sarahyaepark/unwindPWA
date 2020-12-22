@@ -57,7 +57,7 @@ export const updateGoal = (
       })
     } else if (dailyEntryId !== undefined) {
       res = await axios.post(`/api`, {
-        query: `mutation{updateGoal(id:${goalId}, dateCreated:"${getCurrentDate()}", dailyEntryId:${dailyEntryId}),{id,description,completed}}`
+        query: `mutation{updateGoal(id:${goalId}, completed:${completed}, dateCreated:"${getCurrentDate()}", dailyEntryId:${dailyEntryId}),{id,description,completed}}`
       })
     } else {
       res = await axios.post(`/api`, {
