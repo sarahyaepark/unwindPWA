@@ -57,7 +57,7 @@ export function ButtonAppBar(props) {
               className={classes.button}
               startIcon={<CalendarTodayOutlinedIcon style={{color: 'white'}} />}
             >
-              Overview
+              Check-Ins
             </Button>
           </Link>
           <Link to="/account">
