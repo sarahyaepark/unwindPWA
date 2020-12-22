@@ -9,6 +9,7 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import emailjs from 'emailjs-com'
 import {ToastContainer, toast} from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import {SERVICE_ID, TEMPLATE_ID, EMAIL_USER_ID} from '../../server/db'
 
 export default function FormDialog() {
   const [open, setOpen] = useState(false)
@@ -33,18 +34,17 @@ export default function FormDialog() {
   }
   const handleSubmit = e => {
     e.preventDefault()
-    // convert into env variables
     console.log(
-      process.env.SERVICE_ID,
-      process.env.TEMPLATE_ID,
-      process.env.EMAIL_USER_ID
+      process.env.REACT_APP_SERVICE_ID,
+      process.env.REACT_APP_TEMPLATE_ID,
+      process.env.REACT_APP_EMAIL_USER_ID
     )
     emailjs
       .sendForm(
-        process.env.SERVICE_ID,
-        process.env.TEMPLATE_ID,
+        process.env.REACT_APP_SERVICE_ID,
+        process.env.REACT_APP_TEMPLATE_ID,
         e.target,
-        process.env.EMAIL_USER_ID
+        process.env.REACT_APP_EMAIL_USER_ID
       )
       .then(
         result => {
