@@ -13,9 +13,15 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin({
-      'process.env.REACT_APP_SERVICE_ID': process.env.SERVICE_ID,
-      'process.env.REACT_APP_TEMPLATE_ID': process.env.TEMPLATE_ID,
-      'process.env.REACT_APP_EMAIL_USER_ID': process.env.EMAIL_USER_ID
+      'process.env.REACT_APP_SERVICE_ID': JSON.stringify(
+        process.env.SERVICE_ID
+      ),
+      'process.env.REACT_APP_TEMPLATE_ID': JSON.stringify(
+        process.env.TEMPLATE_ID
+      ),
+      'process.env.REACT_APP_EMAIL_USER_ID': JSON.stringify(
+        process.env.EMAIL_USER_ID
+      )
     })
   ],
   resolve: {
