@@ -62,7 +62,7 @@ export default function TransitionAlerts() {
       </Collapse>
       <Button
         disabled={open}
-        variant="outline-info"
+        variant="info"
         onClick={() => {
           setOpen(true)
         }}

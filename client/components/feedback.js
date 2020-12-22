@@ -54,7 +54,7 @@ export default function FormDialog() {
 
   return (
     <div className="feedback">
-      <Button variant="outline-info" onClick={handleClickOpen}>
+      <Button variant="info" onClick={handleClickOpen}>
         Suggestions
       </Button>
       <Dialog
