@@ -3,7 +3,7 @@ import {makeStyles} from '@material-ui/core/styles'
 import Alert from '@material-ui/lab/Alert'
 import IconButton from '@material-ui/core/IconButton'
 import Collapse from '@material-ui/core/Collapse'
-import Button from '@material-ui/core/Button'
+import Button from 'react-bootstrap/Button'
 import CloseIcon from '@material-ui/icons/Close'
 
 const useStyles = makeStyles(theme => ({
@@ -62,7 +62,7 @@ export default function TransitionAlerts() {
       </Collapse>
       <Button
         disabled={open}
-        variant="outlined"
+        variant="outline-info"
         onClick={() => {
           setOpen(true)
         }}
