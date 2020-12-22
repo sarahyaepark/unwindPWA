@@ -1,3 +1,4 @@
+const webpack = require('webpack')
 const isDev = process.env.NODE_ENV === 'development'
 
 module.exports = {
@@ -10,6 +11,13 @@ module.exports = {
     path: __dirname,
     filename: './public/bundle.js'
   },
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env.REACT_APP_SERVICE_ID': process.env.SERVICE_ID,
+      'process.env.REACT_APP_TEMPLATE_ID': process.env.TEMPLATE_ID,
+      'process.env.REACT_APP_EMAIL_USER_ID': process.env.EMAIL_USER_ID
+    })
+  ],
   resolve: {
     extensions: ['.js', '.jsx', '.png', '.css', '.ttf']
   },
