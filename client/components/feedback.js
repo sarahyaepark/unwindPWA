@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react'
-import Button from '@material-ui/core/Button'
+import Button from 'react-bootstrap/Button'
+import ButtonUI from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
@@ -52,8 +53,8 @@ export default function FormDialog() {
   }
 
   return (
-    <div>
-      <Button variant="outlined" color="secondary" onClick={handleClickOpen}>
+    <div className="feedback">
+      <Button variant="outline-info" onClick={handleClickOpen}>
         Suggestions
       </Button>
       <Dialog
@@ -86,18 +87,15 @@ export default function FormDialog() {
               fullWidth
               required
             />
-            <Button type="submit" color="primary">
+            <ButtonUI type="submit" color="primary">
               Submit
-            </Button>
+            </ButtonUI>
           </form>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <ButtonUI onClick={handleClose} color="primary">
             Cancel
-          </Button>
-          {/* <Button onClick={handleSubmit} color="primary">
-            Submit
-          </Button> */}
+          </ButtonUI>
         </DialogActions>
       </Dialog>
       <ToastContainer />
