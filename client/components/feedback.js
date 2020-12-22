@@ -33,17 +33,12 @@ export default function FormDialog() {
   }
   const handleSubmit = e => {
     e.preventDefault()
-    console.log(
-      process.env.REACT_APP_SERVICE_ID,
-      process.env.REACT_APP_TEMPLATE_ID,
-      process.env.REACT_APP_EMAIL_USER_ID
-    )
     emailjs
       .sendForm(
-        process.env.REACT_APP_SERVICE_ID,
-        process.env.REACT_APP_TEMPLATE_ID,
+        `${process.env.REACT_APP_SERVICE_ID}`,
+        `${process.env.REACT_APP_TEMPLATE_ID}`,
         e.target,
-        process.env.REACT_APP_EMAIL_USER_ID
+        `${process.env.REACT_APP_EMAIL_USER_ID}`
       )
       .then(
         result => {
