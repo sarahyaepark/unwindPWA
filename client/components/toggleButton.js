@@ -23,7 +23,17 @@ const useStyles = makeStyles({
 export default function StandaloneToggleButton(props) {
   const {goalId} = props
   const classes = useStyles()
-  const [selected, setSelected] = React.useState(false)
+  let dft = false
+  if (
+    window.sessionStorage.getItem('goalId' + goalId) ||
+    window.localStorage.getItem('goalId' + goalId)
+  ) {
+    dft =
+      window.sessionStorage.getItem('goalId' + goalId) ||
+      window.localStorage.getItem('goalId' + goalId)
+    if (dft === 'false') dft = false
+  }
+  const [selected, setSelected] = React.useState(dft)
 
   const setStorage = () => {
     if (window.sessionStorage.getItem('firstName')) {
