@@ -21,7 +21,8 @@ const App = () => {
   return mql ? (
     <div className="App">
       <MobileNav />
-      <MobileLoading />
+      <Routes />
+      {/* <MobileLoading /> */}
     </div>
   ) : (
     <div className="App">
