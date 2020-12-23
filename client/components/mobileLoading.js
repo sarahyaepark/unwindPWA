@@ -5,6 +5,7 @@ export const MobileLoading = props => {
     <div className="Mobile">
       <div className="MobileText">
         <h1>Mobile Coming Soon...</h1>
+        <h3>Try us out on desktop!</h3>
         <img
           className="loadingImg"
           src="https://i.pinimg.com/originals/ce/d2/d0/ced2d0cc1832708a6a1ee95df0e285a1.gif"
