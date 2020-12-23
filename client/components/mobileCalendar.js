@@ -18,16 +18,9 @@ const MobileCalendar = props => {
 
   const {overview} = props
   const [val, onChange] = useState(new Date())
-  useEffect(
-    () => {
-      console.log(overview)
-    },
-    [overview]
-  )
 
   const handleChange = newDate => {
     onChange(newDate)
-    console.log(formatDate(newDate))
   }
   const formatMood = moodNum => {
     if (moodNum === 0) return '#D7F7F5'
@@ -60,7 +53,6 @@ const MobileCalendar = props => {
         activeDate={val}
         overview={overview}
       />
-      <br />
     </div>
   ) : (
     <div className="CalendarHeatmap">

@@ -47,13 +47,13 @@ const MobileDayOverview = props => {
     <div className="mobileDayOverview">
       {/* <div> */}
       <h1>
-        An overview of your day on {moment(activeDate).format('MMMM DD YYYY')}
+        An overview of your day on {moment(activeDate).format('MMMM DD, YYYY')}
       </h1>
       <hr />
       <h1>{formatMood(mood)}</h1>
       {goals.length > 0 ? (
         <div>
-          <h3>Completed self care goals:</h3>
+          <h3>Completed self care goals</h3>
           {goals.map(goal => {
             return (
               <ul key={goal.id}>
@@ -66,12 +66,14 @@ const MobileDayOverview = props => {
       ) : null}
       {journal ? (
         <div>
-          <h3>Journal: {journal}</h3>
+          <h3>Journal</h3>
+          <ul>{journal}</ul>
         </div>
       ) : null}
       {compliment ? (
         <div>
-          <h3>Self-compliment: {compliment}</h3>
+          <h3>Compliment:</h3>
+          <ul>{compliment}</ul>
         </div>
       ) : null}
       {/* </div> */}

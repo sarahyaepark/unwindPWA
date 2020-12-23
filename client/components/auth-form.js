@@ -6,6 +6,7 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import history from '../history'
 import {GoalForm} from './goal-form'
+import {Link} from 'react-router-dom'
 
 const AuthForm = props => {
   const {name, displayName} = props
@@ -122,6 +123,17 @@ const AuthForm = props => {
             />
           </Form.Group>
         </Form>
+        or
+        {displayName === 'Sign Up' ? (
+          <Link to="/login">
+            <Button variant="primary">Log In</Button>
+          </Link>
+        ) : (
+          <Link to="/signup">
+            <Button variant="primary">Sign Up</Button>
+          </Link>
+        )}
+        <br />
       </div>
       {/* <a href="/auth/google">{displayName} with Google</a> */}
     </div>

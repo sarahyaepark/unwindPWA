@@ -138,7 +138,7 @@ export const AccountSettings = props => {
         </Form>
       </div>
       <br />
-      <Button variant="outline-danger" onClick={props.logout}>
+      <Button variant="danger" onClick={props.logout}>
         Log Out
       </Button>
       <br />

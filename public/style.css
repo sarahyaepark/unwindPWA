@@ -74,10 +74,12 @@ nav a {
   box-shadow: 5px 5px purple;
   border-radius: 15px;
   width: 40vw;
-  height: 70vh;
+  /* height: 80vh; */
   padding-top: 2rem;
   padding-left: 2rem;
   padding-right: 2rem;
+  padding-bottom: 1rem;
+  margin-bottom: 2rem;
 }
 
 .AccSettings {
@@ -404,3 +406,82 @@ hr {
 /* .react-calendar__month-view__days__day--weekend {
   color: black;
 } */
+@media only screen and (max-width: 700px) {
+  .AuthDiv {
+    padding-top: 2rem;
+  }
+  .FormDiv {
+    width: 80vw;
+  }
+  .AuthForm {
+    width: 100%;
+  }
+  #alert {
+    padding-top: 2rem;
+    width: 90%;
+  }
+  .UserHomeDiv h3 {
+    font-size: 1.3rem;
+  }
+  .UserHomeDiv h4 {
+    font-size: 1rem;
+  }
+  .greetingDiv {
+    align-items: center;
+  }
+  .greeting {
+    padding-right: 1rem;
+  }
+  .complimentDiv {
+    width: 100%;
+  }
+  .complimentButton {
+    width: 40%;
+  }
+  .GoalDiv h3 {
+    font-size: 1.3rem;
+  }
+  .GoalsListDiv {
+    width: 90vw;
+  }
+  .GoalsList {
+    width: 95%;
+  }
+  .GoalCheck {
+    width: 100%;
+  }
+  .DailyDiv {
+    width: 100vw;
+  }
+  .DailyEntryDiv {
+    width: 90%;
+  }
+  .MuiFormControl-root {
+    width: 20rem !important;
+  }
+  .MuiFormLabel-root {
+    width: 15rem !important;
+  }
+  .MuiInputBase-root {
+    width: 18rem !important;
+  }
+  .MuiSlider-root {
+    width: 17rem !important;
+  }
+  .MuiSlider-markLabel {
+    font-size: 1.7rem !important;
+  }
+  .goodnightQuote {
+    width: 95%;
+  }
+  .goodnightDiv {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .AccSettings {
+    width: 90vw;
+  }
+  .mobileDayOverview {
+    margin-bottom: 6rem;
+  }
+}
