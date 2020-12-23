@@ -8,7 +8,7 @@ import CloseIcon from '@material-ui/icons/Close'
 
 const useStyles = makeStyles(theme => ({
   root: {
-    width: '60%',
+    width: '50%',
     paddingLeft: theme.spacing(2),
     marginBottom: theme.spacing(2),
     '& > * + *': {
@@ -42,22 +42,30 @@ export default function TransitionAlerts() {
           }
         >
           Let's Unwind together! 🌙
-          <br /> Use this app to Unwind and reflect about your day each night.
-          After submitting your entry for the day, you can't go back and change
-          them! Be authentic with yourself.
+          <br /> The purpose of Unwind-ing is so that you can see that each day
+          doesn't have to affect the next! Over time, you'll find the self care
+          habits that most contribute to your overall mood.
           <br />
-          Input three self care goals that you'd like to accomplish every day to
-          show yourself some love.
-          <br /> Keep track of the goals you've completed, and journal along the
-          way!
+          <br /> Use this app to reflect about your day each night. After
+          submitting your entry for the day, you can't go back and change them
+          so they remain authentic.
           <br />
-          Give yourself daily compliments and you'll see them returned to you so
-          you can remember the kindness you've given yourself!
+          <li>
+            Input three self care goals that you'd like to accomplish every day
+            to show yourself some love.
+          </li>
+          <li>
+            Keep track of the goals you've completed, and journal along the way!
+          </li>
+          <li>
+            Give yourself daily compliments and you'll see them returned to you
+            so you can remember the kindness you've given yourself!
+          </li>
+          <li>
+            Complete daily entries to see your calendar in yearly view, and
+            click the month to see your monthly view!
+          </li>
           <br />
-          Complete daily entries to see your calendar in yearly view, and click
-          the month to see your monthly view!
-          <br />
-          Let's prioritize loving yourself. 💖
         </Alert>
       </Collapse>
       <Button
