@@ -4,7 +4,7 @@ import {
   Navbar,
   BottomNav,
   MobileLoading,
-  MobileNav,
+  MobileTop,
   Welcome
 } from './components'
 import Routes from './routes'
@@ -20,8 +20,10 @@ const App = () => {
 
   return mql ? (
     <div className="App">
-      <MobileNav />
-      <MobileLoading />
+      <Navbar />
+      <Welcome />
+      <Routes />
+      <BottomNav />
     </div>
   ) : (
     <div className="App">

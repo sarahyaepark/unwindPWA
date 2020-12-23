@@ -23,7 +23,7 @@ export default function TransitionAlerts() {
   const [open, setOpen] = React.useState(false)
 
   return (
-    <div className={classes.root}>
+    <div className={classes.root} id="alert">
       <Collapse in={open}>
         <Alert
           // variant="outlined"

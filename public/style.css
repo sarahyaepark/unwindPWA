@@ -74,10 +74,12 @@ nav a {
   box-shadow: 5px 5px purple;
   border-radius: 15px;
   width: 40vw;
-  height: 70vh;
+  /* height: 80vh; */
   padding-top: 2rem;
   padding-left: 2rem;
   padding-right: 2rem;
+  padding-bottom: 1rem;
+  margin-bottom: 2rem;
 }
 
 .AccSettings {
@@ -336,4 +338,150 @@ h4 {
 
 .goodnightDiv h3 {
   font-size: 1.5rem;
+}
+
+.MobileCalDiv {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 2rem;
+  width: 100vw;
+  height: 100%;
+}
+
+.MobileCalDiv h1 {
+  font-size: 1.5rem;
+}
+
+.mobileDayOverview {
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 2px solid #12c2e9;
+  box-shadow: 5px 5px purple;
+  border-radius: 15px;
+  width: 90%;
+  padding: 1rem;
+}
+
+.MobileCalDiv h3 {
+  font-size: 1.3rem;
+}
+
+hr {
+  border: 0;
+  width: 96%;
+  color: #ffff00;
+  height: 1px;
+}
+
+.react-calendar__tile {
+  height: 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.react-calendar__month-view__days__day {
+  color: rgb(100, 100, 100) !important;
+}
+
+.react-calendar {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  border: 2px solid #12c2e9;
+  box-shadow: 5px 5px purple;
+  border-radius: 15px;
+}
+
+.react-calendar__tile--active {
+  background: linear-gradient(45deg, #f7ddfc 20%, #91eae4 90%) !important;
+  border-radius: 20 !important;
+}
+
+.react-calendar__tile--now {
+  background-color: white !important;
+}
+
+/* .react-calendar__month-view__days__day--weekend {
+  color: black;
+} */
+@media only screen and (max-width: 700px) {
+  .AuthDiv {
+    padding-top: 2rem;
+  }
+  .FormDiv {
+    width: 80vw;
+  }
+  .AuthForm {
+    width: 100%;
+  }
+  #alert {
+    padding-top: 2rem;
+    width: 90%;
+  }
+  .UserHomeDiv h3 {
+    font-size: 1.3rem;
+  }
+  .UserHomeDiv h4 {
+    font-size: 1rem;
+  }
+  .greetingDiv {
+    align-items: center;
+  }
+  .greeting {
+    padding-right: 1rem;
+  }
+  .complimentDiv {
+    width: 100%;
+  }
+  .complimentButton {
+    width: 40%;
+  }
+  .GoalDiv h3 {
+    font-size: 1.3rem;
+  }
+  .GoalsListDiv {
+    width: 90vw;
+  }
+  .GoalsList {
+    width: 95%;
+  }
+  .GoalCheck {
+    width: 100%;
+  }
+  .DailyDiv {
+    width: 100vw;
+  }
+  .DailyEntryDiv {
+    width: 90%;
+  }
+  .MuiFormControl-root {
+    width: 20rem !important;
+  }
+  .MuiFormLabel-root {
+    width: 15rem !important;
+  }
+  .MuiInputBase-root {
+    width: 18rem !important;
+  }
+  .MuiSlider-root {
+    width: 17rem !important;
+  }
+  .MuiSlider-markLabel {
+    font-size: 1.7rem !important;
+  }
+  .goodnightQuote {
+    width: 95%;
+  }
+  .goodnightDiv {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .AccSettings {
+    width: 90vw;
+  }
+  .mobileDayOverview {
+    margin-bottom: 6rem;
+  }
 }

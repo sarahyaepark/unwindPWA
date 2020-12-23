@@ -31,7 +31,7 @@ export const DailyEntry = props => {
             classes={{root: classes.root}}
             id="outlined-basic"
             name="journal"
-            label="Write something about your day or anything else you want..."
+            label="Write something about your day"
             variant="outlined"
             onChange={evt => {
               setJournal(evt.target.value)

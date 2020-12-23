@@ -4,6 +4,7 @@ import * as d3 from 'd3'
 import {connect} from 'react-redux'
 import {fetchOverview, me} from '../store'
 import Feedback from './feedback'
+import MobileCalendar from './mobileCalendar'
 
 export const CalendarView = props => {
   const [dateData, setData] = useState('')
@@ -80,48 +81,59 @@ export const CalendarView = props => {
     else return null
     return finalData.length
   }
+  const [mql, setmql] = useState(true)
+  useEffect(
+    () => {
+      setmql(window.matchMedia('(max-width: 700px)').matches)
+    },
+    [window.matchMedia('(max-width: 700px)')]
+  )
 
-  return overview.length > 0 ? (
-    <div className="CalendarHeatmapDiv">
-      <CalendarHeatmap data={overview} color="#91EAE4" overview="year" />
-      <br />
-      <br />
-      <br />
-      {currentView !== '' ? (
-        <div className="CalOverview">
-          {dateData !== '' && dateData !== null ? (
-            <div className="DataOverview">
-              <h1>
-                In {dateData}, you checked in to Unwind {findFreqData()} times!
-                🎉
-              </h1>
-              {findPercentage() ? (
-                <h3>
-                  On your happier days, you completed on average{' '}
-                  {findPercentage()}% of your daily self care goals.
-                </h3>
-              ) : null}
-            </div>
-          ) : null}
-        </div>
-      ) : (
+  return !mql ? (
+    overview.length > 0 ? (
+      <div className="CalendarHeatmapDiv">
+        <CalendarHeatmap data={overview} color="#91EAE4" overview="year" />
+        <br />
+        <br />
+        <br />
+        {currentView !== '' ? (
+          <div className="CalOverview">
+            {dateData !== '' && dateData !== null ? (
+              <div className="DataOverview">
+                <h1>
+                  In {dateData}, you checked in to Unwind {findFreqData()}{' '}
+                  times! 🎉
+                </h1>
+                {findPercentage() ? (
+                  <h3>
+                    On your happier days, you completed on average{' '}
+                    {findPercentage()}% of your daily self care goals.
+                  </h3>
+                ) : null}
+              </div>
+            ) : null}
+          </div>
+        ) : (
+          <img
+            src="https://i.pinimg.com/originals/a4/f2/cb/a4f2cb80ff2ae2772e80bf30e9d78d4c.gif"
+            width="200px"
+            height="200px"
+          />
+        )}
+        <br />
+        <Feedback />
+      </div>
+    ) : (
+      <div className="CalendarHeatmap">
         <img
           src="https://i.pinimg.com/originals/a4/f2/cb/a4f2cb80ff2ae2772e80bf30e9d78d4c.gif"
           width="200px"
           height="200px"
         />
-      )}
-      <br />
-      <Feedback />
-    </div>
+      </div>
+    )
   ) : (
-    <div className="CalendarHeatmap">
-      <img
-        src="https://i.pinimg.com/originals/a4/f2/cb/a4f2cb80ff2ae2772e80bf30e9d78d4c.gif"
-        width="200px"
-        height="200px"
-      />
-    </div>
+    <MobileCalendar overview={overview} />
   )
 }
 

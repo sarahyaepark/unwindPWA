@@ -114,7 +114,7 @@ export const UserHome = props => {
     <div className="UserHomeDiv">
       {firstName !== null ? (
         <div className="greetingDiv">
-          <div>
+          <div className="greeting">
             <h3>
               {greeting()}, {firstName} ✨
             </h3>
@@ -123,9 +123,11 @@ export const UserHome = props => {
           {compliment.date ? (
             <div className="complimentDiv">
               <h3>
-                From you to you on {compliment.date}: <br />
-                {compliment.compliment}
+                From you on {compliment.date}
+                <br />
               </h3>
+              <hr />
+              <h3>{compliment.compliment}</h3>
               <OverlayTrigger
                 placement="bottom"
                 delay={{show: 250, hide: 400}}
