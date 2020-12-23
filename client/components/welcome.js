@@ -42,11 +42,14 @@ export default function TransitionAlerts() {
           }
         >
           Let's Unwind together! 🌙
-          <br /> The purpose of Unwind-ing is so that you can see that each day
-          doesn't have to affect the next! Over time, you'll find the self care
-          habits that most contribute to your overall mood.
+          <br /> We deserve to put effort into taking care of our selves.
+          <br /> The purpose of Unwind-ing is to give yourself a nightly
+          self-care ritual.
+          <br /> Each day is a new day to show yourself love and care! Over
+          time, you'll find the self care habits that most contribute to your
+          overall mood.
           <br />
-          <br /> Use this app to reflect about your day each night. After
+          <br /> Use this app each night to reflect about your day. After
           submitting your entry for the day, you can't go back and change them
           so they remain authentic.
           <br />
