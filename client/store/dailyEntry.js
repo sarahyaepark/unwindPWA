@@ -45,11 +45,19 @@ export const addEntry = (
       query: `{activeGoals(userId:${userId}, dateCreated:"${getCurrentDate()}"),{description,id,completed,dateCreated}}`
     })
     goalRes.data.data.activeGoals.map(goal => {
+      let completed
+      if (window.sessionStorage.getItem('goalId' + goal.id)) {
+        completed = window.sessionStorage.getItem('goalId' + goal.id) === 'true'
+      } else if (window.localStorage.getItem('goalId' + goal.id)) {
+        completed = window.localStorage.getItem('goalId' + goal.id) === 'true'
+      } else {
+        completed = false
+      }
       dispatch(
         updateGoal(
           null,
           goal.id,
-          null,
+          completed,
           undefined,
           res.data.data.addDailyEntry.id
         )

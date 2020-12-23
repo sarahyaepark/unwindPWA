@@ -16,6 +16,7 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
 import Button from 'react-bootstrap/Button'
 import Feedback from './feedback'
+import ToggleButton from './toggleButton'
 /**
  * COMPONENT
  */
@@ -56,18 +57,32 @@ export const UserHome = props => {
     },
     [goals]
   )
-
   const handleCheckBoxToggle = (goalId, completed) => {
-    props.updateGoal(userId, goalId, !completed).then(() => {
-      props.fetchGoals(userId)
-      setSortedGoals(goals.sort((a, b) => a.id - b.id))
-    })
+    if (window.sessionStorage.getItem('firstName')) {
+      window.sessionStorage.setItem('goalId' + goalId, !completed)
+    } else if (window.localStorage.getItem('firstName')) {
+      window.localStorage.setItem('goalId' + goalId, !completed)
+    }
+    // props.updateGoal(userId, goalId, !completed).then(() => {
+    //   props.fetchGoals(userId)
+    //   setSortedGoals(goals.sort((a, b) => a.id - b.id))
+    // })
   }
 
   const handleFocus = text => {}
 
   const handleFocusOut = (text, goalId) => {
     props.updateGoal(null, goalId, null, null, null, text)
+  }
+
+  const currentGoalCompletion = goalId => {
+    if (window.sessionStorage.getItem('goalId' + goalId)) {
+      return window.sessionStorage.getItem('goalId' + goalId) === 'true'
+    } else if (window.localStorage.getItem('goalId' + goalId)) {
+      return window.localStorage.getItem('goalId' + goalId) === 'true'
+    } else {
+      return false
+    }
   }
 
   const greeting = () => {
@@ -154,23 +169,7 @@ export const UserHome = props => {
                   return (
                     // <div key={goal.id} >
                     <div key={goal.id} className="GoalCheck">
-                      {!goal.completed ? (
-                        <img
-                          className="checkBox"
-                          src="https://i.imgur.com/YXbSdoH.png"
-                          onClick={() =>
-                            handleCheckBoxToggle(goal.id, goal.completed)
-                          }
-                        />
-                      ) : (
-                        <img
-                          className="checkBox"
-                          src="https://i.imgur.com/Giad7aJ.png"
-                          onClick={() =>
-                            handleCheckBoxToggle(goal.id, goal.completed)
-                          }
-                        />
-                      )}
+                      <ToggleButton goalId={goal.id} />
                       {/* <h2 className="goalDescription">{goal.description}</h2> */}
                       <div className="editLabel">
                         <EditableLabel

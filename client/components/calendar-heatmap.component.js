@@ -1066,7 +1066,9 @@ class CalendarHeatmap extends React.Component {
         }"><h3>${formattedMood}</h3></div>`
         tooltip_html +=
           '<div>' + moment(d.date).format('dddd, MMM Do YYYY') + '</div>'
-        tooltip_html += `<div>journal: ${d.journal}</div>`
+        if (d.journal) {
+          tooltip_html += `<div>journal: ${d.journal}</div>`
+        }
         if (d.compliment) {
           tooltip_html += `<div>compliment: ${d.compliment}</div>`
         }
