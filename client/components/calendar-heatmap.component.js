@@ -415,9 +415,9 @@ class CalendarHeatmap extends React.Component {
       .append('text')
       .attr('class', 'label label-year')
       .style('cursor', 'pointer')
-      .style('fill', 'rgb(170, 170, 170)')
+      .style('fill', 'rgb(255, 255, 255)')
       .attr('font-size', () => {
-        return Math.floor(this.settings.label_padding / 3) + 'px'
+        return Math.floor(this.settings.label_padding / 2) + 'px'
       })
       .text(d => {
         return d.year()
@@ -650,7 +650,24 @@ class CalendarHeatmap extends React.Component {
         tooltip_html +=
           '<div>' + moment(d.date).format('dddd, MMM Do YYYY') + '</div><br>'
         tooltip_html += '<div>' + this.formatMood(d.total) + '</div>'
-
+        console.log(d)
+        if (d.details[0].journal) {
+          tooltip_html += `<div>journal: ${d.details[0].journal}</div>`
+        }
+        if (d.details[0].compliment) {
+          tooltip_html += `<div>compliment: ${d.details[0].compliment}</div>`
+        }
+        if (d.details[0].goals.length > 0) {
+          let completedGoals = d.details[0].goals.filter(
+            goal => goal.completed === true
+          )
+          if (completedGoals.length === d.details[0].goals.length)
+            tooltip_html += `<div>🌟Yay you completed all your self care goals!🌟</div>`
+          tooltip_html += `<div>Goals Completed:</div>`
+          completedGoals.map(goal => {
+            tooltip_html += `<li>${goal.description}</li>`
+          })
+        }
         // Calculate tooltip position
         let x = calcItemX(d) + this.settings.item_size
         if (
@@ -746,9 +763,9 @@ class CalendarHeatmap extends React.Component {
       .append('text')
       .attr('class', 'label label-month')
       .style('cursor', 'pointer')
-      .style('fill', 'rgb(170, 170, 170)')
+      .style('fill', 'rgb(255, 255, 255)')
       .attr('font-size', () => {
-        return Math.floor(this.settings.label_padding / 3) + 'px'
+        return Math.floor(this.settings.label_padding / 2.5) + 'px'
       })
       .text(d => {
         return d.toLocaleDateString('en-us', {month: 'short'})
@@ -839,7 +856,7 @@ class CalendarHeatmap extends React.Component {
       .append('text')
       .attr('class', 'label label-day')
       .style('cursor', 'pointer')
-      .style('fill', 'rgb(170, 170, 170)')
+      .style('fill', 'rgb(255, 255, 255)')
       .attr('x', this.settings.label_padding / 3)
       .attr('y', (d, i) => {
         return dayScale(i) + dayScale.bandwidth() / 1.75
@@ -1146,7 +1163,7 @@ class CalendarHeatmap extends React.Component {
       .append('text')
       .attr('class', 'label label-week')
       .style('cursor', 'pointer')
-      .style('fill', 'rgb(170, 170, 170)')
+      .style('fill', 'rgb(255, 255, 255)')
       .attr('font-size', () => {
         return Math.floor(this.settings.label_padding / 3) + 'px'
       })
@@ -1226,7 +1243,7 @@ class CalendarHeatmap extends React.Component {
       .append('text')
       .attr('class', 'label label-day')
       .style('cursor', 'pointer')
-      .style('fill', 'rgb(170, 170, 170)')
+      .style('fill', 'rgb(255, 255, 255)')
       .attr('x', this.settings.label_padding / 3)
       .attr('y', (d, i) => {
         return dayScale(i) + dayScale.bandwidth() / 1.75
@@ -1879,7 +1896,7 @@ class CalendarHeatmap extends React.Component {
       .attr('fill', 'transparent')
       .style('opacity', 0)
       .style('stroke-width', 2)
-      .style('stroke', 'rgb(170, 170, 170)')
+      .style('stroke', 'rgb(255, 255, 255)')
       .on('click', () => {
         if (this.in_transition) {
           return
@@ -1915,7 +1932,7 @@ class CalendarHeatmap extends React.Component {
       .append('text')
       .style('stroke-width', 1)
       .style('text-anchor', 'middle')
-      .style('fill', 'rgb(170, 170, 170)')
+      .style('fill', 'rgb(255, 255, 255)')
       .attr('x', this.settings.label_padding / 2.25)
       .attr('y', this.settings.label_padding / 2.5)
       .attr('dy', () => {
