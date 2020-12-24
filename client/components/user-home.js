@@ -176,7 +176,7 @@ export const UserHome = props => {
                           text={goal.description}
                           labelClassName="goalDescription"
                           inputWidth="200px"
-                          inputHeight="25px"
+                          // inputHeight="25px"
                           labelFontSize="1.3rem"
                           inputFontSize="1.3rem"
                           labelFontWeight="bold"
