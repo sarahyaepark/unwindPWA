@@ -3,7 +3,7 @@ import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord'
 import MobileDayOverview from './mobileDayOverview'
-
+import MobileOverview from './mobileOverview'
 const MobileCalendar = props => {
   const formatDate = newDate => {
     let d = new Date(newDate),
@@ -18,6 +18,7 @@ const MobileCalendar = props => {
 
   const {overview} = props
   const [val, onChange] = useState(new Date())
+  const [view, setView] = useState(new Date())
 
   const handleChange = newDate => {
     onChange(newDate)
@@ -46,8 +47,12 @@ const MobileCalendar = props => {
         onChange={handleChange}
         value={val}
         tileContent={handleTileContent}
+        onActiveStartDateChange={({activeStartDate, value, view}) =>
+          setView(activeStartDate)
+        }
       />
       <br />
+      <MobileOverview activeDate={val} overview={overview} view={view} />
       <MobileDayOverview
         formatDate={formatDate}
         activeDate={val}
@@ -55,12 +60,9 @@ const MobileCalendar = props => {
       />
     </div>
   ) : (
-    <div className="CalendarHeatmap">
-      <img
-        src="https://i.pinimg.com/originals/a4/f2/cb/a4f2cb80ff2ae2772e80bf30e9d78d4c.gif"
-        width="200px"
-        height="200px"
-      />
+    <div className="MobileCalDiv">
+      <Calendar onChange={handleChange} value={val} />
+      <br />
     </div>
   )
 }

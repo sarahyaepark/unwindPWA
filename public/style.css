@@ -481,7 +481,21 @@ hr {
   .AccSettings {
     width: 90vw;
   }
-  .mobileDayOverview {
+  /* .mobileDayOverview {
     margin-bottom: 6rem;
+  } */
+  .MobileCalDiv {
+    padding-bottom: 6rem;
+  }
+  .mobileOverview {
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 2px solid #12c2e9;
+    box-shadow: 5px 5px purple;
+    border-radius: 15px;
+    width: 90%;
+    padding: 1rem;
+    margin-bottom: 1rem;
   }
 }
