@@ -137,6 +137,21 @@ export const updateUserInfo = (
   }
 }
 
+export const destroyUserInfo = userId => async dispatch => {
+  try {
+    // delete data from sessions/local storage
+    await axios.post(`/api`, {
+      query: `mutation{destroyUserInfo(userId:${userId}),{id}}`
+    })
+    dispatch(removeUser())
+    window.localStorage.clear()
+    window.sessionStorage.clear()
+    history.push('/login')
+  } catch (err) {
+    console.error(err)
+  }
+}
+
 export const logout = () => async dispatch => {
   try {
     // delete data from sessions/local storage
