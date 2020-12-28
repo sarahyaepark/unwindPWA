@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import React, {useEffect, useState} from 'react'
 import {connect} from 'react-redux'
 import {me, auth, updateUserInfo, logout} from '../store'
@@ -43,12 +44,25 @@ export const AccountSettings = props => {
   const handleSubmit = evt => {
     evt.preventDefault()
     let firstName = props.user.firstName
+    if (
+      !evt.target.firstName.value &&
+      !evt.target.oldPassword.value &&
+      !evt.target.newPassword.value &&
+      !evt.target.confirmPassword.value
+    ) {
+      return
+    } else setError('')
+
     if (evt.target.firstName.value) firstName = evt.target.firstName.value
     if (
       evt.target.oldPassword.value &&
       evt.target.newPassword.value &&
       evt.target.confirmPassword.value
     ) {
+      if (evt.target.newPassword.value.length < 8) {
+        setError('Password must be at least 8 characters')
+        return
+      }
       if (error === '') {
         if (evt.target.newPassword.value !== evt.target.oldPassword.value) {
           props
@@ -74,6 +88,7 @@ export const AccountSettings = props => {
         setInfoError('Invalid Information')
       }
     } else {
+      // eslint-disable-next-line no-unused-vars
       props.updateUserInfo(props.user.email, firstName).then(result => {
         notify()
         formRef.reset()
@@ -128,13 +143,14 @@ export const AccountSettings = props => {
               onChange={evt => handleChange(evt)}
               isInvalid={!!error}
             />
+            <Form.Control.Feedback type="invalid" className="invalid-feedback">
+              {error}
+            </Form.Control.Feedback>
           </Form.Group>
-          <Form.Control.Feedback type="invalid" className="invalid-feedback">
-            {error}
-          </Form.Control.Feedback>
           <Button variant="primary" type="submit">
             Update Information
           </Button>
+          <ToastContainer />
           <AlertDialog destroy={true} />
         </Form>
       </div>
