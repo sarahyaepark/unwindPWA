@@ -233,6 +233,33 @@ const queryType = new graphql.GraphQLObjectType({
 const mutationType = new graphql.GraphQLObjectType({
   name: 'Mutation',
   fields: {
+    destroyUserInfo: {
+      type: userType,
+      args: {
+        userId: {type: graphql.GraphQLID}
+      },
+      async resolve(parent, args) {
+        try {
+          await DailyEntry.destroy({
+            where: {
+              userId: args.userId
+            }
+          })
+          await Goal.destroy({
+            where: {
+              userId: args.userId
+            }
+          })
+          await User.destroy({
+            where: {
+              id: args.userId
+            }
+          })
+        } catch (err) {
+          console.log(err)
+        }
+      }
+    },
     addUser: {
       type: userType,
       args: {

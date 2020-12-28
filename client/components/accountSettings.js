@@ -5,6 +5,7 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import {ToastContainer, toast} from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import AlertDialog from './submissionAlert'
 
 /**
  * COMPONENT
@@ -134,7 +135,7 @@ export const AccountSettings = props => {
           <Button variant="primary" type="submit">
             Update Information
           </Button>
-          <ToastContainer />
+          <AlertDialog destroy={true} />
         </Form>
       </div>
       <br />

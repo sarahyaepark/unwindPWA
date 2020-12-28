@@ -403,6 +403,12 @@ hr {
   background-color: white !important;
 }
 
+.destroyDiv {
+  display: flex;
+  margin-top: 1rem;
+  justify-content: center;
+}
+
 /* .react-calendar__month-view__days__day--weekend {
   color: black;
 } */

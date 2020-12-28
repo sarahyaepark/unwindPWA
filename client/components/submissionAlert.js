@@ -7,8 +7,9 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import {withStyles} from '@material-ui/core/styles'
-import {addEntry} from '../store'
+import {addEntry, destroyUserInfo} from '../store'
 import history from '../history'
+import Button2 from 'react-bootstrap/Button'
 
 export function AlertDialog(props) {
   const [open, setOpen] = React.useState(false)
@@ -41,7 +42,45 @@ export function AlertDialog(props) {
     setOpen(false)
   }
 
-  return (
+  const deleteAccount = () => {
+    let userId
+    if (window.localStorage.getItem('id'))
+      userId = window.localStorage.getItem('id')
+    else userId = window.sessionStorage.getItem('id')
+    props.destroyUserInfo(userId)
+    setOpen(false)
+  }
+
+  return props.destroy ? (
+    <div className="destroyDiv">
+      <Button2 variant="danger" onClick={handleClickOpen}>
+        Deactivate Account
+      </Button2>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          Are you sure you want to deactivate your account?
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            This action will delete all your Unwind app data permanently!
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            No
+          </Button>
+          <Button onClick={deleteAccount} color="secondary" autoFocus>
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  ) : (
     <div className="alertDialog">
       <StyledButton
         size="large"
@@ -102,7 +141,8 @@ const mapDispatch = dispatch => {
         dispatch(addEntry(userId, mood))
       }
       history.push('/goodnight')
-    }
+    },
+    destroyUserInfo: userId => dispatch(destroyUserInfo(userId))
   }
 }
 
