@@ -79,7 +79,7 @@ export function ButtonAppBar(props) {
             className={classes.button}
             onClick={e => {
               e.preventDefault()
-              window.location.href = 'https://github.com/sarahyaepark/unwindPWA'
+              window.open('https://github.com/sarahyaepark/unwindPWA', '_blank')
             }}
             startIcon={<GitHubIcon style={{color: 'white'}} />}
           >
@@ -106,7 +106,7 @@ export function ButtonAppBar(props) {
             className="NavButtons"
             onClick={e => {
               e.preventDefault()
-              window.location.href = 'https://github.com/sarahyaepark/unwindPWA'
+              window.open('https://github.com/sarahyaepark/unwindPWA', '_blank')
             }}
           >
             <GitHubIcon style={{color: 'white'}} />
