@@ -409,6 +409,17 @@ hr {
   justify-content: center;
 }
 
+.calendarWelcomeDiv {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.calendarWelcomeDiv h3 {
+  font-size: 1.3rem;
+  text-align: center;
+}
+
 /* .react-calendar__month-view__days__day--weekend {
   color: black;
 } */

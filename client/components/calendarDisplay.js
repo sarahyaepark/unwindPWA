@@ -5,6 +5,7 @@ import {connect} from 'react-redux'
 import {fetchOverview, me} from '../store'
 import Feedback from './feedback'
 import MobileCalendar from './mobileCalendar'
+import CalendarWelcome from './calendarWelcome'
 
 export const CalendarView = props => {
   const [dateData, setData] = useState('')
@@ -90,7 +91,9 @@ export const CalendarView = props => {
   )
 
   return !mql ? (
-    overview.length > 0 ? (
+    overview === 'no entries' ? (
+      <CalendarWelcome view="desktop" />
+    ) : overview.length > 0 ? (
       <div className="CalendarHeatmapDiv">
         <CalendarHeatmap data={overview} color="#91EAE4" overview="year" />
         <br />
