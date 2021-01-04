@@ -650,7 +650,6 @@ class CalendarHeatmap extends React.Component {
         tooltip_html +=
           '<div>' + moment(d.date).format('dddd, MMM Do YYYY') + '</div><br>'
         tooltip_html += '<div>' + this.formatMood(d.total) + '</div>'
-        console.log(d)
         if (d.details[0].journal) {
           tooltip_html += `<div>journal: ${d.details[0].journal}</div>`
         }

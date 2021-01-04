@@ -7,7 +7,7 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import {withStyles} from '@material-ui/core/styles'
-import {addEntry, destroyUserInfo} from '../store'
+import {addEntry, destroyUserInfo, fetchOverview} from '../store'
 import history from '../history'
 import Button2 from 'react-bootstrap/Button'
 
@@ -132,14 +132,23 @@ const mapDispatch = dispatch => {
       else userId = window.sessionStorage.getItem('id')
       let mood = window.sessionStorage.getItem('currentMood')
       if (compliment !== undefined && journal !== undefined) {
-        dispatch(addEntry(userId, mood, journal, compliment))
+        dispatch(addEntry(userId, mood, journal, compliment)).then(() => {
+          dispatch(fetchOverview(userId))
+        })
       } else if (compliment !== undefined) {
-        dispatch(addEntry(userId, mood, null, compliment))
+        dispatch(addEntry(userId, mood, null, compliment)).then(() => {
+          dispatch(fetchOverview(userId))
+        })
       } else if (journal !== undefined) {
-        dispatch(addEntry(userId, mood, journal))
+        dispatch(addEntry(userId, mood, journal)).then(() => {
+          dispatch(fetchOverview(userId))
+        })
       } else {
-        dispatch(addEntry(userId, mood))
+        dispatch(addEntry(userId, mood)).then(() => {
+          dispatch(fetchOverview(userId))
+        })
       }
+
       history.push('/goodnight')
     },
     destroyUserInfo: userId => dispatch(destroyUserInfo(userId))

@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import React, {useState, useEffect} from 'react'
 import CalendarHeatmap from './calendar-heatmap.component'
 import * as d3 from 'd3'
@@ -16,13 +17,15 @@ export const CalendarView = props => {
     props.me()
     // yearReceived(window.sessionStorage.getItem('CurrentYear'))
   }, [])
+
   useEffect(
     () => {
-      // replace with userId after testing
-      props.fetchOverview(user.id)
+      if (Array.isArray(props.overview) && props.overview.length < 1 && user.id)
+        props.fetchOverview(user.id)
     },
     [user]
   )
+
   useEffect(
     () => {
       setData(window.sessionStorage.getItem(currentView))

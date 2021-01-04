@@ -25,7 +25,6 @@ const MobileOverview = props => {
     let uniqueGoalsMap = {}
     let uniqueGoals = []
     let sortedUniqueGoals = []
-    console.log(tempMonthData)
     tempMonthData.map(data => {
       data.details[0].goals.map(goal => {
         if (goal.completed) {
@@ -46,7 +45,6 @@ const MobileOverview = props => {
       sortedUniqueGoals.push(tempObj)
     }
     sortedUniqueGoals.sort((a, b) => b.freq - a.freq)
-    console.log(sortedUniqueGoals)
     return sortedUniqueGoals
   }
 

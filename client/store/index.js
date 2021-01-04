@@ -19,10 +19,17 @@ const reducer = combineReducers({
   currentView,
   compliment
 })
+
+const rootReducer = (state, action) => {
+  // Clear all data in redux store to initial.
+  if (action.type === 'REMOVE_USER') state = undefined
+
+  return reducer(state, action)
+}
 const middleware = composeWithDevTools(
   applyMiddleware(thunkMiddleware, createLogger({collapsed: true}))
 )
-const store = createStore(reducer, middleware)
+const store = createStore(rootReducer, middleware)
 
 export default store
 export * from './user'
