@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import React, {useState, useEffect} from 'react'
 import CalendarHeatmap from './calendar-heatmap.component'
 import * as d3 from 'd3'
@@ -5,6 +6,7 @@ import {connect} from 'react-redux'
 import {fetchOverview, me} from '../store'
 import Feedback from './feedback'
 import MobileCalendar from './mobileCalendar'
+import CalendarWelcome from './calendarWelcome'
 
 export const CalendarView = props => {
   const [dateData, setData] = useState('')
@@ -15,13 +17,15 @@ export const CalendarView = props => {
     props.me()
     // yearReceived(window.sessionStorage.getItem('CurrentYear'))
   }, [])
+
   useEffect(
     () => {
-      // replace with userId after testing
-      props.fetchOverview(user.id)
+      if (Array.isArray(props.overview) && props.overview.length < 1 && user.id)
+        props.fetchOverview(user.id)
     },
     [user]
   )
+
   useEffect(
     () => {
       setData(window.sessionStorage.getItem(currentView))
@@ -90,7 +94,9 @@ export const CalendarView = props => {
   )
 
   return !mql ? (
-    overview.length > 0 ? (
+    overview === 'no entries' ? (
+      <CalendarWelcome view="desktop" />
+    ) : overview.length > 0 ? (
       <div className="CalendarHeatmapDiv">
         <CalendarHeatmap data={overview} color="#91EAE4" overview="year" />
         <br />

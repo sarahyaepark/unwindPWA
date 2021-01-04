@@ -12,6 +12,10 @@ export const fetchOverview = userId => async dispatch => {
     let dailyEntries = await axios.post(`/api`, {
       query: `{dailyEntries(userId:${userId}),{id, date, journal, mood, compliment}}`
     })
+    if (dailyEntries.data.data.dailyEntries.length < 1) {
+      dispatch(getOverview('no entries'))
+      return
+    }
     // this returns an array of arrays of objects: daily goal id, completed, description, datecreated
     await Promise.all(
       dailyEntries.data.data.dailyEntries.map(async dailyEntry => {
@@ -43,8 +47,8 @@ export const fetchOverview = userId => async dispatch => {
       })
     )
     dispatch(getOverview(data))
-  } catch (authError) {
-    return dispatch(getOverview({error: authError}))
+  } catch (e) {
+    return dispatch(getOverview({error: e}))
   }
 }
 

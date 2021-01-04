@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import axios from 'axios'
+const CancelToken = axios.CancelToken
 
 // set a goodnight state to true
 // countdown till next day (pass in the current date)
@@ -8,14 +9,37 @@ export default function Goodnight() {
   const [inspoAuthor, setInspoAuthor] = useState(false)
 
   useEffect(() => {
-    axios.get(`https://type.fit/api/quotes`).then(function(response) {
-      let randomQuoteIdx = Math.floor(Math.random() * 1000)
-      while (response.data[randomQuoteIdx].author === 'Donald Trump') {
-        randomQuoteIdx = Math.floor(Math.random() * 1000)
-      }
-      setInspoText(response.data[randomQuoteIdx].text)
-      setInspoAuthor(response.data[randomQuoteIdx].author)
-    })
+    let unmounted = false
+    let source = CancelToken.source()
+    axios
+      .get(`https://type.fit/api/quotes`, {
+        cancelToken: source.token
+      })
+      .then(function(response) {
+        if (!unmounted) {
+          let randomQuoteIdx = Math.floor(Math.random() * 1000)
+          while (response.data[randomQuoteIdx].author === 'Donald Trump') {
+            randomQuoteIdx = Math.floor(Math.random() * 1000)
+          }
+          setInspoText(response.data[randomQuoteIdx].text)
+          setInspoAuthor(response.data[randomQuoteIdx].author)
+        }
+      })
+      .catch(function(thrown) {
+        if (!unmounted) {
+          if (axios.isCancel(thrown)) {
+            console.log('Request canceled', thrown.message)
+          } else {
+            // handle error
+          }
+        }
+      })
+
+    return () => {
+      // clean up
+      unmounted = true
+      source.cancel('Operation canceled by the user.')
+    }
   }, [])
 
   return (

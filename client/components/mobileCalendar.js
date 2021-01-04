@@ -4,6 +4,7 @@ import 'react-calendar/dist/Calendar.css'
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord'
 import MobileDayOverview from './mobileDayOverview'
 import MobileOverview from './mobileOverview'
+import CalendarWelcome from './calendarWelcome'
 const MobileCalendar = props => {
   const formatDate = newDate => {
     let d = new Date(newDate),
@@ -41,7 +42,9 @@ const MobileCalendar = props => {
       }
     }
   }
-  return overview.length > 0 ? (
+  return overview === 'no entries' ? (
+    <CalendarWelcome view="mobile" />
+  ) : overview.length > 0 ? (
     <div className="MobileCalDiv">
       <Calendar
         onChange={handleChange}

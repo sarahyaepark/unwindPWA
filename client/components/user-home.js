@@ -6,7 +6,8 @@ import {
   me,
   updateGoal,
   getCurrentDate,
-  getCompliments
+  getCompliments,
+  fetchOverview
 } from '../store'
 import DailyEntry from './dailyEntry'
 import Goodnight from './goodnight'
@@ -17,6 +18,7 @@ import Tooltip from 'react-bootstrap/Tooltip'
 import Button from 'react-bootstrap/Button'
 import Feedback from './feedback'
 import ToggleButton from './toggleButton'
+
 /**
  * COMPONENT
  */
@@ -42,6 +44,9 @@ export const UserHome = props => {
       if (loaded) {
         props.fetchGoals(userId)
         props.getCompliments(userId)
+        if (Array.isArray(props.overview) && props.overview.length < 1) {
+          props.fetchOverview(userId)
+        }
       }
     },
     [loaded]
@@ -216,7 +221,8 @@ const mapState = state => {
     user: state.user,
     userId: state.user.id,
     goals: state.goals,
-    compliment: state.compliment
+    compliment: state.compliment,
+    overview: state.overview
   }
 }
 
@@ -225,6 +231,7 @@ const mapDispatch = dispatch => {
     fetchGoals: userId => dispatch(fetchGoals(userId)),
     me: () => dispatch(me()),
     getCompliments: userId => dispatch(getCompliments(userId)),
+    fetchOverview: userId => dispatch(fetchOverview(userId)),
     updateGoal: (
       userId,
       goalId,
