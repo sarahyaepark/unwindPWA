@@ -4,10 +4,10 @@ const pkg = require('../../package.json')
 const databaseName = pkg.name + (process.env.NODE_ENV === 'test' ? '-test' : '')
 
 const db = new Sequelize(
-  // `postgres://${process.env.USER}:${process.env.PASSWORD}@${
-  //   process.env.DBURL
-  // }:25060/defaultdb?ssl=true`,
-  `postgres://localhost:5432/${databaseName}`,
+  `postgres://${process.env.USER}:${process.env.PASSWORD}@${
+    process.env.DBURL
+  }:25060/defaultdb?ssl=true`,
+  // `postgres://localhost:5432/${databaseName}`,
   {
     logging: false
   }
