@@ -10,13 +10,13 @@ Backend with `Node`/`express`/`sequelize`/`GraphQL` and a frontend with `react`/
 <img width="600px" height="277px" src="./public/demo_gifs/signup_goalform.gif">
 
 * Check in daily to log mood, journal, and compliment
-<img width="600px" height="277px" src="./public/demo_gifs/dailyEntry.gif">
+<img width="600px" height="277px" src="./public/demo_gifs/dailyentry.gif">
 
 * Calendar View and analyses of daily user info
 **desktop**
 <img width="600px" height="277px" src="./public/demo_gifs/desktopCal.gif">
 **mobile**
-<img width="274px" height="592px" src="./public/demo_gifs/mobileCal.gif">
+<img width="246px" height="534px" src="./public/demo_gifs/mobileCal.gif">
 
 * Update account settings
 <img width="600px" height="277px" src="./public/demo_gifs/accsettings.gif">
