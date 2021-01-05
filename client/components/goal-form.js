@@ -41,11 +41,15 @@ const GoalInput = props => {
             </OverlayTrigger>
           </div>
           <br />
-          <Form.Control name="goal1" placeholder="Morning stretches..." />
+          <Form.Control
+            name="goal1"
+            placeholder="Morning stretches..."
+            required
+          />
           <br />
-          <Form.Control name="goal2" placeholder="Goal 2" />
+          <Form.Control name="goal2" placeholder="Goal 2" required />
           <br />
-          <Form.Control name="goal3" placeholder="Goal 3" />
+          <Form.Control name="goal3" placeholder="Goal 3" required />
         </Form.Group>
         <Button variant="primary" type="submit">
           Sign Up
