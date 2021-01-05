@@ -7,13 +7,19 @@ Backend with `Node`/`express`/`sequelize`/`GraphQL` and a frontend with `react`/
 ## App Walkthrough
 
 * Sign up and choose three daily self care goals
-  <img width="600px" height="385px" src="./public/demo_gifs/signup.gif">
+  <img width="600px" height="385px" src="./public/demo_gifs/signup_goalform.gif">
 
 * Check in daily to log mood, journal, and compliment
-  <img width="600px" height="385px" src="./public/demo_gifs/dailyentry.gif">
+  <img width="600px" height="385px" src="./public/demo_gifs/dailyEntry.gif">
 
-* Calendar View of daily user info
-  <img width="600px" height="385px" src="./public/demo_gifs/calendarview.gif">
+* Calendar View and analyses of daily user info
+  *desktop
+  <img width="600px" height="385px" src="./public/demo_gifs/desktopCal.gif">
+  *mobile
+  <img width="274px" height="592px" src="./public/demo_gifs/mobileCal.gif">
+
+* Update account settings
+  <img width="600px" height="385px" src="./public/demo_gifs/accsettings.gif">
 
 ## Local Setup
 
