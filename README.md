@@ -13,9 +13,10 @@ Backend with `Node`/`express`/`sequelize`/`GraphQL` and a frontend with `react`/
 <img width="600px" height="277px" src="./public/demo_gifs/dailyentry.gif">
 
 * Calendar View and analyses of daily user info
-**desktop**
+- desktop
 <img width="600px" height="277px" src="./public/demo_gifs/desktopCal.gif">
-**mobile**
+
+- mobile
 <img width="246px" height="534px" src="./public/demo_gifs/mobileCal.gif">
 
 * Update account settings
