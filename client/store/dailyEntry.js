@@ -1,7 +1,7 @@
 import axios from 'axios'
 import history from '../history'
 import {updateGoal} from './dailyGoal'
-
+import {fetchOverview} from './overview'
 const GET_ENTRY = 'GET_ENTRY'
 // const REMOVE_USER = 'REMOVE_USER'
 
@@ -45,25 +45,36 @@ export const addEntry = (
     let goalRes = await axios.post(`/api`, {
       query: `{activeGoals(userId:${userId}, dateCreated:"${getCurrentDate()}"),{description,id,completed,dateCreated}}`
     })
-    goalRes.data.data.activeGoals.map(goal => {
-      let completed
-      if (window.sessionStorage.getItem('goalId' + goal.id)) {
-        completed = window.sessionStorage.getItem('goalId' + goal.id) === 'true'
-      } else if (window.localStorage.getItem('goalId' + goal.id)) {
-        completed = window.localStorage.getItem('goalId' + goal.id) === 'true'
-      } else {
-        completed = false
-      }
-      dispatch(
-        updateGoal(
-          null,
-          goal.id,
-          completed,
-          undefined,
-          res.data.data.addDailyEntry.id
-        )
-      )
-    })
+    await Promise.all(
+      goalRes.data.data.activeGoals.map(async goal => {
+        let completed
+        if (window.sessionStorage.getItem('goalId' + goal.id)) {
+          completed =
+            window.sessionStorage.getItem('goalId' + goal.id) === 'true'
+        } else if (window.localStorage.getItem('goalId' + goal.id)) {
+          completed = window.localStorage.getItem('goalId' + goal.id) === 'true'
+        } else {
+          completed = false
+        }
+        await axios.post(`/api`, {
+          query: `mutation{updateGoal(id:${
+            goal.id
+          }, completed:${completed}, dateCreated:"${getCurrentDate()}", dailyEntryId:${
+            res.data.data.addDailyEntry.id
+          }),{id,description,completed}}`
+        })
+        // dispatch(
+        //   updateGoal(
+        //     null,
+        //     goal.id,
+        //     completed,
+        //     undefined,
+        //     res.data.data.addDailyEntry.id
+        //   )
+        // )
+      })
+    )
+    dispatch(fetchOverview(userId))
   } catch (authError) {
     return dispatch(getEntry({error: authError}))
   }
