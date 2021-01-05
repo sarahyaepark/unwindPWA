@@ -132,21 +132,13 @@ const mapDispatch = dispatch => {
       else userId = window.sessionStorage.getItem('id')
       let mood = window.sessionStorage.getItem('currentMood')
       if (compliment !== undefined && journal !== undefined) {
-        dispatch(addEntry(userId, mood, journal, compliment)).then(() => {
-          dispatch(fetchOverview(userId))
-        })
+        dispatch(addEntry(userId, mood, journal, compliment))
       } else if (compliment !== undefined) {
-        dispatch(addEntry(userId, mood, null, compliment)).then(() => {
-          dispatch(fetchOverview(userId))
-        })
+        dispatch(addEntry(userId, mood, null, compliment))
       } else if (journal !== undefined) {
-        dispatch(addEntry(userId, mood, journal)).then(() => {
-          dispatch(fetchOverview(userId))
-        })
+        dispatch(addEntry(userId, mood, journal))
       } else {
-        dispatch(addEntry(userId, mood)).then(() => {
-          dispatch(fetchOverview(userId))
-        })
+        dispatch(addEntry(userId, mood))
       }
 
       history.push('/goodnight')
