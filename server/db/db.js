@@ -1,18 +1,25 @@
 const Sequelize = require('sequelize')
 const pkg = require('../../package.json')
 
+// const databaseName = pkg.name + (process.env.NODE_ENV === 'test' ? '-test' : '')
+
+// const db = new Sequelize(
+//   // `postgres://${process.env.USER}:${process.env.PASSWORD}@${
+//   //   process.env.DBURL
+//   // }:25060/defaultdb?ssl=true`,
+//   `postgres://localhost:5432/${databaseName}`,
+//   {
+//     logging: false
+//   }
+// )
 const databaseName = pkg.name + (process.env.NODE_ENV === 'test' ? '-test' : '')
 
 const db = new Sequelize(
-  `postgres://${process.env.USER}:${process.env.PASSWORD}@${
-    process.env.DBURL
-  }:25060/defaultdb?ssl=true`,
-  // `postgres://localhost:5432/${databaseName}`,
+  process.env.DATABASE_URL || `postgres://localhost:5432/${databaseName}`,
   {
     logging: false
   }
 )
-
 module.exports = db
 
 // This is a global Mocha hook used for resource cleanup.
